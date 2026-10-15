@@ -14,7 +14,8 @@ Le site sert à générer des prospects : le visiteur simule le coût d'un vélo
 site/                 ← tout ce qui est publié sur le FTP (et rien d'autre)
   index.html          page d'accueil complète (avantages, simulateur, vélos, CGV, contact)
   simulateur.html     simulateur seul, formulaire HubSpot obligatoire avant les résultats
-  config.js           réglages modifiables sans toucher au HTML (GA4, HubSpot, taux de loyer)
+  config.js           réglages modifiables sans toucher au HTML (GA4, HubSpot, taux de loyer, part salarié)
+  simulateur-calcul.js  formule du simulateur, partagée par les deux pages (window.TV_SIM)
   support.js          moteur de rendu de index.html (ne pas modifier)
   images/             logos SVG + photos
 ressources/           sources non publiées : logo .ai, fiches PDF, photos HD
@@ -24,10 +25,10 @@ docs/                 documentation détaillée (déploiement, règles métier, 
 
 ## Les deux pages, deux techniques différentes
 
-- **`simulateur.html`** : HTML + CSS + JavaScript classique, autonome. Tout le code est dans le fichier (logo SVG inline compris). Dépend seulement de `config.js`, du formulaire HubSpot et de Google Fonts.
+- **`simulateur.html`** : HTML + CSS + JavaScript classique, autonome. Tout le code est dans le fichier (logo SVG inline compris). Dépend de `config.js`, `simulateur-calcul.js`, du formulaire HubSpot et de Google Fonts.
 - **`index.html`** : écrite avec un framework de maquettage (balises `<x-dc>`, `<sc-for>`, `<sc-if>`, `{{ variables }}`, classe `Component extends DCLogic` dans `<script type="text/x-dc">`). Elle **ne s'affiche pas sans `support.js`**. Respecter cette syntaxe quand on la modifie, ou proposer de la réécrire en HTML classique comme le simulateur (sujet en attente, à valider avec l'utilisateur).
 
-Les deux pages lisent `window.TV_CONFIG` (défini par `config.js`) et ont des valeurs par défaut si le fichier est absent.
+Les deux pages lisent `window.TV_CONFIG` (défini par `config.js`). **Le calcul du simulateur est dans `simulateur-calcul.js`, commun aux deux pages** : toute modification de formule se fait là, une seule fois. Seul l'affichage est propre à chaque page.
 
 ## Charte graphique
 
@@ -45,7 +46,7 @@ Logo : `site/images/logo-transition-velo.svg` (fond clair), `logo-transition-vel
 ## Règles métier à respecter (détails : `docs/REGLES-METIER.md`)
 
 - L'offre et les avantages fiscaux concernent **uniquement les vélos et VAE** (assistance coupée à 25 km/h, 250 W max). **Les speedbikes (45 km/h) sont des cyclomoteurs** : pas d'exonération BOSS, pas de réduction d'IS. Ne jamais afficher d'avantage fiscal pour un speedbike.
-- Formule du simulateur : `loyer mensuel HT = prix HT × tauxLoyer × coeffDuree[durée]` (valeurs dans `config.js`). Part salarié 30 %, part employeur 70 %.
+- Formule du simulateur : `loyer mensuel HT = prix HT × tauxLoyer × coeffDuree[durée]` (valeurs dans `config.js`). Part salarié choisie par le visiteur (0 à 50 %, 30 % par défaut, réglable dans `config.js`), le reste pour l'employeur.
 - Le cumul « participation du salarié + réduction d'IS de 25 % » est juridiquement discutable (la loi exige une mise à disposition gratuite). Ne pas renforcer les promesses fiscales sans validation d'un expert-comptable.
 
 ## Formulaire HubSpot

@@ -14,7 +14,7 @@ Pour ajouter une mesure : `window.tvTrack('nom_evenement', { param: valeur })`. 
 
 | Événement | Déclencheur | Paramètres |
 |---|---|---|
-| `sim_step_view` | chaque étape du simulateur | `step`, `step_name` (prix, profil, formulaire, resultats) ; à partir de l'étape 3 : `velo_prix`, `salaire_brut`, `tmi`, `duree_mois`, `cout_net_salarie`, `cout_net_employeur` |
+| `sim_step_view` | chaque étape du simulateur | `step`, `step_name` (prix, profil, formulaire, resultats) ; à partir de l'étape 3 : `velo_prix`, `salaire_brut`, `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie`, `cout_net_employeur` |
 | `generate_lead` | formulaire HubSpot envoyé | `form` + les mêmes valeurs de simulation |
 | `contact_click` | clic téléphone ou email | `method` (phone, email), `location` |
 | `cta_click` | liens vers `#simulateur` ou `#contact` | `target`, `location`, `label` |
@@ -27,7 +27,7 @@ Tous les événements portent `page_type` (`simulateur` ou `accueil`). Sur l'acc
 
 1. **Admin → Définitions personnalisées** :
    - Dimensions (portée événement) : `step_name`, `page_type`, `method`, `location`, `target`, `tab`
-   - Métriques : `velo_prix` (devise), `salaire_brut` (devise), `tmi`, `duree_mois`, `cout_net_salarie` (devise), `cout_net_employeur` (devise)
+   - Métriques : `velo_prix` (devise), `salaire_brut` (devise), `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie` (devise), `cout_net_employeur` (devise)
 2. **Admin → Événements** : marquer `generate_lead` comme **événement clé**.
 3. **Explorer → Exploration de l'entonnoir** : étapes `sim_step_view` avec `step_name` = prix → profil → formulaire, puis `generate_lead`, puis `sim_step_view` = resultats.
 4. Campagnes : ajouter `?utm_source=…&utm_medium=…&utm_campaign=…` aux liens (LinkedIn, emailing, QR codes des fiches PDF).

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./config.js"></script>
+<script src="./simulateur-calcul.js"></script>
 <script src="./support.js"></script>
 </head>
 <body data-page="accueil">
@@ -325,6 +326,11 @@
             <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#8A8271;margin-bottom:12px">Durée du contrat LLD</div>
             <div style="display:flex;gap:8px"><sc-for list="{{ durees }}" as="d" hint-placeholder-count="3"><button style="{{ d.style }}" onClick="{{ d.onClick }}">{{ d.label }}<small style="display:block;font-size:10px;opacity:.7;font-weight:400;margin-top:1px">{{ d.note }}</small></button></sc-for></div>
           </div>
+          <div style="grid-column:1/-1;background:#FCFBF9;border:1px solid #E7E2D8;border-radius:12px;padding:20px">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#8A8271;margin-bottom:12px">Part du loyer payée par le salarié</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><sc-for list="{{ parts }}" as="pt" hint-placeholder-count="6"><button style="{{ pt.style }}" onClick="{{ pt.onClick }}">{{ pt.label }}</button></sc-for></div>
+            <div style="font-size:13px;color:#8A8271">{{ partInfo }}</div>
+          </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center">
           <button onClick="{{ goStep1 }}" style="background:transparent;color:#6B6454;border:1px solid #E7E2D8;padding:12px 22px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="background:#F4F0E7">← Retour</button>
@@ -363,7 +369,7 @@
                 <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;min-width:96px;text-align:right;color:#D4412B">{{ loyerStr }}</div>
               </div>
               <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #F0EDE8;gap:12px">
-                <div style="font-size:13px;color:#1C232B;min-width:170px">Part salarié (30% HT)</div>
+                <div style="font-size:13px;color:#1C232B;min-width:170px">{{ partSalLabel }}</div>
                 <div style="flex:1;height:6px;background:#EFE9DC;border-radius:3px;overflow:hidden"><div style="height:100%;background:#D4412B;width:100%"></div></div>
                 <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;min-width:96px;text-align:right;color:#D4412B">{{ partSalStr }}</div>
               </div>
@@ -388,7 +394,7 @@
                 <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;min-width:96px;text-align:right;color:#D4412B">{{ loyerStr }}</div>
               </div>
               <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #F0EDE8;gap:12px">
-                <div style="font-size:13px;color:#1C232B;min-width:170px">Part employeur (70% HT)</div>
+                <div style="font-size:13px;color:#1C232B;min-width:170px">{{ partEmpLabel }}</div>
                 <div style="flex:1;height:6px;background:#EFE9DC;border-radius:3px;overflow:hidden"><div style="height:100%;background:#D4412B;width:100%"></div></div>
                 <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;min-width:96px;text-align:right;color:#D4412B">{{ partEmpStr }}</div>
               </div>
@@ -683,7 +689,7 @@
 <!-- Modale + formulaire HubSpot montés hors React (componentDidMount) pour éviter les conflits de réconciliation --></x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { step:1, prix:2332, salaire:3000, tmi:11, duree:36, bk:'sal', modal:false };
+  state = { step:1, prix:2332, salaire:3000, tmi:11, duree:36, part:window.TV_SIM.partDefaut, bk:'sal', modal:false };
 
   componentDidMount(){
     const overlay = document.createElement('div');
@@ -729,9 +735,8 @@ class Component extends DCLogic {
 
   // Réglages lus dans config.js (valeurs par défaut si le fichier est absent)
   hs(){ const h = (window.TV_CONFIG || {}).hubspot || {}; return { region: h.region || 'eu1', portalId: h.portalId || '145421861', formId: h.formId || '079ed762-8b3e-400f-8242-d5c480381dfb' }; }
-  cc(){ return (window.TV_CONFIG || {}).calcul || {}; }
   track(name, params){ if (window.tvTrack) window.tvTrack(name, params || {}); }
-  simVals(){ const s = this.state, c = this.calc(); return { velo_prix:s.prix, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
+  simVals(){ const s = this.state, c = this.calc(); return { velo_prix:s.prix, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
   goTo(n){
     this.setState({ step:n });
     if (n !== this._lastStep) {
@@ -743,31 +748,12 @@ class Component extends DCLogic {
 
   fmt(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; }
 
-  calc(){
-    const s = this.state;
-    const CC = this.cc();
-    const coeff = (CC.coeffDuree || {36:1, 24:1.25, 12:1.7})[s.duree] || 1;
-    const loyer = Math.round(s.prix * (+CC.tauxLoyer || 0.0335) * coeff);
-    const partSal = Math.round(loyer * 0.30);
-    const partEmp = Math.round(loyer * 0.70);
-    const ecoCot = Math.round(partSal * 0.23);
-    const ecoIR = Math.round((partSal - ecoCot) * (s.tmi/100) * 0.9);
-    const coutNetSal = Math.max(0, partSal - ecoCot - ecoIR);
-    const ecoSalPct = Math.round((ecoCot + ecoIR) / partSal * 100);
-    const reduIS = Math.round(partEmp * 0.25);
-    const deductIS = Math.round(partEmp * 0.25 * 0.25);
-    const coutNetEmp = Math.max(0, partEmp - reduIS - deductIS);
-    const ecoEmpPct = Math.round((reduIS + deductIS) / partEmp * 100);
-    const brut = loyer * s.duree;
-    const ecoSalT = (ecoCot + ecoIR) * s.duree;
-    const ecoEmpT = (reduIS + deductIS) * s.duree;
-    return { loyer, partSal, partEmp, ecoCot, ecoIR, coutNetSal, ecoSalPct, reduIS, deductIS, coutNetEmp, ecoEmpPct, brut, ecoSalT, ecoEmpT, saving: ecoSalT + ecoEmpT };
-  }
+  calc(){ return window.TV_SIM.calc(this.state); }
 
   renderVals(){
     const s = this.state, c = this.calc();
     window.tvSimValues = this.simVals();
-    const pctW = (p,t)=> Math.min(100, Math.round(p/t*100)) + '%';
+    const pctW = (p,t)=> t ? Math.min(100, Math.round(p/t*100)) + '%' : '0%';
     const rangeBg = (v,mn,mx)=>{ const p=(v-mn)/(mx-mn)*100; return `linear-gradient(to right,#D4412B 0%,#D4412B ${p}%,#E7E2D8 ${p}%,#E7E2D8 100%)`; };
     const st = n => s.step===n ? 'active' : (n < s.step ? 'done' : 'todo');
     const mkTab = (n,label,val) => { const t = st(n); return {
@@ -780,7 +766,7 @@ class Component extends DCLogic {
       valStyle: { fontSize:'11px', marginTop:'1px', color: t==='active'?'rgba(255,255,255,.85)':'#8A8271' }
     };};
     const presetStyle = v => ({ background: s.prix===v?'#D4412B':'#F4F0E7', color: s.prix===v?'#fff':'#1C232B', border:'1px solid '+(s.prix===v?'#D4412B':'#E7E2D8'), padding:'8px 15px', borderRadius:'100px', fontSize:'13px', fontWeight:'500', cursor:'pointer', fontFamily:'inherit', transition:'all .15s' });
-    const tmiStyle = v => ({ flex:'1', minWidth:'46px', background: s.tmi===v?'#1C232B':'#F4F0E7', color: s.tmi===v?'#fff':'#1C232B', border:'1px solid '+(s.tmi===v?'#1C232B':'#E7E2D8'), padding:'8px 4px', borderRadius:'7px', fontSize:'12px', fontWeight:'700', cursor:'pointer', fontFamily:"'JetBrains Mono',monospace", textAlign:'center', transition:'all .15s' });
+    const tmiStyle = (v, cur = s.tmi) => ({ flex:'1', minWidth:'46px', background: cur===v?'#1C232B':'#F4F0E7', color: cur===v?'#fff':'#1C232B', border:'1px solid '+(cur===v?'#1C232B':'#E7E2D8'), padding:'8px 4px', borderRadius:'7px', fontSize:'12px', fontWeight:'700', cursor:'pointer', fontFamily:"'JetBrains Mono',monospace", textAlign:'center', transition:'all .15s' });
     const dureeStyle = v => ({ flex:'1', background: s.duree===v?'#1C232B':'#F4F0E7', color: s.duree===v?'#fff':'#1C232B', border:'1px solid '+(s.duree===v?'#1C232B':'#E7E2D8'), padding:'9px', borderRadius:'8px', fontSize:'13px', fontWeight:'600', cursor:'pointer', fontFamily:'inherit', textAlign:'center', transition:'all .15s' });
     const bkStyle = k => ({ flex:'1', padding:'13px', textAlign:'center', fontSize:'13px', fontWeight:'600', cursor:'pointer', fontFamily:'inherit', background:'none', border:'none', borderBottom:'2px solid '+(s.bk===k?'#D4412B':'transparent'), color: s.bk===k?'#D4412B':'#8A8271', marginBottom:'-1px', transition:'all .15s' });
     const barStyle = (col,w) => ({ height:'100%', background:col, borderRadius:'3px', width:w });
@@ -799,13 +785,16 @@ class Component extends DCLogic {
       salaire: s.salaire, salaireLabel: this.fmt(s.salaire), salaireRangeStyle: { background: rangeBg(s.salaire,1800,7000) },
       onSalaire: e => this.setState({ salaire: +e.target.value }),
       tmis: [0,11,30,41,45].map(v=>({ label:v+'%', onClick:()=>this.setState({tmi:v}), style: tmiStyle(v) })),
-      durees: [12,24,36].map(d=>{ const CC = this.cc(); return { v:d, note: d===36 ? 'Recommandé' : '+'+Math.round(((CC.coeffDuree||{12:1.7,24:1.25,36:1})[d]||1)*100-100)+'% vs 36' }; }).map(d=>({ label:d.v+' mois', note:d.note, onClick:()=>this.setState({duree:d.v}), style: dureeStyle(d.v) })),
+      durees: [12,24,36].map(d=>({ v:d, note: window.TV_SIM.dureeNote(d) })).map(d=>({ label:d.v+' mois', note:d.note, onClick:()=>this.setState({duree:d.v}), style: dureeStyle(d.v) })),
+      parts: window.TV_SIM.partChoix.map(v=>({ label:v+'%', onClick:()=>this.setState({part:v}), style: tmiStyle(v, s.part) })),
+      partInfo: window.TV_SIM.partInfo(s.part),
       goStep1: ()=> this.goTo(1),
       goStep3: ()=> this.goTo(3),
 
       // step 3
       bigSal: String(c.coutNetSal), bigEmp: String(c.coutNetEmp),
-      ecoSalPct: c.ecoSalPct+"% d'économie", ecoEmpPct: c.ecoEmpPct+"% d'économie",
+      ecoSalPct: c.partSal ? c.ecoSalPct+"% d'économie" : 'Pris en charge à 100 %', ecoEmpPct: c.ecoEmpPct+"% d'économie",
+      partSalLabel: 'Part salarié ('+s.part+'% HT)', partEmpLabel: 'Part employeur ('+(100-s.part)+'% HT)',
       loyerStr: c.loyer+' €/mois', partSalStr: c.partSal+' €/mois', ecoCotStr: '− '+c.ecoCot+' €/mois', ecoIRStr: '− '+c.ecoIR+' €/mois', netSalStr: c.coutNetSal+' €/mois',
       barCotStyle: barStyle('#1F7A45', pctW(c.ecoCot,c.partSal)), barIRStyle: barStyle('#C8960C', pctW(c.ecoIR,c.partSal)),
       partEmpStr: c.partEmp+' €/mois', isStr: '− '+c.reduIS+' €/mois', deductStr: '− '+c.deductIS+' €/mois', netEmpStr: c.coutNetEmp+' €/mois',

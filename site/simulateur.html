@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="./config.js"></script>
+<script src="./simulateur-calcul.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur vélo de fonction — Transition Vélo</title>
 <meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
@@ -187,6 +188,11 @@
           <div class="box" style="grid-column:1/-1">
             <div class="box-l">Durée du contrat LLD</div>
             <div id="durees" style="display:flex;gap:8px"></div>
+          </div>
+          <div class="box" style="grid-column:1/-1">
+            <div class="box-l">Part du loyer payée par le salarié</div>
+            <div id="parts" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+            <div id="partInfo" style="font-size:13px;color:var(--muted)"></div>
           </div>
         </div>
         <div class="nav-row">
@@ -388,44 +394,26 @@
 
 <script>
 (function(){
-  var CFG = window.TV_CONFIG || {}, HS = CFG.hubspot || {}, CC = CFG.calcul || {};
+  var CFG = window.TV_CONFIG || {}, HS = CFG.hubspot || {}, SIM = window.TV_SIM;
   var HS_REGION = HS.region || 'eu1', HS_PORTAL = HS.portalId || '145421861', HS_FORM = HS.formId || '079ed762-8b3e-400f-8242-d5c480381dfb';
   var HS_SCRIPT = 'https://js-' + HS_REGION + '.hsforms.net/forms/embed/' + HS_PORTAL + '.js';
   (function(f){ f.setAttribute('data-region', HS_REGION); f.setAttribute('data-portal-id', HS_PORTAL); f.setAttribute('data-form-id', HS_FORM); })(document.querySelector('.hs-form-frame'));
   var LS_KEY = 'tv_sim_unlocked';
 
-  var s = { step:1, prix:2332, salaire:3000, tmi:11, duree:36, bk:'sal', unlocked:false };
+  var s = { step:1, prix:2332, salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
   try { s.unlocked = localStorage.getItem(LS_KEY) === '1'; } catch(e){}
 
   var $ = function(id){ return document.getElementById(id); };
   var fmt = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
 
-  function calc(){
-    var coeff = (CC.coeffDuree || {36:1, 24:1.25, 12:1.7})[s.duree] || 1;
-    var loyer = Math.round(s.prix * (+CC.tauxLoyer || 0.0335) * coeff);
-    var partSal = Math.round(loyer * 0.30);
-    var partEmp = Math.round(loyer * 0.70);
-    var ecoCot = Math.round(partSal * 0.23);
-    var ecoIR = Math.round((partSal - ecoCot) * (s.tmi/100) * 0.9);
-    var coutNetSal = Math.max(0, partSal - ecoCot - ecoIR);
-    var ecoSalPct = Math.round((ecoCot + ecoIR) / partSal * 100);
-    var reduIS = Math.round(partEmp * 0.25);
-    var deductIS = Math.round(partEmp * 0.25 * 0.25);
-    var coutNetEmp = Math.max(0, partEmp - reduIS - deductIS);
-    var ecoEmpPct = Math.round((reduIS + deductIS) / partEmp * 100);
-    var brut = loyer * s.duree;
-    var ecoSalT = (ecoCot + ecoIR) * s.duree;
-    var ecoEmpT = (reduIS + deductIS) * s.duree;
-    return { loyer:loyer, partSal:partSal, partEmp:partEmp, ecoCot:ecoCot, ecoIR:ecoIR, coutNetSal:coutNetSal, ecoSalPct:ecoSalPct,
-             reduIS:reduIS, deductIS:deductIS, coutNetEmp:coutNetEmp, ecoEmpPct:ecoEmpPct, brut:brut, ecoSalT:ecoSalT, ecoEmpT:ecoEmpT, saving:ecoSalT+ecoEmpT };
-  }
+  function calc(){ return SIM.calc(s); }
 
   function rangeBg(v,mn,mx){ var p=(v-mn)/(mx-mn)*100; return 'linear-gradient(to right,#D4412B 0%,#D4412B '+p+'%,#E7E2D8 '+p+'%,#E7E2D8 100%)'; }
-  function pct(p,t){ return Math.min(100, Math.round(p/t*100)) + '%'; }
+  function pct(p,t){ return t ? Math.min(100, Math.round(p/t*100)) + '%' : '0%'; }
 
   // ---------- Mesure d'audience ----------
   var STEP_NAMES = {1:'prix', 2:'profil', 3:'formulaire', 4:'resultats'}, lastStep = 0;
-  function vals(){ var c = calc(); return { velo_prix:s.prix, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
+  function vals(){ var c = calc(); return { velo_prix:s.prix, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
   function track(name, params){ if (window.tvTrack) window.tvTrack(name, params || {}); }
 
   // Navigation : on ne peut jamais atteindre l'étape 4 sans avoir rempli le formulaire
@@ -478,8 +466,10 @@
     $('salaire').value = s.salaire;
     $('salaire').style.background = rangeBg(s.salaire,1800,7000);
     $('tmis').innerHTML = [0,11,30,41,45].map(function(v){ return '<button class="seg mono'+(s.tmi===v?' on':'')+'" style="min-width:46px;font-size:12px;font-weight:700" data-tmi="'+v+'">'+v+'%</button>'; }).join('');
-    $('durees').innerHTML = [12,24,36].map(function(d){ return [d, d===36 ? 'Recommandé' : '+'+Math.round(((CC.coeffDuree||{12:1.7,24:1.25,36:1})[d]||1)*100-100)+'% vs 36']; })
+    $('durees').innerHTML = [12,24,36].map(function(d){ return [d, SIM.dureeNote(d)]; })
       .map(function(d){ return '<button class="seg'+(s.duree===d[0]?' on':'')+'" data-duree="'+d[0]+'">'+d[0]+' mois<small>'+d[1]+'</small></button>'; }).join('');
+    $('parts').innerHTML = SIM.partChoix.map(function(v){ return '<button class="seg mono'+(s.part===v?' on':'')+'" style="min-width:46px;font-size:12px;font-weight:700" data-part="'+v+'">'+v+'%</button>'; }).join('');
+    $('partInfo').textContent = SIM.partInfo(s.part);
 
     // étape 3 (teaser flouté — valeurs factices tant que non débloqué)
     $('teaseSal').textContent = '88 €';
@@ -489,7 +479,7 @@
     if (!s.unlocked) return;
     $('bigSal').textContent = c.coutNetSal;
     $('bigEmp').textContent = c.coutNetEmp;
-    $('ecoSalPct').textContent = c.ecoSalPct + "% d'économie";
+    $('ecoSalPct').textContent = c.partSal ? c.ecoSalPct + "% d'économie" : "Pris en charge à 100 %";
     $('ecoEmpPct').textContent = c.ecoEmpPct + "% d'économie";
 
     var tabs = [['sal','Détail salarié'],['emp','Détail employeur'],['total','Bilan '+s.duree+' mois']];
@@ -504,13 +494,13 @@
     var R='#D4412B', G='#1F7A45', Y='#C8960C', html='';
     if (s.bk==='sal') html =
       row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
-      row('Part salarié (30% HT)', c.partSal+' €/mois', R, [R,'100%']) +
+      row('Part salarié ('+s.part+'% HT)', c.partSal+' €/mois', R, [R,'100%']) +
       row('Économie cotisations sociales', '− '+c.ecoCot+' €/mois', G, [G, pct(c.ecoCot,c.partSal)]) +
       row('Économie impôt sur le revenu', '− '+c.ecoIR+' €/mois', G, [Y, pct(c.ecoIR,c.partSal)]) +
       tot('Coût net réel / mois', c.coutNetSal+' €/mois');
     else if (s.bk==='emp') html =
       row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
-      row('Part employeur (70% HT)', c.partEmp+' €/mois', R, [R,'100%']) +
+      row('Part employeur ('+(100-s.part)+'% HT)', c.partEmp+' €/mois', R, [R,'100%']) +
       row('Réduction IS 25% (art. 220 CGI)', '− '+c.reduIS+' €/mois', G, [G, pct(c.reduIS,c.partEmp)]) +
       row('Charges déductibles (IS 25%)', '− '+c.deductIS+' €/mois', G, [Y, pct(c.deductIS,c.partEmp)]) +
       tot('Coût net réel / mois', c.coutNetEmp+' €/mois');
@@ -560,12 +550,13 @@
 
   // ---------- Événements ----------
   document.addEventListener('click', function(e){
-    var b = e.target.closest('[data-go],[data-prix],[data-tmi],[data-duree],[data-bk]');
+    var b = e.target.closest('[data-go],[data-prix],[data-tmi],[data-duree],[data-part],[data-bk]');
     if (!b) return;
     if (b.dataset.go)    return go(+b.dataset.go);
     if (b.dataset.prix)  s.prix = +b.dataset.prix;
     if (b.dataset.tmi)   s.tmi = +b.dataset.tmi;
     if (b.dataset.duree) s.duree = +b.dataset.duree;
+    if (b.dataset.part)  s.part = +b.dataset.part;
     if (b.dataset.bk)  { s.bk = b.dataset.bk; track('sim_detail_tab', { tab:s.bk }); }
     render();
   });

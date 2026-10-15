@@ -23,6 +23,8 @@ window.TV_CONFIG = {
      Loyer mensuel HT = prix HT du vélo × tauxLoyer × coefficient de durée */
   calcul: {
     tauxLoyer: 0.0335,                       // 3,35 % du prix HT par mois (base 36 mois)
-    coeffDuree: { 12: 1.7, 24: 1.25, 36: 1 }  // majoration des contrats courts
+    coeffDuree: { 12: 1.7, 24: 1.25, 36: 1 }, // majoration des contrats courts
+    // Part du loyer payée par le salarié (en %), le reste par l'employeur
+    partSalarie: { defaut: 30, choix: [0, 10, 20, 30, 40, 50] }
   }
 };
