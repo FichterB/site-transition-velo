@@ -61,8 +61,9 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 ## Déploiement (détails : `docs/DEPLOIEMENT.md`)
 
 - Site : **https://transitionvelo.net** — préprod : https://transitionvelo.net/preprod/ (hébergement OVH, SFTP).
-- Push sur `main` → déploiement automatique en **préproduction** (`/preprod/`), avec le suivi GA désactivé.
-- Mise en **production** : manuelle, depuis l'onglet Actions de GitHub (« Déployer » → cible `production`), après vérification de la préprod.
+- Deux branches : `main` (= préprod) et `production` (= site en ligne). Ne jamais pousser directement sur `production`.
+- Push sur `main` → déploiement automatique en **préproduction** (`/preprod/`), avec GA4 et Clarity coupés.
+- Mise en **production** : l'utilisateur ouvre une pull request `main` → `production` sur GitHub et la fusionne (lien : https://github.com/FichterB/site-transition-velo/compare/production...main) ; le déploiement et le récap Missive suivent automatiquement.
 - Seul le dossier `site/` est envoyé sur le FTP.
 
 ## Avant chaque commit
