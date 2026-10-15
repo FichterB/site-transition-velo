@@ -58,6 +58,7 @@ Google Analytics 4, chargé **uniquement après consentement** (bandeau maison, 
 
 ## Déploiement (détails : `docs/DEPLOIEMENT.md`)
 
+- Site : **https://transitionvelo.net** — préprod : https://transitionvelo.net/preprod/ (hébergement OVH, SFTP).
 - Push sur `main` → déploiement automatique en **préproduction** (`/preprod/`), avec le suivi GA désactivé.
 - Mise en **production** : manuelle, depuis l'onglet Actions de GitHub (« Déployer » → cible `production`), après vérification de la préprod.
 - Seul le dossier `site/` est envoyé sur le FTP.

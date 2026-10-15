@@ -46,7 +46,7 @@ L'envoi remplace les fichiers du même nom mais **ne supprime rien** sur le serv
 Settings → **Environments** → `production` → cocher **Required reviewers** et s'ajouter. Chaque mise en production demandera alors une validation.
 
 ### 4. Premier déploiement
-Lancer d'abord l'action en préprod et vérifier `https://<domaine>/preprod/simulateur.html`.
+Lancer d'abord l'action en préprod et vérifier `https://transitionvelo.net/preprod/simulateur.html`.
 
 > Le premier envoi en production réécrit les fichiers existants du même nom sur le serveur. Faire une sauvegarde du site actuel (téléchargement FTP) avant.
 
