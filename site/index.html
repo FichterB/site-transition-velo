@@ -670,7 +670,7 @@
 <!-- Modale + formulaire HubSpot montés hors React (componentDidMount) pour éviter les conflits de réconciliation --></x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { step:1, prix:2332, sel:[2], salaire:3000, tmi:11, duree:36, part:window.TV_SIM.partDefaut, bk:'sal', modal:false };
+  state = { step:1, prix:window.TV_SIM.velos[window.TV_SIM.veloDefaut].prix, sel:[window.TV_SIM.veloDefaut], salaire:3000, tmi:11, duree:36, part:window.TV_SIM.partDefaut, bk:'sal', modal:false };
 
   componentDidMount(){
     const overlay = document.createElement('div');

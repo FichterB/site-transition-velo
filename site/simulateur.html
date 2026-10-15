@@ -73,14 +73,34 @@
   input.mini::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--ink);border-radius:50%;cursor:pointer}
   input.mini::-moz-range-thumb{width:16px;height:16px;background:var(--ink);border-radius:50%;border:none;cursor:pointer}
 
-  .chip{background:var(--cream);color:var(--ink);border:1px solid var(--line);padding:8px 15px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
-  .chip.on{background:var(--red);color:#fff;border-color:var(--red)}
-  .chip:disabled{opacity:.4;cursor:not-allowed}
-  .chip.on:disabled{opacity:1}
-  .chip-grp{display:inline-flex}
-  .chip-grp .chip.on{border-top-left-radius:0;border-bottom-left-radius:0}
-  .chip-moins{background:var(--red);color:#fff;border:none;border-right:1px solid rgba(255,255,255,.4);padding:0 11px 0 13px;border-radius:100px 0 0 100px;font-size:15px;font-weight:700;cursor:pointer}
-  .chip-moins:hover{background:#B5341F}
+  /* étape 1 : liste des vélos (lignes générées par simulateur-calcul.js > ligneVelo) */
+  .bikes{list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+  .bike{display:grid;grid-template-columns:110px 1fr 140px 130px;gap:20px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+  .bike.on{background:linear-gradient(90deg,rgba(212,65,43,.05),transparent 60%)}
+  .bike .pic{aspect-ratio:4/3;background:#fff;display:flex;align-items:center;justify-content:center}
+  .bike .pic img{max-width:92%;max-height:92%;object-fit:contain;display:block}
+  .bike .pic img.wheel{width:38%;opacity:.35}
+  .bike .cat{font-size:12px;color:var(--muted)}
+  .bike h3{font-size:16px;margin:0 0 2px}
+  .bike p{font-size:13.5px;color:var(--muted2);margin:0;line-height:1.45}
+  .bike .loyer{font-size:13.5px;margin:0;line-height:1.4}
+  .bike .loyer b{font-family:'JetBrains Mono',monospace;font-size:17px}
+  .bike .loyer small{color:var(--muted)}
+  .qty{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+  .qty button{font:inherit;font-weight:700;cursor:pointer;border-radius:8px}
+  .qty .add{background:#fff;border:1.5px solid var(--ink);color:var(--ink);padding:7px 14px;font-size:14px}
+  .qty .add:hover{border-color:var(--red);color:var(--red)}
+  .qty .pm{width:34px;height:34px;border:1.5px solid var(--red);background:#fff;color:var(--red);font-size:17px;line-height:1;padding:0}
+  .qty button:disabled{opacity:.35;cursor:not-allowed}
+  .qty .n{font-family:'JetBrains Mono',monospace;font-weight:700;min-width:1.2em;text-align:center}
+  .more{background:none;border:0;padding:14px 0 0;color:var(--red);font-weight:700;font-size:14px;cursor:pointer}
+  .libre{margin-top:16px;font-size:14px}
+  .libre summary{cursor:pointer;color:var(--muted2);font-weight:600}
+  .libre-in{text-align:center;padding:18px 0 4px}
+  .choix{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:22px 0 18px;padding:14px 18px;background:var(--cream);border-radius:10px}
+  .choix .resume{font-weight:700}
+  .choix .resume small{display:block;font-weight:400;color:var(--muted2);font-size:13px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
   .seg{flex:1;background:var(--cream);color:var(--ink);border:1px solid var(--line);padding:9px 4px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
   .seg.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .seg small{display:block;font-size:10px;opacity:.7;font-weight:400;margin-top:1px}
@@ -126,6 +146,8 @@
   footer a{color:rgba(255,255,255,.5);text-decoration:none}
 
   @media(max-width:840px){
+    .bike{grid-template-columns:96px 1fr 120px}
+    .bike .qty{grid-column:2 / -1;justify-content:flex-start}
     .grid2,.gate{grid-template-columns:1fr}
     .tab .v{display:none}
     .tab{padding:12px 10px;gap:8px}
@@ -137,7 +159,11 @@
     .row .bar{display:none}
     .row .val{margin-left:auto}
     .big-n{font-size:40px}
-    .p1-card{padding:28px 18px 22px!important}
+    .p1-card{padding:24px 16px 20px!important}
+    .bike{grid-template-columns:84px 1fr;gap:6px 14px;align-items:start}
+    .bike .pic{grid-row:span 3}
+    .bike .loyer,.bike .qty{grid-column:2}
+    .qty{justify-content:flex-start}
   }
 </style>
 </head>
@@ -159,20 +185,25 @@
 
     <div class="stepper" id="stepper"></div>
 
-    <!-- ÉTAPE 1 : prix -->
+    <!-- ÉTAPE 1 : vélos -->
     <section class="panel" id="p1">
-      <div class="card p1-card" style="padding:40px 40px 30px;text-align:center">
-        <div style="font-weight:700;font-size:22px;margin-bottom:8px">Quel est le prix du vélo souhaité ?</div>
-        <div style="font-size:14px;color:var(--muted);margin-bottom:28px">Entrez le prix HT du vélo — assurance et entretien compris dans le loyer</div>
-        <div class="mono" id="prixLabel" style="font-size:58px;font-weight:700;color:var(--red);line-height:1;margin-bottom:6px"></div>
-        <div style="font-size:15px;color:var(--muted);margin-bottom:28px">HT — hors taxes</div>
-        <input type="range" class="big" id="prix" min="600" max="8000" step="50" aria-label="Prix HT total des vélos" style="margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:28px"><span>600 €</span><span>4 300 €</span><span>8 000 €</span></div>
-        <div id="presets" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:10px"></div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:30px">Plusieurs vélos ? Chaque clic en ajoute un, « − » en retire un : les prix s'additionnent.</div>
+      <div class="card p1-card" style="padding:32px 32px 26px">
+        <div style="font-weight:700;font-size:22px;margin-bottom:6px">Quels vélos voulez-vous simuler ?</div>
+        <div style="font-size:14px;color:var(--muted);margin-bottom:18px">Ajoutez un ou plusieurs vélos, même plusieurs fois le même. Assurance et entretien sont compris dans le loyer.</div>
+        <ul class="bikes" id="bikes"></ul>
+        <button type="button" class="more" id="voirTous" data-voir-tous>+ Ajouter d'autres vélos</button>
+        <details class="libre" id="libre">
+          <summary>Autre vélo ? Indiquez son prix HT</summary>
+          <div class="libre-in">
+            <div class="mono" id="prixLabel" style="font-size:40px;font-weight:700;color:var(--red);line-height:1;margin-bottom:14px"></div>
+            <input type="range" class="big" id="prix" min="600" max="8000" step="50" aria-label="Prix HT du vélo" style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>600 €</span><span>4 300 €</span><span>8 000 €</span></div>
+          </div>
+        </details>
+        <div class="choix" id="choix" aria-live="polite"></div>
         <div class="nav-row">
           <span class="step-count">Étape 1 sur 4</span>
-          <button class="btn" data-go="2">Continuer →</button>
+          <button class="btn" data-go="2" id="next1">Continuer →</button>
         </div>
       </div>
     </section>
@@ -296,13 +327,16 @@
   (function(f){ f.setAttribute('data-region', HS_REGION); f.setAttribute('data-portal-id', HS_PORTAL); f.setAttribute('data-form-id', HS_FORM); })(document.querySelector('.hs-form-frame'));
   var LS_KEY = 'tv_sim_unlocked';
 
-  var s = { step:1, prix:2332, sel:[2], salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
+  // sel = vélos choisis ; libre = prix saisi au curseur (vélo hors liste) ; filtre = n'afficher que les vélos choisis (arrivée depuis l'accueil)
+  var s = { step:1, prix:0, sel:[], libre:false, filtre:false, salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
   try { s.unlocked = localStorage.getItem(LS_KEY) === '1'; } catch(e){}
 
   var $ = function(id){ return document.getElementById(id); };
   var fmt = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
 
   function calc(){ return SIM.calc(s); }
+  function choisi(){ return s.sel.length > 0 || s.libre; }
+  function majPrix(){ if (s.sel.length) { s.prix = SIM.total(s.sel); s.libre = false; } else if (!s.libre) s.prix = 0; }
 
   function rangeBg(v,mn,mx){ var p=(v-mn)/(mx-mn)*100; return 'linear-gradient(to right,#D4412B 0%,#D4412B '+p+'%,#E7E2D8 '+p+'%,#E7E2D8 100%)'; }
   function pct(p,t){ return t ? Math.min(100, Math.round(p/t*100)) + '%' : '0%'; }
@@ -315,6 +349,7 @@
 
   // Navigation : on ne peut jamais atteindre l'étape 4 sans avoir rempli le formulaire
   function go(n){
+    if (n > 1 && !choisi()) n = 1;   // pas de vélo choisi : on reste à l'étape 1
     if (n === 4 && !s.unlocked) n = 3;
     if (n === 3 && s.unlocked) n = 4;
     s.step = n;
@@ -332,7 +367,7 @@
 
   function renderStepper(c){
     var tabs = [
-      [1,'Prix du vélo', SIM.resumePrix(s.prix, s.sel)],
+      [1,'Vos vélos', s.sel.length ? SIM.resumePrix(s.prix, s.sel) : (s.libre ? fmt(s.prix)+' HT' : 'À choisir')],
       [2,'Votre profil', fmt(s.salaire)+' · TMI '+s.tmi+'%'],
       [3,'Coordonnées', s.unlocked ? 'Envoyées' : 'Requis'],
       [4,'Résultats', s.unlocked ? c.coutNetSal+' €/mois' : 'Verrouillé']
@@ -352,14 +387,20 @@
     [1,2,3,4].forEach(function(n){ $('p'+n).classList.toggle('show', s.step===n); });
 
     // étape 1
-    $('prixLabel').textContent = fmt(s.prix);
-    $('prix').value = s.prix;
-    $('prix').style.background = rangeBg(s.prix, SIM.prixMin, SIM.prixMax);
-    // Chaque clic ajoute un vélo ; « − » en retire un
-    $('presets').innerHTML = SIM.velos.map(function(v, i){ var n = SIM.quantite(s.sel, i);
-      return '<span class="chip-grp">' +
-        (n ? '<button class="chip-moins" data-velo-moins="'+i+'" aria-label="Retirer un '+v.nom+'">−</button>' : '') +
-        '<button class="chip'+(n?' on':'')+'" data-velo="'+i+'" aria-label="Ajouter un '+v.nom+'"'+(SIM.horsLimite(s.sel, i)?' disabled title="Total maximum '+SIM.prixMax.toLocaleString('fr-FR')+' € HT"':'')+'>'+SIM.libelleVelo(i, n)+'</button></span>'; }).join('');
+    if (s.filtre && !s.sel.length) s.filtre = false;
+    var liste = SIM.velos.map(function(v, i){ return i; }).filter(function(i){ return !s.filtre || SIM.quantite(s.sel, i) > 0; });
+    $('bikes').innerHTML = liste.map(function(i){ return SIM.ligneVelo(i, s.sel); }).join('');
+    $('voirTous').style.display = s.filtre ? '' : 'none';
+    if (s.libre) $('libre').open = true;
+    var curseur = s.libre ? s.prix : SIM.borner(s.prix || 2000);
+    $('prixLabel').textContent = fmt(curseur);
+    $('prix').value = curseur;
+    $('prix').style.background = rangeBg(curseur, SIM.prixMin, SIM.prixMax);
+    var loyerTxt = function(p){ return '<small>Loyer indicatif : '+SIM.eur(SIM.calc({ prix:p, tmi:0, duree:36, part:0 }).loyer)+' HT/mois sur 36 mois</small>'; };
+    $('choix').innerHTML = s.sel.length ? '<div class="resume">'+SIM.resumePrix(s.prix, s.sel)+loyerTxt(s.prix)+'</div>'
+      : s.libre ? '<div class="resume">Vélo à '+fmt(s.prix)+' HT'+loyerTxt(s.prix)+'</div>'
+      : '<div class="resume">Aucun vélo choisi<small>Ajoutez au moins un vélo, ou indiquez un prix, pour continuer.</small></div>';
+    $('next1').disabled = !choisi();
 
     // étape 2
     $('salaireLabel').textContent = fmt(s.salaire);
@@ -450,24 +491,27 @@
 
   // ---------- Événements ----------
   document.addEventListener('click', function(e){
-    var b = e.target.closest('[data-go],[data-velo],[data-velo-moins],[data-tmi],[data-duree],[data-part],[data-bk]');
+    var b = e.target.closest('[data-go],[data-plus],[data-moins],[data-voir-tous],[data-tmi],[data-duree],[data-part],[data-bk]');
     if (!b) return;
     if (b.dataset.go)    return go(+b.dataset.go);
-    if (b.dataset.velo || b.dataset.veloMoins) {
-      var sel = b.dataset.velo ? SIM.ajouter(s.sel, +b.dataset.velo) : SIM.retirer(s.sel, +b.dataset.veloMoins);
-      if (sel) { s.sel = sel; if (sel.length) s.prix = SIM.total(sel); trackParam('prix', s.prix); trackParam('nb_velos', sel.length); } }
+    if (b.dataset.voirTous != null) s.filtre = false;
+    if (b.dataset.plus != null || b.dataset.moins != null) {
+      var sel = b.dataset.plus != null ? SIM.ajouter(s.sel, +b.dataset.plus) : SIM.retirer(s.sel, +b.dataset.moins);
+      if (sel) { s.sel = sel; if (sel.length) s.libre = false; majPrix(); trackParam('prix', s.prix); trackParam('nb_velos', sel.length); } }
     if (b.dataset.tmi)   { s.tmi = +b.dataset.tmi; trackParam('tmi', s.tmi); }
     if (b.dataset.duree) { s.duree = +b.dataset.duree; trackParam('duree', s.duree); }
     if (b.dataset.part)  { s.part = +b.dataset.part; trackParam('part_salarie', s.part); }
     if (b.dataset.bk)  { s.bk = b.dataset.bk; track('sim_detail_tab', { tab:s.bk }); }
     render();
   });
-  $('prix').addEventListener('input', function(e){ s.prix = +e.target.value; s.sel = []; render(); trackParam('prix', s.prix); });
+  $('prix').addEventListener('input', function(e){ s.prix = +e.target.value; s.sel = []; s.libre = true; s.filtre = false; render(); trackParam('prix', s.prix); });
   $('salaire').addEventListener('input', function(e){ s.salaire = +e.target.value; render(); trackParam('salaire', s.salaire); });
 
   // Permet de lier directement : simulateur.html#resultats ou ?prix=1915
   var q = new URLSearchParams(location.search);
-  if (q.get('prix')) { s.prix = SIM.borner(+q.get('prix') || s.prix); s.sel = []; }
+  if (q.get('prix')) { s.prix = SIM.borner(+q.get('prix') || 2000); s.sel = []; s.libre = true; }
+  // Vélos choisis sur l'accueil : simulateur.html?velos=2,2,5 → on affiche seulement ces vélos
+  if (q.get('velos')) { var choix = SIM.lireSelection(q.get('velos')); if (choix.length) { s.sel = choix; s.filtre = true; majPrix(); } }
 
   go(1);
 })();
