@@ -28,7 +28,9 @@ docs/                 documentation détaillée (déploiement, règles métier, 
 Les deux pages sont en HTML + CSS + JavaScript classique, sans framework ni étape de construction. Elles dépendent de `config.js`, `simulateur-calcul.js`, `tracking.js` et de Google Fonts (plus le formulaire HubSpot pour le simulateur).
 
 - **`index.html`** : présentation de l'offre. Pas de simulateur intégré : le catalogue permet d'ajouter un ou plusieurs vélos, puis « Simuler ce choix » ouvre `simulateur.html?velos=2,2,5` (index dans la liste des vélos).
-- **`simulateur.html`** : 4 étapes (vélos, profil, formulaire HubSpot, résultats). Les résultats ne s'affichent qu'après l'envoi du formulaire. Paramètres d'adresse acceptés : `?velos=…` (vélos choisis sur l'accueil) et `?prix=…` (prix libre).
+- **`simulateur.html`** : deux parcours.
+  - **Arrivée directe** (pub, email, QR code) : 4 étapes (vélos, profil, formulaire HubSpot, résultats) ; les résultats ne s'affichent qu'après l'envoi du formulaire.
+  - **Venu de l'accueil** (marque `tv_depuis_site` posée par `index.html` dans `sessionStorage`) : 3 étapes, résultats affichés directement, formulaire HubSpot proposé sous les résultats (« Recevoir cette simulation »). Paramètres d'adresse acceptés : `?velos=…` (vélos choisis sur l'accueil) et `?prix=…` (prix libre).
 
 Style « éditorial » voulu, pour éviter le rendu générique type IA : pas de cartes à ombre, pas d'icônes dans des carrés colorés, pas de bordure gauche colorée, pas de pastilles, pas de petits sur-titres en capitales au-dessus de chaque section, pas de chiffres non sourcés. Préférer filets fins, listes, vraies photos, texte concret.
 

@@ -202,7 +202,7 @@
         </details>
         <div class="choix" id="choix" aria-live="polite"></div>
         <div class="nav-row">
-          <span class="step-count">Étape 1 sur 4</span>
+          <span class="step-count" id="sc1">Étape 1 sur 4</span>
           <button class="btn" data-go="2" id="next1">Continuer →</button>
         </div>
       </div>
@@ -235,7 +235,7 @@
         </div>
         <div class="nav-row">
           <button class="btn-ghost" data-go="1">← Retour</button>
-          <span class="step-count">Étape 2 sur 4</span>
+          <span class="step-count" id="sc2">Étape 2 sur 4</span>
           <button class="btn" data-go="3">Voir mes résultats →</button>
         </div>
       </div>
@@ -264,7 +264,7 @@
           <div class="gate-ok" id="gateOk">
             <svg width="48" height="48" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M6 10l2.6 2.6L14 7" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div style="font-weight:700;font-size:18px;margin:14px 0 6px">Merci, c'est envoyé !</div>
-            <div style="font-size:14px;color:var(--muted)">Affichage de vos résultats…</div>
+            <div style="font-size:14px;color:var(--muted)" id="gateOkTxt">Affichage de vos résultats…</div>
           </div>
           <div class="nav-row" style="margin-top:16px">
             <button class="btn-ghost" data-go="2">← Modifier mon profil</button>
@@ -301,6 +301,13 @@
         <div><strong>Calcul validé BOSS — 7 mai 2026.</strong> Exonération cotisations confirmée · Part salarié 30% HT · Art. 220 undecies A CGI · Rescrit BOI-RES-TVA-000161</div>
       </div>
 
+      <!-- Visite venue de l'accueil : le formulaire est proposé ici, après les résultats -->
+      <div class="card" id="leadBox" style="display:none;padding:28px;margin-top:16px">
+        <div style="font-weight:700;font-size:19px;margin-bottom:6px">Recevoir cette simulation</div>
+        <p style="font-size:14px;color:var(--muted2);margin:0 0 14px">Laissez vos coordonnées : Adrien vous rappelle sous 24 h avec une proposition chiffrée. Sans engagement.</p>
+        <div id="leadSlot"></div>
+      </div>
+
       <div class="nav-row" style="margin-top:16px">
         <button class="btn-ghost" data-go="2">← Modifier</button>
         <a class="btn" href="tel:+33658775836">Appeler Adrien · 06 58 77 58 36</a>
@@ -328,14 +335,20 @@
   var LS_KEY = 'tv_sim_unlocked';
 
   // sel = vélos choisis ; libre = prix saisi au curseur (vélo hors liste) ; filtre = n'afficher que les vélos choisis (arrivée depuis l'accueil)
-  var s = { step:1, prix:0, sel:[], libre:false, filtre:false, salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
+  // Visite venue de l'accueil (marque posée par index.html) : résultats affichés sans formulaire préalable,
+  // le formulaire HubSpot est proposé sous les résultats. Arrivée directe (pub, email, QR code) : formulaire d'abord.
+  var depuisSite = false;
+  try { depuisSite = sessionStorage.getItem('tv_depuis_site') === '1'; } catch(e){}
+  var s = { step:1, gate:!depuisSite, prix:0, sel:[], libre:false, filtre:false, salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
   try { s.unlocked = localStorage.getItem(LS_KEY) === '1'; } catch(e){}
+  var dejaEnvoye = s.unlocked;   // formulaire déjà envoyé lors d'une visite précédente
 
   var $ = function(id){ return document.getElementById(id); };
   var fmt = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
 
   function calc(){ return SIM.calc(s); }
   function choisi(){ return s.sel.length > 0 || s.libre; }
+  function resultatsVisibles(){ return s.unlocked || !s.gate; }
   function majPrix(){ if (s.sel.length) { s.prix = SIM.total(s.sel); s.libre = false; } else if (!s.libre) s.prix = 0; }
 
   function rangeBg(v,mn,mx){ var p=(v-mn)/(mx-mn)*100; return 'linear-gradient(to right,#D4412B 0%,#D4412B '+p+'%,#E7E2D8 '+p+'%,#E7E2D8 100%)'; }
@@ -343,17 +356,17 @@
 
   // ---------- Mesure d'audience ----------
   var STEP_NAMES = {1:'prix', 2:'profil', 3:'formulaire', 4:'resultats'}, lastStep = 0;
-  function vals(){ var c = calc(); return { velo_prix:s.prix, nb_velos:s.sel.length || 1, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
+  function vals(){ var c = calc(); return { velo_prix:s.prix, nb_velos:s.sel.length || 1, parcours:s.gate ? 'direct' : 'accueil', salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
   function track(name, params){ if (window.tvTrack) window.tvTrack(name, params || {}); }
   function trackParam(param, value){ if (window.tvTrackParam) window.tvTrackParam(param, value); }
 
   // Navigation : on ne peut jamais atteindre l'étape 4 sans avoir rempli le formulaire
   function go(n){
     if (n > 1 && !choisi()) n = 1;   // pas de vélo choisi : on reste à l'étape 1
-    if (n === 4 && !s.unlocked) n = 3;
-    if (n === 3 && s.unlocked) n = 4;
+    if (n === 4 && !resultatsVisibles()) n = 3;
+    if (n === 3 && resultatsVisibles()) n = 4;
     s.step = n;
-    if (n === 3) loadHubspot();
+    if (n === 3 || (n === 4 && !s.unlocked)) loadHubspot();
     if (n !== lastStep) {
       lastStep = n;
       var ev = { step:n, step_name:STEP_NAMES[n] };
@@ -366,21 +379,25 @@
   }
 
   function renderStepper(c){
+    var vu = resultatsVisibles();
     var tabs = [
       [1,'Vos vélos', s.sel.length ? SIM.resumePrix(s.prix, s.sel) : (s.libre ? fmt(s.prix)+' HT' : 'À choisir')],
       [2,'Votre profil', fmt(s.salaire)+' · TMI '+s.tmi+'%'],
       [3,'Coordonnées', s.unlocked ? 'Envoyées' : 'Requis'],
-      [4,'Résultats', s.unlocked ? c.coutNetSal+' €/mois' : 'Verrouillé']
+      [4,'Résultats', vu ? c.coutNetSal+' €/mois' : 'Verrouillé']
     ];
-    $('stepper').innerHTML = tabs.map(function(t){
+    if (!s.gate) tabs.splice(2, 1);   // venu de l'accueil : pas d'étape « Coordonnées »
+    $('stepper').innerHTML = tabs.map(function(t, k){
       var n=t[0], cls = s.step===n ? 'active' : ((n<s.step || (n===3 && s.unlocked)) ? 'done' : 'todo');
-      if (n===4 && !s.unlocked && s.step!==4) cls += ' locked';
-      var num = cls.indexOf('done')===0 ? '✓' : (n===4 && !s.unlocked ? '🔒' : n);
+      if (n===4 && !vu && s.step!==4) cls += ' locked';
+      var num = cls.indexOf('done')===0 ? '✓' : (n===4 && !vu ? '🔒' : k+1);
       return '<button class="tab '+cls+'" data-go="'+n+'"><span class="n">'+num+'</span><span class="tx"><span class="l">'+t[1]+'</span><span class="v">'+t[2]+'</span></span></button>';
     }).join('');
   }
 
   function render(){
+    $('sc1').textContent = 'Étape 1 sur ' + (s.gate ? 4 : 3);
+    $('sc2').textContent = 'Étape 2 sur ' + (s.gate ? 4 : 3);
     var c = calc();
     window.tvSimValues = vals();
     renderStepper(c);
@@ -417,7 +434,8 @@
     $('teaseEmp').textContent = '88 €';
 
     // étape 4 — n'est rempli que si débloqué
-    if (!s.unlocked) return;
+    if (!resultatsVisibles()) return;
+    $('leadBox').style.display = (!s.gate && !dejaEnvoye) ? '' : 'none';
     $('bigSal').textContent = c.coutNetSal;
     $('bigEmp').textContent = c.coutNetEmp;
     $('ecoSalPct').textContent = c.partSal ? c.ecoSalPct + "% d'économie" : "Pris en charge à 100 %";
@@ -478,7 +496,7 @@
     $('gateFormWrap').style.display = 'none';
     $('gateOk').classList.add('show');
     renderStepper(calc());
-    setTimeout(function(){ go(4); }, 1200);
+    if (s.gate) setTimeout(function(){ go(4); }, 1200);   // venu de l'accueil : on est déjà sur les résultats
   }
 
   // Nouveaux formulaires HubSpot (embed "hs-form-frame")
@@ -512,6 +530,12 @@
   if (q.get('prix')) { s.prix = SIM.borner(+q.get('prix') || 2000); s.sel = []; s.libre = true; }
   // Vélos choisis sur l'accueil : simulateur.html?velos=2,2,5 → on affiche seulement ces vélos
   if (q.get('velos')) { var choix = SIM.lireSelection(q.get('velos')); if (choix.length) { s.sel = choix; s.filtre = true; majPrix(); } }
+
+  if (!s.gate) {
+    $('leadSlot').appendChild($('gateFormWrap'));
+    $('leadSlot').appendChild($('gateOk'));
+    $('gateOkTxt').textContent = 'Adrien vous rappelle sous 24 h.';
+  }
 
   go(1);
 })();

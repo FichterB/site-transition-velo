@@ -348,6 +348,11 @@
 </div>
 
 <script>
+// Visite venue du site : le simulateur montrera les résultats sans exiger le formulaire HubSpot (voir simulateur.html)
+try { sessionStorage.setItem('tv_depuis_site', '1'); } catch(e){}
+</script>
+
+<script>
 // Catalogue : même liste et même formule que le simulateur (simulateur-calcul.js).
 // On peut ajouter plusieurs vélos ; « Simuler ce choix » transmet la sélection : simulateur.html?velos=2,2,5
 (function(){
