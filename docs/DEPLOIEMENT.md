@@ -78,7 +78,7 @@ Lancer d'abord l'action en préprod et vérifier `https://transitionvelo.net/pre
 ## Checklist de vérification en préprod
 
 - [ ] `simulateur.html` : les 4 étapes s'enchaînent, le formulaire HubSpot s'affiche, les résultats apparaissent après envoi
-- [ ] `index.html` : la page s'affiche (sinon `support.js` manque), le bouton « Ouvrir le formulaire » fonctionne
+- [ ] `index.html` : la page s'affiche, « Ajouter » sur un vélo puis « Simuler ce choix » ouvre le simulateur avec ces vélos
 - [ ] Logo net en haut et en pied de page, favicon dans l'onglet
 - [ ] Affichage correct sur téléphone
 - [ ] Pas d'erreur dans la console du navigateur

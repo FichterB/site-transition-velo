@@ -24,12 +24,11 @@ Pour ajouter une mesure : `window.tvTrack('nom_evenement', { param: valeur })`. 
 | `form_view` | formulaire HubSpot affiché et prêt | `form` |
 | `contact_click` | clic téléphone ou email — **événement clé** (téléphone) | `method` (phone, email), `location` |
 | `cta_click` | liens vers `#simulateur` ou `#contact` | `target`, `location`, `label` |
-| `lead_form_open` | bouton « Ouvrir le formulaire » (accueil) | `location`, `label` |
 | `sim_detail_tab` | onglets détail salarié / employeur / bilan | `tab` |
-| `section_view` | section de l'accueil vue (moitié visible, ou moitié de l'écran), une fois par page | `section` (avantages, simulateur, velos, cgv, contact) |
+| `section_view` | section de l'accueil vue (moitié visible, ou moitié de l'écran), une fois par page | `section` (hero, avantages, etapes, fiscalite, velos, atelier, contact, cgv) |
 | `bike_click` | clic sur une carte du catalogue de vélos (accueil) | `modele`, `velo_prix` |
 
-Tous les événements portent `page_type` (`simulateur` ou `accueil`). Sur l'accueil, le simulateur a 3 étapes (pas de formulaire avant les résultats).
+Tous les événements portent `page_type` (`simulateur` ou `accueil`). L'accueil n'a plus de simulateur : il envoie vers `simulateur.html` (avec les vélos choisis).
 
 Marquage dans le HTML : `data-track-section="…"` sur une section, `data-bike="…" data-bike-prix="…"` sur une carte vélo, `data-track="nom_evenement"` sur un bouton.
 

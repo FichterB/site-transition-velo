@@ -135,7 +135,7 @@
 
   // ---------- Sections vues (une fois par visite de page) ----------
   // Une section compte comme vue quand la moitié d'elle est à l'écran, ou qu'elle occupe la moitié de l'écran
-  // L'accueil est dessiné par support.js après le chargement : on surveille les sections à mesure qu'elles apparaissent
+  // Des sections peuvent être ajoutées après le chargement : on les surveille à mesure qu'elles apparaissent
   if ('IntersectionObserver' in window) {
     var seen = {};
     var io = new IntersectionObserver(function(entries){
