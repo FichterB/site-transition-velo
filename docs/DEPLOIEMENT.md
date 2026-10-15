@@ -42,10 +42,21 @@ Les mots de passe ne doivent **jamais** être écrits dans un fichier du dépôt
 
 L'envoi remplace les fichiers du même nom mais **ne supprime rien** sur le serveur.
 
-### 3. Protéger la production (recommandé)
+### 3. Récap Missive à chaque mise en production (optionnel)
+À la fin de chaque déploiement en **production**, un message est posté dans Missive : qui a déployé, quelle version, et la liste des changements depuis la mise en production précédente. Tous les récaps arrivent dans **la même conversation** « Mises en production — transitionvelo.net » (créée automatiquement la première fois).
+
+1. Missive → Préférences → onglet **API** → **Create a new token** (nécessite le forfait Productive).
+2. GitHub → Settings → Secrets and variables → Actions → **Secrets** : `MISSIVE_TOKEN` = ce jeton.
+3. (Recommandé) Onglet **Variables** : `MISSIVE_ORGANIZATION` = l'ID de l'organisation Missive, pour que la conversation soit visible de toute l'équipe. Sans elle, la conversation n'est visible que du propriétaire du jeton.
+
+Sans `MISSIVE_TOKEN`, l'étape est simplement sautée. Un problème côté Missive ne fait jamais échouer la mise en production.
+
+La version en ligne est marquée par l'étiquette git `production`, déplacée après chaque mise en production réussie : c'est elle qui sert à calculer « les changements depuis la dernière fois ».
+
+### 4. Protéger la production (recommandé)
 Settings → **Environments** → `production` → cocher **Required reviewers** et s'ajouter. Chaque mise en production demandera alors une validation.
 
-### 4. Premier déploiement
+### 5. Premier déploiement
 Lancer d'abord l'action en préprod et vérifier `https://transitionvelo.net/preprod/simulateur.html`.
 
 > Le premier envoi en production réécrit les fichiers existants du même nom sur le serveur. Faire une sauvegarde du site actuel (téléchargement FTP) avant.

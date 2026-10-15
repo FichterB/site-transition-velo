@@ -2,8 +2,11 @@
 # - Push sur main        → préproduction (dossier www/preprod/), suivi GA désactivé
 # - Lancement manuel     → préproduction ou production (onglet Actions > Déployer > Run workflow)
 #
-# Seul secret à créer (Settings > Secrets and variables > Actions > Secrets) :
-#   FTP_PASSWORD   mot de passe SFTP OVH
+# Secrets (Settings > Secrets and variables > Actions > Secrets) :
+#   FTP_PASSWORD     mot de passe SFTP OVH (obligatoire)
+#   MISSIVE_TOKEN    jeton API Missive (optionnel) : récap posté dans Missive à chaque mise en production
+# Variable (onglet Variables, optionnelle) :
+#   MISSIVE_ORGANIZATION  ID de l'organisation Missive, pour que la conversation soit partagée avec l'équipe
 # Le reste des réglages est dans le bloc env ci-dessous.
 #
 # Les fichiers sont envoyés et remplacés, jamais supprimés sur le serveur.
@@ -37,12 +40,16 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # pour déplacer l'étiquette git « production » après chaque mise en production
     environment: ${{ github.event.inputs.cible || 'preprod' }}
     env:
       CIBLE: ${{ github.event.inputs.cible || 'preprod' }}
     steps:
       - name: Récupérer le code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # historique complet : sert au récap des changements depuis la dernière production
 
       - name: Vérifier la syntaxe de config.js
         run: node --check site/config.js
@@ -74,3 +81,60 @@ jobs:
             open --env-password -u $SFTP_USER -p $SFTP_PORT sftp://$SFTP_HOST
             mirror --reverse --verbose --exclude-glob .DS_Store site/ $DEST
           "
+
+      # ---------- Récap de mise en production (production uniquement) ----------
+      # L'étiquette git « production » marque la version en ligne : le récap liste les commits depuis la précédente.
+      - name: Production — préparer le récap des changements
+        if: env.CIBLE == 'production'
+        id: recap
+        run: |
+          if git rev-parse -q --verify refs/tags/production >/dev/null; then
+            PREV=$(git rev-parse --short production)
+            LOG=$(git log --no-merges --format='- %s' production..HEAD)
+            DEPUIS="depuis la mise en production précédente ($PREV)"
+          else
+            LOG=$(git log --no-merges --format='- %s' -n 15)
+            DEPUIS="(première mise en production suivie : 15 derniers changements)"
+          fi
+          [ -z "$LOG" ] && LOG="- Aucun nouveau changement (redéploiement de la même version)"
+          {
+            echo "**Mise en production** de https://transitionvelo.net par ${{ github.actor }}"
+            echo "Version \`$(git rev-parse --short HEAD)\` — $(TZ=Europe/Paris date '+%d/%m/%Y à %H:%M')"
+            echo
+            echo "Changements $DEPUIS :"
+            echo "$LOG"
+            echo
+            echo "[Détail du déploiement](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          } > recap.md
+          cat recap.md
+
+      - name: Production — poster le récap dans Missive
+        if: env.CIBLE == 'production'
+        continue-on-error: true   # un souci Missive ne doit jamais faire échouer la mise en production
+        env:
+          MISSIVE_TOKEN: ${{ secrets.MISSIVE_TOKEN }}
+          MISSIVE_ORGANIZATION: ${{ vars.MISSIVE_ORGANIZATION }}
+        run: |
+          if [ -z "$MISSIVE_TOKEN" ]; then
+            echo "::notice::Secret MISSIVE_TOKEN absent : récap non envoyé à Missive."
+            exit 0
+          fi
+          # Une référence fixe : la 1re fois Missive crée la conversation, ensuite il y ajoute chaque récap
+          jq -n --rawfile md recap.md --arg org "$MISSIVE_ORGANIZATION" '{posts: ({
+              references: ["<deploiements@transitionvelo.net>"],
+              conversation_subject: "Mises en production — transitionvelo.net",
+              username: "Déploiement site",
+              notification: { title: "Site mis en production", body: "transitionvelo.net est à jour" },
+              conversation_color: "good",
+              add_to_inbox: true,
+              markdown: $md
+            } + (if $org != "" then { organization: $org } else {} end))}' > payload.json
+          curl -sS --fail-with-body -X POST https://public.missiveapp.com/v1/posts \
+            -H "Authorization: Bearer $MISSIVE_TOKEN" -H "Content-Type: application/json" \
+            --data @payload.json
+
+      - name: Production — marquer la version en ligne
+        if: env.CIBLE == 'production'
+        run: |
+          git tag -f production
+          git push -f origin refs/tags/production
