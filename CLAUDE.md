@@ -47,7 +47,7 @@ Logo : `site/images/logo-transition-velo.svg` (fond clair), `logo-transition-vel
 ## Règles métier à respecter (détails : `docs/REGLES-METIER.md`)
 
 - L'offre et les avantages fiscaux concernent **uniquement les vélos et VAE** (assistance coupée à 25 km/h, 250 W max). **Les speedbikes (45 km/h) sont des cyclomoteurs** : pas d'exonération BOSS, pas de réduction d'IS. Ne jamais afficher d'avantage fiscal pour un speedbike.
-- Formule du simulateur : `loyer mensuel HT = prix HT × tauxLoyer × coeffDuree[durée]` (valeurs dans `config.js`). Part salarié choisie par le visiteur (0 à 50 %, 30 % par défaut, réglable dans `config.js`), le reste pour l'employeur.
+- Formule du simulateur : `loyer mensuel HT = prix HT × tauxLoyer × coeffDuree[durée]` (valeurs dans `config.js`). Le visiteur peut ajouter plusieurs vélos suggérés, y compris le même plusieurs fois (« − » pour en retirer) : leurs prix s'additionnent (total max `prixMax`, 8 000 € HT). Part salarié choisie par le visiteur (0 à 50 %, 30 % par défaut, réglable dans `config.js`), le reste pour l'employeur.
 - Le cumul « participation du salarié + réduction d'IS de 25 % » est juridiquement discutable (la loi exige une mise à disposition gratuite). Ne pas renforcer les promesses fiscales sans validation d'un expert-comptable.
 
 ## Formulaire HubSpot

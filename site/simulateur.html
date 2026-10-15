@@ -75,6 +75,12 @@
 
   .chip{background:var(--cream);color:var(--ink);border:1px solid var(--line);padding:8px 15px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
   .chip.on{background:var(--red);color:#fff;border-color:var(--red)}
+  .chip:disabled{opacity:.4;cursor:not-allowed}
+  .chip.on:disabled{opacity:1}
+  .chip-grp{display:inline-flex}
+  .chip-grp .chip.on{border-top-left-radius:0;border-bottom-left-radius:0}
+  .chip-moins{background:var(--red);color:#fff;border:none;border-right:1px solid rgba(255,255,255,.4);padding:0 11px 0 13px;border-radius:100px 0 0 100px;font-size:15px;font-weight:700;cursor:pointer}
+  .chip-moins:hover{background:#B5341F}
   .seg{flex:1;background:var(--cream);color:var(--ink);border:1px solid var(--line);padding:9px 4px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
   .seg.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .seg small{display:block;font-size:10px;opacity:.7;font-weight:400;margin-top:1px}
@@ -160,9 +166,10 @@
         <div style="font-size:14px;color:var(--muted);margin-bottom:28px">Entrez le prix HT du vélo — assurance et entretien compris dans le loyer</div>
         <div class="mono" id="prixLabel" style="font-size:58px;font-weight:700;color:var(--red);line-height:1;margin-bottom:6px"></div>
         <div style="font-size:15px;color:var(--muted);margin-bottom:28px">HT — hors taxes</div>
-        <input type="range" class="big" id="prix" min="600" max="4000" step="50" aria-label="Prix HT du vélo" style="margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:28px"><span>600 €</span><span>1 500 €</span><span>2 500 €</span><span>4 000 €</span></div>
-        <div id="presets" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:30px"></div>
+        <input type="range" class="big" id="prix" min="600" max="8000" step="50" aria-label="Prix HT total des vélos" style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:28px"><span>600 €</span><span>4 300 €</span><span>8 000 €</span></div>
+        <div id="presets" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:10px"></div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:30px">Plusieurs vélos ? Chaque clic en ajoute un, « − » en retire un : les prix s'additionnent.</div>
         <div class="nav-row">
           <span class="step-count">Étape 1 sur 4</span>
           <button class="btn" data-go="2">Continuer →</button>
@@ -289,7 +296,7 @@
   (function(f){ f.setAttribute('data-region', HS_REGION); f.setAttribute('data-portal-id', HS_PORTAL); f.setAttribute('data-form-id', HS_FORM); })(document.querySelector('.hs-form-frame'));
   var LS_KEY = 'tv_sim_unlocked';
 
-  var s = { step:1, prix:2332, salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
+  var s = { step:1, prix:2332, sel:[2], salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
   try { s.unlocked = localStorage.getItem(LS_KEY) === '1'; } catch(e){}
 
   var $ = function(id){ return document.getElementById(id); };
@@ -302,7 +309,7 @@
 
   // ---------- Mesure d'audience ----------
   var STEP_NAMES = {1:'prix', 2:'profil', 3:'formulaire', 4:'resultats'}, lastStep = 0;
-  function vals(){ var c = calc(); return { velo_prix:s.prix, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
+  function vals(){ var c = calc(); return { velo_prix:s.prix, nb_velos:s.sel.length || 1, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
   function track(name, params){ if (window.tvTrack) window.tvTrack(name, params || {}); }
   function trackParam(param, value){ if (window.tvTrackParam) window.tvTrackParam(param, value); }
 
@@ -325,7 +332,7 @@
 
   function renderStepper(c){
     var tabs = [
-      [1,'Prix du vélo', fmt(s.prix)+' HT'],
+      [1,'Prix du vélo', SIM.resumePrix(s.prix, s.sel)],
       [2,'Votre profil', fmt(s.salaire)+' · TMI '+s.tmi+'%'],
       [3,'Coordonnées', s.unlocked ? 'Envoyées' : 'Requis'],
       [4,'Résultats', s.unlocked ? c.coutNetSal+' €/mois' : 'Verrouillé']
@@ -347,9 +354,12 @@
     // étape 1
     $('prixLabel').textContent = fmt(s.prix);
     $('prix').value = s.prix;
-    $('prix').style.background = rangeBg(s.prix,600,4000);
-    $('presets').innerHTML = [[639,'VTC 639 €'],[1915,'VAE ville 1 915 €'],[2332,'VAE premium 2 332 €'],[3249,'Gravel élec. 3 249 €'],[3915,'VTT élec. 3 915 €']]
-      .map(function(p){ return '<button class="chip'+(s.prix===p[0]?' on':'')+'" data-prix="'+p[0]+'">'+p[1]+'</button>'; }).join('');
+    $('prix').style.background = rangeBg(s.prix, SIM.prixMin, SIM.prixMax);
+    // Chaque clic ajoute un vélo ; « − » en retire un
+    $('presets').innerHTML = SIM.velos.map(function(v, i){ var n = SIM.quantite(s.sel, i);
+      return '<span class="chip-grp">' +
+        (n ? '<button class="chip-moins" data-velo-moins="'+i+'" aria-label="Retirer un '+v.nom+'">−</button>' : '') +
+        '<button class="chip'+(n?' on':'')+'" data-velo="'+i+'" aria-label="Ajouter un '+v.nom+'"'+(SIM.horsLimite(s.sel, i)?' disabled title="Total maximum '+SIM.prixMax.toLocaleString('fr-FR')+' € HT"':'')+'>'+SIM.libelleVelo(i, n)+'</button></span>'; }).join('');
 
     // étape 2
     $('salaireLabel').textContent = fmt(s.salaire);
@@ -440,22 +450,24 @@
 
   // ---------- Événements ----------
   document.addEventListener('click', function(e){
-    var b = e.target.closest('[data-go],[data-prix],[data-tmi],[data-duree],[data-part],[data-bk]');
+    var b = e.target.closest('[data-go],[data-velo],[data-velo-moins],[data-tmi],[data-duree],[data-part],[data-bk]');
     if (!b) return;
     if (b.dataset.go)    return go(+b.dataset.go);
-    if (b.dataset.prix)  { s.prix = +b.dataset.prix; trackParam('prix', s.prix); }
+    if (b.dataset.velo || b.dataset.veloMoins) {
+      var sel = b.dataset.velo ? SIM.ajouter(s.sel, +b.dataset.velo) : SIM.retirer(s.sel, +b.dataset.veloMoins);
+      if (sel) { s.sel = sel; if (sel.length) s.prix = SIM.total(sel); trackParam('prix', s.prix); trackParam('nb_velos', sel.length); } }
     if (b.dataset.tmi)   { s.tmi = +b.dataset.tmi; trackParam('tmi', s.tmi); }
     if (b.dataset.duree) { s.duree = +b.dataset.duree; trackParam('duree', s.duree); }
     if (b.dataset.part)  { s.part = +b.dataset.part; trackParam('part_salarie', s.part); }
     if (b.dataset.bk)  { s.bk = b.dataset.bk; track('sim_detail_tab', { tab:s.bk }); }
     render();
   });
-  $('prix').addEventListener('input', function(e){ s.prix = +e.target.value; render(); trackParam('prix', s.prix); });
+  $('prix').addEventListener('input', function(e){ s.prix = +e.target.value; s.sel = []; render(); trackParam('prix', s.prix); });
   $('salaire').addEventListener('input', function(e){ s.salaire = +e.target.value; render(); trackParam('salaire', s.salaire); });
 
   // Permet de lier directement : simulateur.html#resultats ou ?prix=1915
   var q = new URLSearchParams(location.search);
-  if (q.get('prix')) s.prix = Math.min(4000, Math.max(600, +q.get('prix') || s.prix));
+  if (q.get('prix')) { s.prix = SIM.borner(+q.get('prix') || s.prix); s.sel = []; }
 
   go(1);
 })();

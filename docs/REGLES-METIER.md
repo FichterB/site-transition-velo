@@ -38,6 +38,7 @@ Un speedbike peut être loué en LLD, mais il est traité comme un véhicule de 
 
 ```
 loyer mensuel HT   = prix HT × tauxLoyer (0,0335) × coeffDuree (36 mois : 1 ; 24 : 1,25 ; 12 : 1,7)
+prix HT           = prix d'un vélo, ou somme des vélos suggérés ajoutés (le même modèle peut compter plusieurs fois) (8 000 € HT max, config.js > prixMax)
 part salarié       = X % du loyer (choix du visiteur, 30 % par défaut — config.js > partSalarie)
   économie cotisations = 23 % de la part salarié
   économie IR          = (part salarié − économie cotisations) × TMI × 0,9

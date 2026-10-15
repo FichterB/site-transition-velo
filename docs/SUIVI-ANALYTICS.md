@@ -19,8 +19,8 @@ Pour ajouter une mesure : `window.tvTrack('nom_evenement', { param: valeur })`. 
 | Événement | Déclencheur | Paramètres |
 |---|---|---|
 | `generate_lead` | formulaire HubSpot envoyé — **événement clé** | `form` + les valeurs de simulation |
-| `sim_step_view` | chaque étape du simulateur | `step`, `step_name` (prix, profil, formulaire, resultats) ; à partir de l'étape 3 : `velo_prix`, `salaire_brut`, `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie`, `cout_net_employeur` |
-| `sim_param_change` | réglage du simulateur modifié (un envoi par réglage, 0,8 s après le dernier mouvement) | `param` (prix, salaire, tmi, duree, part_salarie), `value` |
+| `sim_step_view` | chaque étape du simulateur | `step`, `step_name` (prix, profil, formulaire, resultats) ; à partir de l'étape 3 : `velo_prix` (total HT), `nb_velos`, `salaire_brut`, `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie`, `cout_net_employeur` |
+| `sim_param_change` | réglage du simulateur modifié (un envoi par réglage, 0,8 s après le dernier mouvement) | `param` (prix, nb_velos, salaire, tmi, duree, part_salarie), `value` |
 | `form_view` | formulaire HubSpot affiché et prêt | `form` |
 | `contact_click` | clic téléphone ou email — **événement clé** (téléphone) | `method` (phone, email), `location` |
 | `cta_click` | liens vers `#simulateur` ou `#contact` | `target`, `location`, `label` |
@@ -37,7 +37,7 @@ Marquage dans le HTML : `data-track-section="…"` sur une section, `data-bike="
 
 1. **Admin → Définitions personnalisées** :
    - Dimensions (portée événement) : `page_type`, `step_name`, `method`, `location`, `target`, `tab`, `param`, `section`, `modele`
-   - Métriques : `velo_prix` (devise), `salaire_brut` (devise), `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie` (devise), `cout_net_employeur` (devise)
+   - Métriques : `velo_prix` (devise), `nb_velos`, `salaire_brut` (devise), `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie` (devise), `cout_net_employeur` (devise)
 2. **Admin → Événements** : marquer `generate_lead` et `contact_click` comme **événements clés**.
 3. **Explorer → Exploration de l'entonnoir** : `sim_step_view` (prix → profil → formulaire), `form_view`, `generate_lead`.
 4. **Admin → Associations → BigQuery** (optionnel) : à faire dès la création, l'historique n'est pas repris.

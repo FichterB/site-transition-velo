@@ -275,11 +275,12 @@
         <div style="font-size:14px;color:#8A8271;margin-bottom:28px">Entrez le prix HT du vélo — assurance et entretien compris dans le loyer</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:58px;font-weight:700;color:#D4412B;line-height:1;margin-bottom:6px">{{ prixLabel }}</div>
         <div style="font-size:15px;color:#8A8271;margin-bottom:28px">HT — hors taxes</div>
-        <input type="range" class="tv-range" min="600" max="4000" step="50" value="{{ prix }}" onChange="{{ onPrix }}" style="{{ prixRangeStyle }}">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:#8A8271;margin-bottom:28px"><span>600 €</span><span>1 500 €</span><span>2 500 €</span><span>4 000 €</span></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:30px">
-          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="5"><button style="{{ p.style }}" onClick="{{ p.onClick }}">{{ p.l }}</button></sc-for>
+        <input type="range" class="tv-range" min="600" max="8000" step="50" value="{{ prix }}" onChange="{{ onPrix }}" style="{{ prixRangeStyle }}">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#8A8271;margin-bottom:28px"><span>600 €</span><span>4 300 €</span><span>8 000 €</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="5"><span style="display:inline-flex"><sc-if value="{{ p.hasN }}" hint-placeholder-val="{{ false }}"><button style="{{ p.moinsStyle }}" onClick="{{ p.onMoins }}" aria-label="{{ p.moinsLabel }}">−</button></sc-if><button style="{{ p.style }}" onClick="{{ p.onClick }}" aria-label="{{ p.ajoutLabel }}">{{ p.l }}</button></span></sc-for>
         </div>
+        <div style="font-size:13px;color:#8A8271;margin-bottom:30px">Plusieurs vélos ? Chaque clic en ajoute un, « − » en retire un : les prix s'additionnent.</div>
         <div style="display:flex;justify-content:space-between;align-items:center">
           <span style="font-size:13px;color:#8A8271">Étape 1 sur 3</span>
           <button onClick="{{ goStep2 }}" style="background:#D4412B;color:#fff;border:none;padding:12px 28px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit" style-hover="background:#B5341F">Continuer →</button>
@@ -669,7 +670,7 @@
 <!-- Modale + formulaire HubSpot montés hors React (componentDidMount) pour éviter les conflits de réconciliation --></x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { step:1, prix:2332, salaire:3000, tmi:11, duree:36, part:window.TV_SIM.partDefaut, bk:'sal', modal:false };
+  state = { step:1, prix:2332, sel:[2], salaire:3000, tmi:11, duree:36, part:window.TV_SIM.partDefaut, bk:'sal', modal:false };
 
   componentDidMount(){
     const overlay = document.createElement('div');
@@ -718,7 +719,15 @@ class Component extends DCLogic {
   track(name, params){ if (window.tvTrack) window.tvTrack(name, params || {}); }
   // Réglage du simulateur modifié (envoi groupé une fois le curseur relâché, voir tracking.js)
   setParam(param, key, value){ this.setState({ [key]: value }); if (window.tvTrackParam) window.tvTrackParam(param, value); }
-  simVals(){ const s = this.state, c = this.calc(); return { velo_prix:s.prix, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
+  // Ajoute (+1) ou retire (−1) un vélo suggéré : les prix s'additionnent (simulateur-calcul.js)
+  changeVelo(i, ajout){
+    const SIM = window.TV_SIM, sel = ajout ? SIM.ajouter(this.state.sel, i) : SIM.retirer(this.state.sel, i);
+    if (!sel) return;
+    const prix = sel.length ? SIM.total(sel) : this.state.prix;
+    this.setState({ sel, prix });
+    if (window.tvTrackParam) { window.tvTrackParam('prix', prix); window.tvTrackParam('nb_velos', sel.length); }
+  }
+  simVals(){ const s = this.state, c = this.calc(); return { velo_prix:s.prix, nb_velos:s.sel.length || 1, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
   goTo(n){
     this.setState({ step:n });
     if (n !== this._lastStep) {
@@ -747,20 +756,26 @@ class Component extends DCLogic {
       labelStyle: { fontSize:'13px', fontWeight:'600', lineHeight:'1.2', color: t==='active'?'#fff':(t==='done'?'#D4412B':'#1C232B') },
       valStyle: { fontSize:'11px', marginTop:'1px', color: t==='active'?'rgba(255,255,255,.85)':'#8A8271' }
     };};
-    const presetStyle = v => ({ background: s.prix===v?'#D4412B':'#F4F0E7', color: s.prix===v?'#fff':'#1C232B', border:'1px solid '+(s.prix===v?'#D4412B':'#E7E2D8'), padding:'8px 15px', borderRadius:'100px', fontSize:'13px', fontWeight:'500', cursor:'pointer', fontFamily:'inherit', transition:'all .15s' });
+    const presetStyle = i => { const on = s.sel.includes(i), plein = window.TV_SIM.horsLimite(s.sel, i), off = plein && !on; return { background: on?'#D4412B':'#F4F0E7', color: on?'#fff':'#1C232B', border:'1px solid '+(on?'#D4412B':'#E7E2D8'), padding:'8px 15px', borderRadius: on?'0 100px 100px 0':'100px', fontSize:'13px', fontWeight:'500', cursor: plein?'not-allowed':'pointer', opacity: off?.4:1, fontFamily:'inherit', transition:'all .15s' }; };
     const tmiStyle = (v, cur = s.tmi) => ({ flex:'1', minWidth:'46px', background: cur===v?'#1C232B':'#F4F0E7', color: cur===v?'#fff':'#1C232B', border:'1px solid '+(cur===v?'#1C232B':'#E7E2D8'), padding:'8px 4px', borderRadius:'7px', fontSize:'12px', fontWeight:'700', cursor:'pointer', fontFamily:"'JetBrains Mono',monospace", textAlign:'center', transition:'all .15s' });
     const dureeStyle = v => ({ flex:'1', background: s.duree===v?'#1C232B':'#F4F0E7', color: s.duree===v?'#fff':'#1C232B', border:'1px solid '+(s.duree===v?'#1C232B':'#E7E2D8'), padding:'9px', borderRadius:'8px', fontSize:'13px', fontWeight:'600', cursor:'pointer', fontFamily:'inherit', textAlign:'center', transition:'all .15s' });
     const bkStyle = k => ({ flex:'1', padding:'13px', textAlign:'center', fontSize:'13px', fontWeight:'600', cursor:'pointer', fontFamily:'inherit', background:'none', border:'none', borderBottom:'2px solid '+(s.bk===k?'#D4412B':'transparent'), color: s.bk===k?'#D4412B':'#8A8271', marginBottom:'-1px', transition:'all .15s' });
     const barStyle = (col,w) => ({ height:'100%', background:col, borderRadius:'3px', width:w });
 
     return {
-      steps: [ mkTab(1,'Prix du vélo', this.fmt(s.prix)+' HT'), mkTab(2,'Votre profil', this.fmt(s.salaire)+' · TMI '+s.tmi+'%'), mkTab(3,'Résultats', c.coutNetSal+' €/mois') ],
+      steps: [ mkTab(1,'Prix du vélo', window.TV_SIM.resumePrix(s.prix, s.sel)), mkTab(2,'Votre profil', this.fmt(s.salaire)+' · TMI '+s.tmi+'%'), mkTab(3,'Résultats', c.coutNetSal+' €/mois') ],
       isStep1: s.step===1, isStep2: s.step===2, isStep3: s.step===3,
 
       // step 1
-      prix: s.prix, prixLabel: this.fmt(s.prix), prixRangeStyle: { background: rangeBg(s.prix,600,4000), marginBottom:'12px' },
-      onPrix: e => this.setParam('prix', 'prix', +e.target.value),
-      presets: [ {v:639,l:'VTC 639 €'},{v:1915,l:'VAE ville 1 915 €'},{v:2332,l:'VAE premium 2 332 €'},{v:3249,l:'Gravel élec. 3 249 €'},{v:3915,l:'VTT élec. 3 915 €'} ].map(p=>({ l:p.l, onClick:()=>this.setParam('prix', 'prix', p.v), style: presetStyle(p.v) })),
+      prix: s.prix, prixLabel: this.fmt(s.prix), prixRangeStyle: { background: rangeBg(s.prix, window.TV_SIM.prixMin, window.TV_SIM.prixMax), marginBottom:'12px' },
+      onPrix: e => { this.setState({ sel: [] }); this.setParam('prix', 'prix', +e.target.value); },
+      presets: window.TV_SIM.velos.map((v, i)=>{ const n = window.TV_SIM.quantite(s.sel, i); return {
+        l: window.TV_SIM.libelleVelo(i, n), hasN: n > 0,
+        onClick: ()=>this.changeVelo(i, true), onMoins: ()=>this.changeVelo(i, false),
+        ajoutLabel: 'Ajouter un '+v.nom, moinsLabel: 'Retirer un '+v.nom,
+        style: presetStyle(i),
+        moinsStyle: { background:'#D4412B', color:'#fff', border:'none', borderRight:'1px solid rgba(255,255,255,.4)', padding:'0 11px 0 13px', borderRadius:'100px 0 0 100px', fontSize:'15px', fontWeight:'700', cursor:'pointer', fontFamily:'inherit' }
+      }; }),
       goStep2: ()=> this.goTo(2),
 
       // step 2
