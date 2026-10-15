@@ -16,6 +16,7 @@ site/                 ← tout ce qui est publié sur le FTP (et rien d'autre)
   simulateur.html     simulateur seul, formulaire HubSpot obligatoire avant les résultats
   config.js           réglages modifiables sans toucher au HTML (GA4, HubSpot, taux de loyer, part salarié)
   simulateur-calcul.js  formule du simulateur, partagée par les deux pages (window.TV_SIM)
+  tracking.js         bandeau cookies + GA4 + Clarity, partagé par les deux pages (window.tvTrack)
   support.js          moteur de rendu de index.html (ne pas modifier)
   images/             logos SVG + photos
 ressources/           sources non publiées : logo .ai, fiches PDF, photos HD
@@ -55,7 +56,7 @@ Portail `145421861`, région `eu1`, formulaire `079ed762-8b3e-400f-8242-d5c48038
 
 ## Suivi d'audience (détails : `docs/SUIVI-ANALYTICS.md`)
 
-Google Analytics 4, chargé **uniquement après consentement** (bandeau maison, choix stocké dans `localStorage` sous `tv_consent`). Toute nouvelle mesure passe par `window.tvTrack('nom_evenement', { ... })`. Ne jamais envoyer de donnée personnelle (nom, email, téléphone) à GA.
+Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), chargés **uniquement après consentement** (bandeau maison, choix stocké dans `localStorage` sous `tv_consent`). Toute nouvelle mesure passe par `window.tvTrack('nom_evenement', { ... })`. Ne jamais envoyer de donnée personnelle (nom, email, téléphone) à GA.
 
 ## Déploiement (détails : `docs/DEPLOIEMENT.md`)
 

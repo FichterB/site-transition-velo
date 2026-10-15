@@ -6,10 +6,12 @@
    ===================================================================== */
 window.TV_CONFIG = {
 
-  /* ---------- Mesure d'audience (Google Analytics 4) ----------
-     Identifiant de mesure : GA4 > Admin > Flux de données > Web.
-     Laisser '' pour désactiver le suivi (aucun bandeau cookies affiché). */
-  ga4Id: '',                 // ex. 'G-AB12CD34EF'
+  /* ---------- Mesure d'audience (Google Analytics 4 + Microsoft Clarity) ----------
+     GA4 : Admin > Flux de données > Web > identifiant de mesure.
+     Clarity : clarity.microsoft.com > projet > Paramètres > Présentation > ID du projet.
+     Laisser '' pour désactiver un outil ; les deux vides = aucun bandeau cookies. */
+  ga4Id: 'G-KQR5HW2G6D',               // ex. 'G-AB12CD34EF'
+  clarityId: '',             // ex. 'abcd1234ef'
   consentDays: 182,          // durée de conservation du choix cookies (jours, 395 max selon la CNIL)
 
   /* ---------- Formulaire HubSpot ---------- */

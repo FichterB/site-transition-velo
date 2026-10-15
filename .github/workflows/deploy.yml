@@ -47,10 +47,10 @@ jobs:
       - name: Vérifier la syntaxe de config.js
         run: node --check site/config.js
 
-      - name: Préprod — couper Google Analytics et bloquer l'indexation
+      - name: Préprod — couper Google Analytics et Clarity, bloquer l'indexation
         if: env.CIBLE == 'preprod'
         run: |
-          sed -i "s/ga4Id: *'[^']*'/ga4Id: ''/" site/config.js
+          sed -i "s/ga4Id: *'[^']*'/ga4Id: ''/; s/clarityId: *'[^']*'/clarityId: ''/" site/config.js
           # robots.txt n'est lu qu'à la racine : on passe par un en-tête HTTP (hébergement Apache)
           printf 'Header set X-Robots-Tag "noindex, nofollow"\n' > site/.htaccess
 
