@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<script src="./config.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulateur vélo de fonction — Transition Vélo</title>
+<meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1203 66 197 182'%3E%3Cpath fill='#1C232B' d='M329.95 164.66c-26.33 3.34-25.66 45.1-.12 47.72 34.32 3.52 32.21-51.8.12-47.72m30.59 72.65-1.5-10.97c-.58-.67-5.05 4.41-5.75 4.98-14.26 11.57-35.08 10.52-49.85.41-23.57-16.14-27.13-52.44-10.94-75.04 13.17-18.39 39.72-25.27 58.31-10.61 1.13.21.69-.49.74-1.23.1-1.4-.07-2.85 0-4.25h25.97l9.99 96.71Zm0 0'/%3E%3Cpath fill='#1C242D' d='m1078.79 110.69-46.21 125.11c-.64.71-2.96.94-3.97 1.03-7.2.62-15.7-.16-22.92-.59l-46.56-124.07 2-1.5c7.78.82 17.5-1.01 25.03 0 .68.09 1.32.1 1.76.74l30.07 82.64 1.61 1.39 30.97-84.75Zm0 0'/%3E%3Cpath fill='#192129' d='M1131.73 176.99c-3.7-19.99-34.2-19.55-38.45 0Zm-38.46 19.44c3 17.4 24.46 22.77 37.93 12.68 2.03-1.52 4.66-6.36 6.99-4.42l16.54 14.95c.09.93-2.45 3.86-3.27 4.7-30.41 31.09-83.09 12.09-86.59-31.71-3.06-38.37 35.48-68.22 70.52-48.95 18.6 10.23 25.58 31.97 22.35 52.04Zm0 0'/%3E%3Cpath fill='#1B232C' d='M852.53 140.6H879v7.48c2.3-.19 4.1-2.89 6.03-4.2 16.27-11.05 40.6-5.77 51.11 10.72 12.88 20.2 4.17 57.62 6.82 80.99l-.78 1.72h-25.97l-.75-.75v-56.83c0-1.02-2.35-6.79-3.08-7.89-5.94-8.92-19.1-9.88-27.12-3.31-2.39 1.96-5.76 6.61-5.76 9.71v58.32l-.75.75h-25.97Zm0 0'/%3E%3Cpath fill='#1A2229' d='M484.91 237.31h-26.97v-57.08c0-1.13-1.89-6.14-2.59-7.38-6.46-11.5-25.09-11.62-31.28 0-.56 1.04-2.09 4.43-2.09 5.39v58.32l-.75.75h-26.72V140.6h26.72l.75 7.48 10.65-7.06c21.76-10.58 52.28 7.41 52.28 31.73Zm0 0'/%3E%3Cpath fill='#1D262F' d='M187.72 237.31h-27.97V136.86l-.75-.74h-44.7v-25.68l.75-.74h117.87l.75.74v24.93l-.75.75h-44.45l-.75.74Zm0 0'/%3E%3Cpath fill='#1A2128' d='M525.76 138.26c15.25-1.39 31.81 3.04 43.01 13.66.24.94-1.53 2.8-2.19 3.65-3.95 5.06-8.8 9.61-13.09 14.39l-1.13-.19c-6.85-5.73-19.67-10.94-28.27-6.76-5.71 2.78-3.58 8.3 1.6 10.43 11.58 4.75 25.31 4.15 36.11 12.31 12.96 9.8 14 29.84 3.54 41.85-16.71 19.16-58.26 14.19-74.47-4.01l15.87-18.13 1.13.19c7.73 6.56 17.27 11.27 27.73 10.22 4.85-.49 12.53-4.39 7.74-9.71-3.41-3.79-20.71-6.59-26.73-8.71-37.58-13.27-28.71-55.75 9.15-59.19'/%3E%3Cpath fill='#1A2129' d='M651.24 165.03v38.13c0 .19.72 2.68.88 3.1 3.19 8.24 13.87 7.8 20.56 4.32l1.03.56v22.93c0 3.51-10.98 5.05-13.74 5.23-14.7.93-27.62-5.19-33.09-19.3-.76-1.95-2.62-7.57-2.62-9.36v-45.36l-1.25-.75h-11.73V140.6h12.23l.75-.75v-23.92l.75-.75h25.48l.75.75v23.92l.75.75h20.97l.75.75v22.43l-1.25.75Zm0 0'/%3E%3Cpath fill='#192128' d='M1192.17 103.71v106.43c1.74 2.46 3.33 2.39 6.18 2.31l.74.75-.41 23.88c-11.47 2.55-24.76 4.27-31.08-7.91-3.66-7.07-1.51-26.41-1.5-34.98 0-27.62-2.21-58.35-.43-85.76.11-1.6.57-3.11.53-4.72Zm0 0'/%3E%3Cpath fill='#1C242C' d='M283.62 140.6v26.42c-9.39-3.66-21.08-4.35-27.96 4.25-1.38 1.73-4 6.93-4 8.96v56.33l-.75.75h-26.23v-87.49c4.78-2.56 10.42-5.64 15.49-7.46 1.85-.67 7.95-2.76 9.24-1.26l1.5 7.47c7.37-9.89 21.53-13 32.71-7.97'/%3E%3Cpath fill='#1A2027' d='M710.67 237.31H683.7v-89.98c1.94-1.92 5.24-3.65 7.81-4.67.78-.31 5.61-2.06 5.93-2.06h12.98l.75.75v94.71c0 .17-.66.76-.5 1.25'/%3E%3Cpath fill='#1A2128' d='M591.05 140.6h14.48v96.71h-25.97l-.75-.75v-87.23c2.76-4.15 8.44-5.56 12.24-8.73'/%3E%3Cpath fill='#1D252D' d='M1328.53 184.47c-.22 45.74-49.59 74.62-90.41 54.33l2 .25-1.5-1.98c.66-.74 1.61-1.15 2.51-1.49 2.64-1.02 11.17-3.63 13.84-4.14 1.53-.29 3.1-.05 4.63-.12l-3.5-1.49c29.15 4.83 56.89-15.11 57.45-45.36Zm0 0'/%3E%3Cpath fill='#1A232B' d='M844.03 184.47c-.85 44.36-45.79 73.66-86.91 55.83l.42-.53-.9-2.43 16.97-6.02-1.5-1.49c28.53 5.97 56-15.35 56.94-44.36.47-.96.7-.96 1.7-1.04 4.24-.35 8.99.33 13.28.04'/%3E%3Cpath fill='#050505' d='M745.64 154.06c-21.97 27.02-7.7 68.62 26.47 75.77l1.5 1.49-16.97 6.02.9 2.43-.41.53c-35.87-15.56-48.56-58.07-26.47-90.72l9.82 8.4c1.14.1 2.73-2.54 3.45-3.38.39-.44 1.21-1.76 1.71-.54'/%3E%3Cpath fill='#010202' d='M1228.13 156.05c-19.58 26.11-4.48 68.41 27.97 73.78l3.5 1.49c-1.53.07-3.1-.17-4.63.12-2.67.51-11.2 3.12-13.84 4.14-.9.34-1.85.75-2.51 1.49l1.5 1.98-2-.25c-34.65-17.22-44.86-60.39-21.97-91.72 1.48 1.17-.99 2.63-.92 3.66.19 2.89 6.43 6.71 9.16 7.11Zm0 0'/%3E%3Cpath fill='#E14B34' d='M814.07 131.13c18.71 11.2 30.39 31.28 29.96 53.34-4.29.29-9.04-.39-13.28-.04-1 .08-1.23.08-1.7 1.03 1.07-33.04-31.51-57.49-62.93-46.35 2.71-3.07 6.87-5.42 10.64-7.09 8.72-3.87 18.91-5.42 28.45-3.27Zm0 0'/%3E%3Cpath fill='#E04932' d='M1297.06 130.63c4.88 1.58 14.13 10.5 17.47 14.72 8.92 11.29 14.07 24.58 14 39.12h-14.98c.58-31.72-32.07-55.92-62.44-45.86 3.18-3.6 7.72-5.36 12.09-7.03 11.87-4.51 19.26-4.69 31.75-1.06.75.21 1.69-.02 2.11.11'/%3E%3Cpath fill='#DE4630' d='M1393.29 102.89c2.52 2.52 2.86 7.32.89 10.27-2.14 3.23-9.74 5-13.3 6.56-12.96 5.67-26.45 11.36-39.74 16.77-7.47 1.47-10.86-7.69-5.59-12.56l50.71-23.17c2.17-.35 5.47.57 7.03 2.13'/%3E%3Cpath fill='#1E262F' d='M1297.06 130.63c-.42-.13-1.36.1-2.11-.11-12.49-3.63-19.88-3.45-31.75 1.06-4.37 1.67-8.91 3.43-12.09 7.03-8.63 2.86-17.58 10.24-22.98 17.44l-3.74 1.8c-2.74-.4-8.97-4.22-9.16-7.11-.07-1.03 2.4-2.49.92-3.66 18.46-25.27 53.98-32.86 80.91-16.45'/%3E%3Cpath fill='#DD4933' d='M1358.29 83.57c-9.47 11.93-22.64 22.84-32.51 34.6-6.68 5.06-13.29-2.82-9.57-9.55l30.69-36.81c5.72-4.49 14.47-1.81 14.13 6.24-.12 2.77-1.18 3.55-2.74 5.52'/%3E%3Cpath fill='#1E2730' d='m814.07 131.13-8.86-2.38c-9.54-2.15-19.73-.6-28.45 3.27-3.77 1.67-7.93 4.02-10.64 7.09-7.02 2.49-15.8 9.2-20.48 14.95-.5-1.22-1.32.1-1.71.54-.72.84-2.31 3.48-3.45 3.38l-9.82-8.4c18.85-27.9 54.25-35.9 83.41-18.45'/%3E%3Cpath fill='#1C252D' d='M580.49 125.97c-16.7-17.65 12.9-39.58 25.31-21.02 11.72 17.53-12.17 34.9-25.31 21.02'/%3E%3Cpath fill='#1A2128' d='M694.07 98.36c23.07-3.36 25.87 29.39 6.73 32.14-24.8 3.58-25.51-29.4-6.73-32.14'/%3E%3Cpath fill='#DE4832' d='M1372.88 143.75c3.72-.17 10.95-.75 14.31-.13 1.12.2 3.95 2.51 4.56 3.43 2.84 4.38.23 9.48-4.27 11.26l-39.74.26c-6.78-.93-7.53-9.96-1.76-12.76 7.08-1.06 14.17-.84 21.25-1.23 1.71-.09 3.9-.76 5.65-.83'/%3E%3Cpath fill='#1D262E' d='M1143.22 103.71 1121 131.63h-19.99l-.76-1.23 17.25-26.69Zm0 0'/%3E%3Cpath fill='#121417' d='M1265.47 179.57c-2.03 1.17-4.01 2.5-3.9 5.14l1.28 2.75 3.49 1.55c6.21-1.73 5.48-8.56-.87-9.44m-33.25-15.62 27.65 15.04 1.2-.82-13.79-29.05c-2.28-.67-10.73 7.45-12.35 9.48-.86 1.07-3.47 4.07-2.71 5.35m52.35-14.87c-3.23 4.67-11.26 21.55-13.09 27.06-.25.75-.63 1.46-.34 2.3 1.03 1.61 7.05-1.92 8.45-2.69 6.54-3.59 13.05-7.63 19.42-11.51 1.04-.64 1.95-1.38 2.87-2.16.92-.16 2.7 2.11 2.15 2.92l-29.95 16.22-.45 5.92 29.92 15.78c.06.4 0 .74-.11 1.13-1.07 3.81-3.36.5-5.55-.72-7.24-4.04-15.12-8.89-22.47-12.47-2.2-1.07-4.76-2.97-4.24 1.23l14.89 29.26-2.97.49-14.26-29.92-4.95-.39-15.33 30.29-2.4-1.26 14.91-30.57c-.9-.33-1.34-.54-2.31-.17-4.75 1.82-13 6.98-17.8 9.69-3.46 1.97-6.77 4.25-10.17 6.33l-2.14-2.18 29.22-16.2c1.56-1.01-.35-2.46-.14-3.65.1-.55 1.13-1.14.83-1.99l-29.41-16.56-.44-1.37c5.34-10.6 16.62-19.2 28.27-21.67 1.46-.31 8.29-1.34 8.61.13l-.82 1.17c-4.11.11-8.39.82-12.24 2.24-.71.26-2.47.71-2.45 1.56l13.09 29.59 4.58-.02 1.44-1.55c3.84-9.46 8.89-18.36 12.89-27.76.27-.65.66-1.09.53-1.95l1.96-.04c.34.15.67.33 1 .49l1.5 1.25c-.45.9-1.69.33-2.17.69-.55.41-.24.94-.33 1.06'/%3E%3Cpath fill='#E49687' d='M1285.57 146.08c4.34 2.15 12.34 8.27 14.65 12.47.42.77.44 1.12.33 1.99-1.06.27-1.16-.64-1.67-1.08-4.59-3.98-6.17-7.33-12.26-10.21-.77-.37-1.08-1-2.05-.17.09-.12-.22-.65.33-1.06.48-.36 1.72.21 2.17-.69Zm0 0'/%3E%3Cpath fill='#CE5D46' d='m1284.57 145.59-1.96.04c.13.86-.26 1.3-.53 1.95.24-1.15-.57-1.07-1.31-1.41-4.03-1.86-9.77-2.57-14.18-2.58v-1.99c6.33-.63 12.31 1.42 17.98 3.99'/%3E%3Cpath fill='#1A1B1E' d='M781.94 179.61c-3.18.11-5.98 4.74-3.36 7.62 4.44 4.9 10.95-2.11 5.98-6.46-.56-.49-1.88-1.18-2.62-1.16m4.75-1.22 2.87.86 26.52-14.96c1.45-1.32-2.17-5.45-3.26-6.74-3.13-3.72-7.96-7.77-12.7-8.94Zm-23.08-29.81c-6.86 2.79-12.55 8.71-15.97 15.17l28.15 15.68 1.25-1.3Zm17.49-6.98-.82 1.92c-2.16-.42-14.27 2.05-14.65 3.85l13.45 29.39 5.28-.25 13.65-29.19c-4.04-3-9.66-3.56-14.59-3.8l-.82-1.92c23.53-.19 42.94 19.23 41.95 42.87l-1.49-.01c1.1-2.53-3.1-17.88-4.81-18.41l-28.43 15.43.28 6.22 29 15.5-1.78 2.6c-3.45-2.16-6.86-4.46-10.41-6.46-4.68-2.64-12.84-7.75-17.47-9.49-2.18-.82-3.25-.5-2.46 1.95 1.77 5.42 7.94 15.93 10.84 21.59 1.34 2.6 3.52 5.31 4.26 7.96l-2.33.93-15.95-30.73-3.91-.02-16.01 30.27-2.2-1.62 15.42-30.22-2.59.11-28.85 15.82-.96-1.83 29.8-17.4v-4.88l-29.81-16.3c-.97-1.16 3.66-7.69 4.69-8.93 7.51-9.02 19.87-15.2 31.72-14.95'/%3E%3Cpath fill='#F4F3F4' d='M1265.47 179.57c6.35.88 7.08 7.71.87 9.44l-3.49-1.55-1.28-2.75c-.11-2.64 1.87-3.97 3.9-5.14'/%3E%3Cpath fill='#F4F3F3' d='M781.94 179.61c.74-.02 2.06.67 2.62 1.16 4.97 4.35-1.54 11.36-5.98 6.46-2.62-2.88.18-7.51 3.36-7.62'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#D4412B;--red-d:#B5341F;--ink:#1C232B;--muted:#8A8271;--muted2:#6B6454;--line:#E7E2D8;--cream:#F4F0E7;--paper:#FCFBF9;--green:#1F7A45;--gold:#C8960C}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--cream);font-family:'Hanken Grotesk',system-ui,sans-serif;color:var(--ink)}
+  button{font-family:inherit}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .anton{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em}
+
+  /* header */
+  .top{position:sticky;top:0;z-index:50;background:rgba(252,251,249,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw}
+  .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}
+  .brand .tag{font-size:11px;line-height:1.3;color:var(--muted);font-weight:500;border-left:1px solid var(--line);padding-left:14px}
+  @media(max-width:640px){.brand .tag{display:none}}
+  .top-tel{font-size:14px;font-weight:700;color:var(--red);text-decoration:none}
+
+  main{padding:72px 5vw 96px}
+  .wrap{max-width:900px;margin:0 auto}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+  h1{font-size:clamp(2rem,4vw,3rem);line-height:1;margin:0 0 16px}
+  .lead{font-size:16px;color:var(--muted2);max-width:600px;line-height:1.7;margin:0 0 36px}
+
+  /* stepper */
+  .stepper{display:flex;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;margin-bottom:30px}
+  .tab{flex:1;display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer;border:none;border-right:1px solid var(--line);background:#fff;text-align:left;transition:background .15s;min-width:0}
+  .tab:last-child{border-right:none}
+  .tab .n{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;background:#EFE9DC;color:var(--muted)}
+  .tab .tx{min-width:0}
+  .tab .l,.tab .v{display:block}
+  .tab .l{font-size:13px;font-weight:600;line-height:1.2;color:var(--ink)}
+  .tab .v{font-size:11px;margin-top:1px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tab.active{background:var(--red)}
+  .tab.active .n{background:rgba(255,255,255,.28);color:#fff}
+  .tab.active .l{color:#fff}
+  .tab.active .v{color:rgba(255,255,255,.85)}
+  .tab.done{background:#FCEEEA}
+  .tab.done .n{background:var(--red);color:#fff}
+  .tab.done .l{color:var(--red)}
+  .tab.locked{cursor:not-allowed}
+  .tab.locked .n{background:#EFE9DC}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px}
+  .panel{display:none}
+  .panel.show{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .btn{background:var(--red);color:#fff;border:none;padding:12px 28px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+  .btn:hover{background:var(--red-d)}
+  .btn-ghost{background:transparent;color:var(--muted2);border:1px solid var(--line);padding:12px 22px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer}
+  .btn-ghost:hover{background:var(--cream)}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .step-count{font-size:13px;color:var(--muted)}
+
+  /* ranges */
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;outline:none;cursor:pointer}
+  input.big{height:6px;border-radius:3px}
+  input.big::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;background:#fff;border-radius:50%;border:3px solid var(--red);box-shadow:0 2px 8px rgba(212,65,43,.3);cursor:pointer}
+  input.big::-moz-range-thumb{width:18px;height:18px;background:#fff;border-radius:50%;border:3px solid var(--red);cursor:pointer}
+  input.mini{height:4px;border-radius:2px}
+  input.mini::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--ink);border-radius:50%;cursor:pointer}
+  input.mini::-moz-range-thumb{width:16px;height:16px;background:var(--ink);border-radius:50%;border:none;cursor:pointer}
+
+  .chip{background:var(--cream);color:var(--ink);border:1px solid var(--line);padding:8px 15px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+  .chip.on{background:var(--red);color:#fff;border-color:var(--red)}
+  .seg{flex:1;background:var(--cream);color:var(--ink);border:1px solid var(--line);padding:9px 4px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+  .seg.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .seg small{display:block;font-size:10px;opacity:.7;font-weight:400;margin-top:1px}
+  .box{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .box-l{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+  /* gate */
+  .gate{display:grid;grid-template-columns:.85fr 1.15fr;gap:0;overflow:hidden}
+  .gate-side{background:var(--ink);color:#fff;padding:32px 28px;position:relative}
+  .gate-side h2{font-size:24px;line-height:1.05;margin:0 0 12px;color:#fff}
+  .gate-side p{font-size:14px;line-height:1.6;color:rgba(255,255,255,.7);margin:0 0 22px}
+  .teaser{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:16px;margin-bottom:10px}
+  .teaser .tl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.55);margin-bottom:6px}
+  .teaser .tv{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#fff;filter:blur(9px);user-select:none}
+  .lock{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.6);margin-top:12px}
+  .gate-form{padding:28px 28px 20px;min-height:420px}
+  .gate-form .hint{font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+  .hs-loading{font-size:13px;color:var(--muted);padding:24px 0;text-align:center}
+  .gate-ok{display:none;text-align:center;padding:60px 10px}
+  .gate-ok.show{display:block}
+
+  /* results */
+  .big-card{border-radius:16px;padding:28px;text-align:center}
+  .big-l{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .big-n{font-family:'JetBrains Mono',monospace;font-size:50px;font-weight:700;line-height:1;margin-bottom:4px}
+  .bk-tabs{display:flex;border-bottom:1px solid var(--line)}
+  .bk-tab{flex:1;padding:13px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);margin-bottom:-1px}
+  .bk-tab.on{border-bottom-color:var(--red);color:var(--red)}
+  .row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #F0EDE8;gap:12px}
+  .row:last-of-type{border-bottom:none}
+  .row .k{font-size:13px;min-width:170px}
+  .row .k.sm{font-size:12px;color:var(--muted)}
+  .row .bar{flex:1;height:6px;background:#EFE9DC;border-radius:3px;overflow:hidden}
+  .row .bar i{display:block;height:100%;border-radius:3px}
+  .row .val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;min-width:96px;text-align:right}
+  .tot{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;margin-top:8px;border-top:2px solid var(--ink)}
+  .tot span:first-child{font-size:14px;font-weight:700}
+  .tot span:last-child{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700}
+  .boss{display:flex;align-items:center;gap:10px;background:#E4EBDF;border:1px solid #C4D6C0;border-radius:10px;padding:12px 16px;margin-top:16px;font-size:12px;color:var(--green);line-height:1.4}
+
+  footer{background:#141A20;color:rgba(255,255,255,.5);text-align:center;padding:30px 5vw;font-size:13px}
+  footer a{color:rgba(255,255,255,.5);text-decoration:none}
+
+  @media(max-width:840px){
+    .grid2,.gate{grid-template-columns:1fr}
+    .tab .v{display:none}
+    .tab{padding:12px 10px;gap:8px}
+  }
+  @media(max-width:560px){
+    .tab .tx{display:none}
+    .tab{justify-content:center}
+    .row .k{min-width:0;flex:0 0 46%}
+    .row .bar{display:none}
+    .row .val{margin-left:auto}
+    .big-n{font-size:40px}
+    .p1-card{padding:28px 18px 22px!important}
+  }
+</style>
+</head>
+<body data-page="simulateur">
+
+<header class="top">
+  <a href="/" class="brand" aria-label="Transition Vélo — accueil">
+    <svg role="img" aria-label="Transition Vélo" style="height:28px;width:auto;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="114 69 1282 177"><path fill="#1C232B" d="M329.95 164.66c-26.33 3.34-25.66 45.1-.12 47.72 34.32 3.52 32.21-51.8.12-47.72m30.59 72.65-1.5-10.97c-.58-.67-5.05 4.41-5.75 4.98-14.26 11.57-35.08 10.52-49.85.41-23.57-16.14-27.13-52.44-10.94-75.04 13.17-18.39 39.72-25.27 58.31-10.61 1.13.21.69-.49.74-1.23.1-1.4-.07-2.85 0-4.25h25.97l9.99 96.71Zm0 0"/><path fill="#1C242D" d="m1078.79 110.69-46.21 125.11c-.64.71-2.96.94-3.97 1.03-7.2.62-15.7-.16-22.92-.59l-46.56-124.07 2-1.5c7.78.82 17.5-1.01 25.03 0 .68.09 1.32.1 1.76.74l30.07 82.64 1.61 1.39 30.97-84.75Zm0 0"/><path fill="#192129" d="M1131.73 176.99c-3.7-19.99-34.2-19.55-38.45 0Zm-38.46 19.44c3 17.4 24.46 22.77 37.93 12.68 2.03-1.52 4.66-6.36 6.99-4.42l16.54 14.95c.09.93-2.45 3.86-3.27 4.7-30.41 31.09-83.09 12.09-86.59-31.71-3.06-38.37 35.48-68.22 70.52-48.95 18.6 10.23 25.58 31.97 22.35 52.04Zm0 0"/><path fill="#1B232C" d="M852.53 140.6H879v7.48c2.3-.19 4.1-2.89 6.03-4.2 16.27-11.05 40.6-5.77 51.11 10.72 12.88 20.2 4.17 57.62 6.82 80.99l-.78 1.72h-25.97l-.75-.75v-56.83c0-1.02-2.35-6.79-3.08-7.89-5.94-8.92-19.1-9.88-27.12-3.31-2.39 1.96-5.76 6.61-5.76 9.71v58.32l-.75.75h-25.97Zm0 0"/><path fill="#1A2229" d="M484.91 237.31h-26.97v-57.08c0-1.13-1.89-6.14-2.59-7.38-6.46-11.5-25.09-11.62-31.28 0-.56 1.04-2.09 4.43-2.09 5.39v58.32l-.75.75h-26.72V140.6h26.72l.75 7.48 10.65-7.06c21.76-10.58 52.28 7.41 52.28 31.73Zm0 0"/><path fill="#1D262F" d="M187.72 237.31h-27.97V136.86l-.75-.74h-44.7v-25.68l.75-.74h117.87l.75.74v24.93l-.75.75h-44.45l-.75.74Zm0 0"/><path fill="#1A2128" d="M525.76 138.26c15.25-1.39 31.81 3.04 43.01 13.66.24.94-1.53 2.8-2.19 3.65-3.95 5.06-8.8 9.61-13.09 14.39l-1.13-.19c-6.85-5.73-19.67-10.94-28.27-6.76-5.71 2.78-3.58 8.3 1.6 10.43 11.58 4.75 25.31 4.15 36.11 12.31 12.96 9.8 14 29.84 3.54 41.85-16.71 19.16-58.26 14.19-74.47-4.01l15.87-18.13 1.13.19c7.73 6.56 17.27 11.27 27.73 10.22 4.85-.49 12.53-4.39 7.74-9.71-3.41-3.79-20.71-6.59-26.73-8.71-37.58-13.27-28.71-55.75 9.15-59.19"/><path fill="#1A2129" d="M651.24 165.03v38.13c0 .19.72 2.68.88 3.1 3.19 8.24 13.87 7.8 20.56 4.32l1.03.56v22.93c0 3.51-10.98 5.05-13.74 5.23-14.7.93-27.62-5.19-33.09-19.3-.76-1.95-2.62-7.57-2.62-9.36v-45.36l-1.25-.75h-11.73V140.6h12.23l.75-.75v-23.92l.75-.75h25.48l.75.75v23.92l.75.75h20.97l.75.75v22.43l-1.25.75Zm0 0"/><path fill="#192128" d="M1192.17 103.71v106.43c1.74 2.46 3.33 2.39 6.18 2.31l.74.75-.41 23.88c-11.47 2.55-24.76 4.27-31.08-7.91-3.66-7.07-1.51-26.41-1.5-34.98 0-27.62-2.21-58.35-.43-85.76.11-1.6.57-3.11.53-4.72Zm0 0"/><path fill="#1C242C" d="M283.62 140.6v26.42c-9.39-3.66-21.08-4.35-27.96 4.25-1.38 1.73-4 6.93-4 8.96v56.33l-.75.75h-26.23v-87.49c4.78-2.56 10.42-5.64 15.49-7.46 1.85-.67 7.95-2.76 9.24-1.26l1.5 7.47c7.37-9.89 21.53-13 32.71-7.97"/><path fill="#1A2027" d="M710.67 237.31H683.7v-89.98c1.94-1.92 5.24-3.65 7.81-4.67.78-.31 5.61-2.06 5.93-2.06h12.98l.75.75v94.71c0 .17-.66.76-.5 1.25"/><path fill="#1A2128" d="M591.05 140.6h14.48v96.71h-25.97l-.75-.75v-87.23c2.76-4.15 8.44-5.56 12.24-8.73"/><path fill="#1D252D" d="M1328.53 184.47c-.22 45.74-49.59 74.62-90.41 54.33l2 .25-1.5-1.98c.66-.74 1.61-1.15 2.51-1.49 2.64-1.02 11.17-3.63 13.84-4.14 1.53-.29 3.1-.05 4.63-.12l-3.5-1.49c29.15 4.83 56.89-15.11 57.45-45.36Zm0 0"/><path fill="#1A232B" d="M844.03 184.47c-.85 44.36-45.79 73.66-86.91 55.83l.42-.53-.9-2.43 16.97-6.02-1.5-1.49c28.53 5.97 56-15.35 56.94-44.36.47-.96.7-.96 1.7-1.04 4.24-.35 8.99.33 13.28.04"/><path fill="#050505" d="M745.64 154.06c-21.97 27.02-7.7 68.62 26.47 75.77l1.5 1.49-16.97 6.02.9 2.43-.41.53c-35.87-15.56-48.56-58.07-26.47-90.72l9.82 8.4c1.14.1 2.73-2.54 3.45-3.38.39-.44 1.21-1.76 1.71-.54"/><path fill="#010202" d="M1228.13 156.05c-19.58 26.11-4.48 68.41 27.97 73.78l3.5 1.49c-1.53.07-3.1-.17-4.63.12-2.67.51-11.2 3.12-13.84 4.14-.9.34-1.85.75-2.51 1.49l1.5 1.98-2-.25c-34.65-17.22-44.86-60.39-21.97-91.72 1.48 1.17-.99 2.63-.92 3.66.19 2.89 6.43 6.71 9.16 7.11Zm0 0"/><path fill="#E14B34" d="M814.07 131.13c18.71 11.2 30.39 31.28 29.96 53.34-4.29.29-9.04-.39-13.28-.04-1 .08-1.23.08-1.7 1.03 1.07-33.04-31.51-57.49-62.93-46.35 2.71-3.07 6.87-5.42 10.64-7.09 8.72-3.87 18.91-5.42 28.45-3.27Zm0 0"/><path fill="#E04932" d="M1297.06 130.63c4.88 1.58 14.13 10.5 17.47 14.72 8.92 11.29 14.07 24.58 14 39.12h-14.98c.58-31.72-32.07-55.92-62.44-45.86 3.18-3.6 7.72-5.36 12.09-7.03 11.87-4.51 19.26-4.69 31.75-1.06.75.21 1.69-.02 2.11.11"/><path fill="#DE4630" d="M1393.29 102.89c2.52 2.52 2.86 7.32.89 10.27-2.14 3.23-9.74 5-13.3 6.56-12.96 5.67-26.45 11.36-39.74 16.77-7.47 1.47-10.86-7.69-5.59-12.56l50.71-23.17c2.17-.35 5.47.57 7.03 2.13"/><path fill="#1E262F" d="M1297.06 130.63c-.42-.13-1.36.1-2.11-.11-12.49-3.63-19.88-3.45-31.75 1.06-4.37 1.67-8.91 3.43-12.09 7.03-8.63 2.86-17.58 10.24-22.98 17.44l-3.74 1.8c-2.74-.4-8.97-4.22-9.16-7.11-.07-1.03 2.4-2.49.92-3.66 18.46-25.27 53.98-32.86 80.91-16.45"/><path fill="#DD4933" d="M1358.29 83.57c-9.47 11.93-22.64 22.84-32.51 34.6-6.68 5.06-13.29-2.82-9.57-9.55l30.69-36.81c5.72-4.49 14.47-1.81 14.13 6.24-.12 2.77-1.18 3.55-2.74 5.52"/><path fill="#1E2730" d="m814.07 131.13-8.86-2.38c-9.54-2.15-19.73-.6-28.45 3.27-3.77 1.67-7.93 4.02-10.64 7.09-7.02 2.49-15.8 9.2-20.48 14.95-.5-1.22-1.32.1-1.71.54-.72.84-2.31 3.48-3.45 3.38l-9.82-8.4c18.85-27.9 54.25-35.9 83.41-18.45"/><path fill="#1C252D" d="M580.49 125.97c-16.7-17.65 12.9-39.58 25.31-21.02 11.72 17.53-12.17 34.9-25.31 21.02"/><path fill="#1A2128" d="M694.07 98.36c23.07-3.36 25.87 29.39 6.73 32.14-24.8 3.58-25.51-29.4-6.73-32.14"/><path fill="#DE4832" d="M1372.88 143.75c3.72-.17 10.95-.75 14.31-.13 1.12.2 3.95 2.51 4.56 3.43 2.84 4.38.23 9.48-4.27 11.26l-39.74.26c-6.78-.93-7.53-9.96-1.76-12.76 7.08-1.06 14.17-.84 21.25-1.23 1.71-.09 3.9-.76 5.65-.83"/><path fill="#1D262E" d="M1143.22 103.71 1121 131.63h-19.99l-.76-1.23 17.25-26.69Zm0 0"/><path fill="#121417" d="M1265.47 179.57c-2.03 1.17-4.01 2.5-3.9 5.14l1.28 2.75 3.49 1.55c6.21-1.73 5.48-8.56-.87-9.44m-33.25-15.62 27.65 15.04 1.2-.82-13.79-29.05c-2.28-.67-10.73 7.45-12.35 9.48-.86 1.07-3.47 4.07-2.71 5.35m52.35-14.87c-3.23 4.67-11.26 21.55-13.09 27.06-.25.75-.63 1.46-.34 2.3 1.03 1.61 7.05-1.92 8.45-2.69 6.54-3.59 13.05-7.63 19.42-11.51 1.04-.64 1.95-1.38 2.87-2.16.92-.16 2.7 2.11 2.15 2.92l-29.95 16.22-.45 5.92 29.92 15.78c.06.4 0 .74-.11 1.13-1.07 3.81-3.36.5-5.55-.72-7.24-4.04-15.12-8.89-22.47-12.47-2.2-1.07-4.76-2.97-4.24 1.23l14.89 29.26-2.97.49-14.26-29.92-4.95-.39-15.33 30.29-2.4-1.26 14.91-30.57c-.9-.33-1.34-.54-2.31-.17-4.75 1.82-13 6.98-17.8 9.69-3.46 1.97-6.77 4.25-10.17 6.33l-2.14-2.18 29.22-16.2c1.56-1.01-.35-2.46-.14-3.65.1-.55 1.13-1.14.83-1.99l-29.41-16.56-.44-1.37c5.34-10.6 16.62-19.2 28.27-21.67 1.46-.31 8.29-1.34 8.61.13l-.82 1.17c-4.11.11-8.39.82-12.24 2.24-.71.26-2.47.71-2.45 1.56l13.09 29.59 4.58-.02 1.44-1.55c3.84-9.46 8.89-18.36 12.89-27.76.27-.65.66-1.09.53-1.95l1.96-.04c.34.15.67.33 1 .49l1.5 1.25c-.45.9-1.69.33-2.17.69-.55.41-.24.94-.33 1.06"/><path fill="#E49687" d="M1285.57 146.08c4.34 2.15 12.34 8.27 14.65 12.47.42.77.44 1.12.33 1.99-1.06.27-1.16-.64-1.67-1.08-4.59-3.98-6.17-7.33-12.26-10.21-.77-.37-1.08-1-2.05-.17.09-.12-.22-.65.33-1.06.48-.36 1.72.21 2.17-.69Zm0 0"/><path fill="#CE5D46" d="m1284.57 145.59-1.96.04c.13.86-.26 1.3-.53 1.95.24-1.15-.57-1.07-1.31-1.41-4.03-1.86-9.77-2.57-14.18-2.58v-1.99c6.33-.63 12.31 1.42 17.98 3.99"/><path fill="#1A1B1E" d="M781.94 179.61c-3.18.11-5.98 4.74-3.36 7.62 4.44 4.9 10.95-2.11 5.98-6.46-.56-.49-1.88-1.18-2.62-1.16m4.75-1.22 2.87.86 26.52-14.96c1.45-1.32-2.17-5.45-3.26-6.74-3.13-3.72-7.96-7.77-12.7-8.94Zm-23.08-29.81c-6.86 2.79-12.55 8.71-15.97 15.17l28.15 15.68 1.25-1.3Zm17.49-6.98-.82 1.92c-2.16-.42-14.27 2.05-14.65 3.85l13.45 29.39 5.28-.25 13.65-29.19c-4.04-3-9.66-3.56-14.59-3.8l-.82-1.92c23.53-.19 42.94 19.23 41.95 42.87l-1.49-.01c1.1-2.53-3.1-17.88-4.81-18.41l-28.43 15.43.28 6.22 29 15.5-1.78 2.6c-3.45-2.16-6.86-4.46-10.41-6.46-4.68-2.64-12.84-7.75-17.47-9.49-2.18-.82-3.25-.5-2.46 1.95 1.77 5.42 7.94 15.93 10.84 21.59 1.34 2.6 3.52 5.31 4.26 7.96l-2.33.93-15.95-30.73-3.91-.02-16.01 30.27-2.2-1.62 15.42-30.22-2.59.11-28.85 15.82-.96-1.83 29.8-17.4v-4.88l-29.81-16.3c-.97-1.16 3.66-7.69 4.69-8.93 7.51-9.02 19.87-15.2 31.72-14.95"/><path fill="#F4F3F4" d="M1265.47 179.57c6.35.88 7.08 7.71.87 9.44l-3.49-1.55-1.28-2.75c-.11-2.64 1.87-3.97 3.9-5.14"/><path fill="#F4F3F3" d="M781.94 179.61c.74-.02 2.06.67 2.62 1.16 4.97 4.35-1.54 11.36-5.98 6.46-2.62-2.88.18-7.51 3.36-7.62"/></svg>
+    <span class="tag">Saint-Péray<br>Drôme &amp; Ardèche</span>
+  </a>
+  <a href="tel:+33658775836" class="top-tel mono">06 58 77 58 36</a>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Simulateur vélo de fonction</div>
+    <h1 class="anton">Simulez le prix de votre vélo</h1>
+    <p class="lead">Après cumul de tous les avantages fiscaux, votre vélo coûte souvent moins cher qu'un café par jour.</p>
+
+    <div class="stepper" id="stepper"></div>
+
+    <!-- ÉTAPE 1 : prix -->
+    <section class="panel" id="p1">
+      <div class="card p1-card" style="padding:40px 40px 30px;text-align:center">
+        <div style="font-weight:700;font-size:22px;margin-bottom:8px">Quel est le prix du vélo souhaité ?</div>
+        <div style="font-size:14px;color:var(--muted);margin-bottom:28px">Entrez le prix HT du vélo — assurance et entretien compris dans le loyer</div>
+        <div class="mono" id="prixLabel" style="font-size:58px;font-weight:700;color:var(--red);line-height:1;margin-bottom:6px"></div>
+        <div style="font-size:15px;color:var(--muted);margin-bottom:28px">HT — hors taxes</div>
+        <input type="range" class="big" id="prix" min="600" max="4000" step="50" aria-label="Prix HT du vélo" style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:28px"><span>600 €</span><span>1 500 €</span><span>2 500 €</span><span>4 000 €</span></div>
+        <div id="presets" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:30px"></div>
+        <div class="nav-row">
+          <span class="step-count">Étape 1 sur 4</span>
+          <button class="btn" data-go="2">Continuer →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÉTAPE 2 : profil -->
+    <section class="panel" id="p2">
+      <div class="card" style="padding:32px">
+        <div style="font-weight:700;font-size:19px;margin-bottom:22px">Votre profil salarié</div>
+        <div class="grid2" style="margin-bottom:24px">
+          <div class="box">
+            <div class="box-l">Salaire brut mensuel</div>
+            <div class="mono" id="salaireLabel" style="font-size:20px;font-weight:700;margin-bottom:12px"></div>
+            <input type="range" class="mini" id="salaire" min="1800" max="7000" step="100" aria-label="Salaire brut mensuel">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px"><span>1 800 €</span><span>7 000 €</span></div>
+          </div>
+          <div class="box">
+            <div class="box-l">Tranche marginale (TMI)</div>
+            <div id="tmis" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+          </div>
+          <div class="box" style="grid-column:1/-1">
+            <div class="box-l">Durée du contrat LLD</div>
+            <div id="durees" style="display:flex;gap:8px"></div>
+          </div>
+        </div>
+        <div class="nav-row">
+          <button class="btn-ghost" data-go="1">← Retour</button>
+          <span class="step-count">Étape 2 sur 4</span>
+          <button class="btn" data-go="3">Voir mes résultats →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÉTAPE 3 : formulaire HubSpot (gate) -->
+    <section class="panel" id="p3">
+      <div class="card gate">
+        <div class="gate-side">
+          <div class="eyebrow" style="color:#FF8A72">Votre simulation est prête</div>
+          <h2 class="anton">Recevez votre résultat détaillé</h2>
+          <p>Laissez vos coordonnées pour afficher votre coût réel salarié et employeur. Adrien vous recontacte sous 24h avec une simulation personnalisée.</p>
+          <div class="teaser"><div class="tl">Coût réel salarié / mois</div><div class="tv" id="teaseSal">00 €</div></div>
+          <div class="teaser"><div class="tl">Coût réel employeur / mois</div><div class="tv" id="teaseEmp">00 €</div></div>
+          <div class="lock">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Débloqué après envoi du formulaire
+          </div>
+        </div>
+        <div class="gate-form">
+          <div id="gateFormWrap">
+            <p class="hint">Sans engagement · Réponse sous 24h · Données confidentielles</p>
+            <div class="hs-loading" id="hsLoading">Chargement du formulaire…</div>
+            <div class="hs-form-frame" data-region="eu1" data-form-id="079ed762-8b3e-400f-8242-d5c480381dfb" data-portal-id="145421861"></div>
+          </div>
+          <div class="gate-ok" id="gateOk">
+            <svg width="48" height="48" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M6 10l2.6 2.6L14 7" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div style="font-weight:700;font-size:18px;margin:14px 0 6px">Merci, c'est envoyé !</div>
+            <div style="font-size:14px;color:var(--muted)">Affichage de vos résultats…</div>
+          </div>
+          <div class="nav-row" style="margin-top:16px">
+            <button class="btn-ghost" data-go="2">← Modifier mon profil</button>
+            <span class="step-count">Étape 3 sur 4</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÉTAPE 4 : résultats -->
+    <section class="panel" id="p4" data-track-loc="resultats">
+      <div class="grid2" style="margin-bottom:16px">
+        <div class="big-card" style="background:#fff;border:2px solid var(--red)">
+          <div class="big-l" style="color:var(--red)">Coût réel salarié / mois</div>
+          <div class="big-n" id="bigSal"></div>
+          <div style="font-size:14px;color:var(--muted);margin-bottom:12px">€ net / mois</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.4"><strong id="ecoSalPct" style="color:var(--green);display:block;font-size:13px"></strong>vs achat sur salaire net</div>
+        </div>
+        <div class="big-card" style="background:var(--ink)">
+          <div class="big-l" style="color:rgba(255,255,255,.55)">Coût réel employeur / mois</div>
+          <div class="big-n" id="bigEmp" style="color:#fff"></div>
+          <div style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:12px">€ net / mois</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.4"><strong id="ecoEmpPct" style="color:#5BE0A0;display:block;font-size:13px"></strong>après IS 25% + déductibilité</div>
+        </div>
+      </div>
+
+      <div class="card" style="overflow:hidden">
+        <div class="bk-tabs" id="bkTabs"></div>
+        <div style="padding:18px 24px" id="bkBody"></div>
+      </div>
+
+      <div class="boss">
+        <svg width="20" height="20" viewBox="0 0 20 20" style="flex-shrink:0"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M6 10l2.6 2.6L14 7" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><strong>Calcul validé BOSS — 7 mai 2026.</strong> Exonération cotisations confirmée · Part salarié 30% HT · Art. 220 undecies A CGI · Rescrit BOI-RES-TVA-000161</div>
+      </div>
+
+      <div class="nav-row" style="margin-top:16px">
+        <button class="btn-ghost" data-go="2">← Modifier</button>
+        <a class="btn" href="tel:+33658775836">Appeler Adrien · 06 58 77 58 36</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <svg role="img" aria-label="Transition Vélo" style="height:26px;width:auto;display:block;margin:0 auto 16px" xmlns="http://www.w3.org/2000/svg" viewBox="114 69 1282 177"><path fill="#FFF" d="M329.95 164.66c-26.33 3.34-25.66 45.1-.12 47.72 34.32 3.52 32.21-51.8.12-47.72m30.59 72.65-1.5-10.97c-.58-.67-5.05 4.41-5.75 4.98-14.26 11.57-35.08 10.52-49.85.41-23.57-16.14-27.13-52.44-10.94-75.04 13.17-18.39 39.72-25.27 58.31-10.61 1.13.21.69-.49.74-1.23.1-1.4-.07-2.85 0-4.25h25.97l9.99 96.71Zm718.25-126.62-46.21 125.11c-.64.71-2.96.94-3.97 1.03-7.2.62-15.7-.16-22.92-.59l-46.56-124.07 2-1.5c7.78.82 17.5-1.01 25.03 0 .68.09 1.32.1 1.76.74l30.07 82.64 1.61 1.39 30.97-84.75Zm52.94 66.3c-3.7-19.99-34.2-19.55-38.45 0Zm-38.46 19.44c3 17.4 24.46 22.77 37.93 12.68 2.03-1.52 4.66-6.36 6.99-4.42l16.54 14.95c.09.93-2.45 3.86-3.27 4.7-30.41 31.09-83.09 12.09-86.59-31.71-3.06-38.37 35.48-68.22 70.52-48.95 18.6 10.23 25.58 31.97 22.35 52.04ZM852.53 140.6H879v7.48c2.3-.19 4.1-2.89 6.03-4.2 16.27-11.05 40.6-5.77 51.11 10.72 12.88 20.2 4.17 57.62 6.82 80.99l-.78 1.72h-25.97l-.75-.75v-56.83c0-1.02-2.35-6.79-3.08-7.89-5.94-8.92-19.1-9.88-27.12-3.31-2.39 1.96-5.76 6.61-5.76 9.71v58.32l-.75.75h-25.97Zm-367.62 96.71h-26.97v-57.08c0-1.13-1.89-6.14-2.59-7.38-6.46-11.5-25.09-11.62-31.28 0-.56 1.04-2.09 4.43-2.09 5.39v58.32l-.75.75h-26.72V140.6h26.72l.75 7.48 10.65-7.06c21.76-10.58 52.28 7.41 52.28 31.73Zm-297.19 0h-27.97V136.86l-.75-.74h-44.7v-25.68l.75-.74h117.87l.75.74v24.93l-.75.75h-44.45l-.75.74Zm0 0"/><path fill="#FFF" d="M525.76 138.26c15.25-1.39 31.81 3.04 43.01 13.66.24.94-1.53 2.8-2.19 3.65-3.95 5.06-8.8 9.61-13.09 14.39l-1.13-.19c-6.85-5.73-19.67-10.94-28.27-6.76-5.71 2.78-3.58 8.3 1.6 10.43 11.58 4.75 25.31 4.15 36.11 12.31 12.96 9.8 14 29.84 3.54 41.85-16.71 19.16-58.26 14.19-74.47-4.01l15.87-18.13 1.13.19c7.73 6.56 17.27 11.27 27.73 10.22 4.85-.49 12.53-4.39 7.74-9.71-3.41-3.79-20.71-6.59-26.73-8.71-37.58-13.27-28.71-55.75 9.15-59.19m125.48 26.77v38.13c0 .19.72 2.68.88 3.1 3.19 8.24 13.87 7.8 20.56 4.32l1.03.56v22.93c0 3.51-10.98 5.05-13.74 5.23-14.7.93-27.62-5.19-33.09-19.3-.76-1.95-2.62-7.57-2.62-9.36v-45.36l-1.25-.75h-11.73V140.6h12.23l.75-.75v-23.92l.75-.75h25.48l.75.75v23.92l.75.75h20.97l.75.75v22.43l-1.25.75Zm540.93-61.32v106.43c1.74 2.46 3.33 2.39 6.18 2.31l.74.75-.41 23.88c-11.47 2.55-24.76 4.27-31.08-7.91-3.66-7.07-1.51-26.41-1.5-34.98 0-27.62-2.21-58.35-.43-85.76.11-1.6.57-3.11.53-4.72ZM283.62 140.6v26.42c-9.39-3.66-21.08-4.35-27.96 4.25-1.38 1.73-4 6.93-4 8.96v56.33l-.75.75h-26.23v-87.49c4.78-2.56 10.42-5.64 15.49-7.46 1.85-.67 7.95-2.76 9.24-1.26l1.5 7.47c7.37-9.89 21.53-13 32.71-7.97m427.05 96.71H683.7v-89.98c1.94-1.92 5.24-3.65 7.81-4.67.78-.31 5.61-2.06 5.93-2.06h12.98l.75.75v94.71c0 .17-.66.76-.5 1.25M591.05 140.6h14.48v96.71h-25.97l-.75-.75v-87.23c2.76-4.15 8.44-5.56 12.24-8.73m737.48 43.87c-.22 45.74-49.59 74.62-90.41 54.33l2 .25-1.5-1.98c.66-.74 1.61-1.15 2.51-1.49 2.64-1.02 11.17-3.63 13.84-4.14 1.53-.29 3.1-.05 4.63-.12l-3.5-1.49c29.15 4.83 56.89-15.11 57.45-45.36Zm-484.5 0c-.85 44.36-45.79 73.66-86.91 55.83l.42-.53-.9-2.43 16.97-6.02-1.5-1.49c28.53 5.97 56-15.35 56.94-44.36.47-.96.7-.96 1.7-1.04 4.24-.35 8.99.33 13.28.04"/><path fill="#FFF" d="M745.64 154.06c-21.97 27.02-7.7 68.62 26.47 75.77l1.5 1.49-16.97 6.02.9 2.43-.41.53c-35.87-15.56-48.56-58.07-26.47-90.72l9.82 8.4c1.14.1 2.73-2.54 3.45-3.38.39-.44 1.21-1.76 1.71-.54m482.49 1.99c-19.58 26.11-4.48 68.41 27.97 73.78l3.5 1.49c-1.53.07-3.1-.17-4.63.12-2.67.51-11.2 3.12-13.84 4.14-.9.34-1.85.75-2.51 1.49l1.5 1.98-2-.25c-34.65-17.22-44.86-60.39-21.97-91.72 1.48 1.17-.99 2.63-.92 3.66.19 2.89 6.43 6.71 9.16 7.11Zm0 0"/><path fill="#E14B34" d="M814.07 131.13c18.71 11.2 30.39 31.28 29.96 53.34-4.29.29-9.04-.39-13.28-.04-1 .08-1.23.08-1.7 1.03 1.07-33.04-31.51-57.49-62.93-46.35 2.71-3.07 6.87-5.42 10.64-7.09 8.72-3.87 18.91-5.42 28.45-3.27Zm0 0"/><path fill="#E04932" d="M1297.06 130.63c4.88 1.58 14.13 10.5 17.47 14.72 8.92 11.29 14.07 24.58 14 39.12h-14.98c.58-31.72-32.07-55.92-62.44-45.86 3.18-3.6 7.72-5.36 12.09-7.03 11.87-4.51 19.26-4.69 31.75-1.06.75.21 1.69-.02 2.11.11"/><path fill="#DE4630" d="M1393.29 102.89c2.52 2.52 2.86 7.32.89 10.27-2.14 3.23-9.74 5-13.3 6.56-12.96 5.67-26.45 11.36-39.74 16.77-7.47 1.47-10.86-7.69-5.59-12.56l50.71-23.17c2.17-.35 5.47.57 7.03 2.13"/><path fill="#FFF" d="M1297.06 130.63c-.42-.13-1.36.1-2.11-.11-12.49-3.63-19.88-3.45-31.75 1.06-4.37 1.67-8.91 3.43-12.09 7.03-8.63 2.86-17.58 10.24-22.98 17.44l-3.74 1.8c-2.74-.4-8.97-4.22-9.16-7.11-.07-1.03 2.4-2.49.92-3.66 18.46-25.27 53.98-32.86 80.91-16.45"/><path fill="#DD4933" d="M1358.29 83.57c-9.47 11.93-22.64 22.84-32.51 34.6-6.68 5.06-13.29-2.82-9.57-9.55l30.69-36.81c5.72-4.49 14.47-1.81 14.13 6.24-.12 2.77-1.18 3.55-2.74 5.52"/><path fill="#FFF" d="m814.07 131.13-8.86-2.38c-9.54-2.15-19.73-.6-28.45 3.27-3.77 1.67-7.93 4.02-10.64 7.09-7.02 2.49-15.8 9.2-20.48 14.95-.5-1.22-1.32.1-1.71.54-.72.84-2.31 3.48-3.45 3.38l-9.82-8.4c18.85-27.9 54.25-35.9 83.41-18.45m-233.58-5.16c-16.7-17.65 12.9-39.58 25.31-21.02 11.72 17.53-12.17 34.9-25.31 21.02m113.58-27.61c23.07-3.36 25.87 29.39 6.73 32.14-24.8 3.58-25.51-29.4-6.73-32.14"/><path fill="#DE4832" d="M1372.88 143.75c3.72-.17 10.95-.75 14.31-.13 1.12.2 3.95 2.51 4.56 3.43 2.84 4.38.23 9.48-4.27 11.26l-39.74.26c-6.78-.93-7.53-9.96-1.76-12.76 7.08-1.06 14.17-.84 21.25-1.23 1.71-.09 3.9-.76 5.65-.83"/><path fill="#FFF" d="M1143.22 103.71 1121 131.63h-19.99l-.76-1.23 17.25-26.69Zm122.25 75.86c-2.03 1.17-4.01 2.5-3.9 5.14l1.28 2.75 3.49 1.55c6.21-1.73 5.48-8.56-.87-9.44m-33.25-15.62 27.65 15.04 1.2-.82-13.79-29.05c-2.28-.67-10.73 7.45-12.35 9.48-.86 1.07-3.47 4.07-2.71 5.35m52.35-14.87c-3.23 4.67-11.26 21.55-13.09 27.06-.25.75-.63 1.46-.34 2.3 1.03 1.61 7.05-1.92 8.45-2.69 6.54-3.59 13.05-7.63 19.42-11.51 1.04-.64 1.95-1.38 2.87-2.16.92-.16 2.7 2.11 2.15 2.92l-29.95 16.22-.45 5.92 29.92 15.78c.06.4 0 .74-.11 1.13-1.07 3.81-3.36.5-5.55-.72-7.24-4.04-15.12-8.89-22.47-12.47-2.2-1.07-4.76-2.97-4.24 1.23l14.89 29.26-2.97.49-14.26-29.92-4.95-.39-15.33 30.29-2.4-1.26 14.91-30.57c-.9-.33-1.34-.54-2.31-.17-4.75 1.82-13 6.98-17.8 9.69-3.46 1.97-6.77 4.25-10.17 6.33l-2.14-2.18 29.22-16.2c1.56-1.01-.35-2.46-.14-3.65.1-.55 1.13-1.14.83-1.99l-29.41-16.56-.44-1.37c5.34-10.6 16.62-19.2 28.27-21.67 1.46-.31 8.29-1.34 8.61.13l-.82 1.17c-4.11.11-8.39.82-12.24 2.24-.71.26-2.47.71-2.45 1.56l13.09 29.59 4.58-.02 1.44-1.55c3.84-9.46 8.89-18.36 12.89-27.76.27-.65.66-1.09.53-1.95l1.96-.04c.34.15.67.33 1 .49l1.5 1.25c-.45.9-1.69.33-2.17.69-.55.41-.24.94-.33 1.06"/><path fill="#E49687" d="M1285.57 146.08c4.34 2.15 12.34 8.27 14.65 12.47.42.77.44 1.12.33 1.99-1.06.27-1.16-.64-1.67-1.08-4.59-3.98-6.17-7.33-12.26-10.21-.77-.37-1.08-1-2.05-.17.09-.12-.22-.65.33-1.06.48-.36 1.72.21 2.17-.69Zm0 0"/><path fill="#CE5D46" d="m1284.57 145.59-1.96.04c.13.86-.26 1.3-.53 1.95.24-1.15-.57-1.07-1.31-1.41-4.03-1.86-9.77-2.57-14.18-2.58v-1.99c6.33-.63 12.31 1.42 17.98 3.99"/><path fill="#FFF" d="M781.94 179.61c-3.18.11-5.98 4.74-3.36 7.62 4.44 4.9 10.95-2.11 5.98-6.46-.56-.49-1.88-1.18-2.62-1.16m4.75-1.22 2.87.86 26.52-14.96c1.45-1.32-2.17-5.45-3.26-6.74-3.13-3.72-7.96-7.77-12.7-8.94Zm-23.08-29.81c-6.86 2.79-12.55 8.71-15.97 15.17l28.15 15.68 1.25-1.3Zm17.49-6.98-.82 1.92c-2.16-.42-14.27 2.05-14.65 3.85l13.45 29.39 5.28-.25 13.65-29.19c-4.04-3-9.66-3.56-14.59-3.8l-.82-1.92c23.53-.19 42.94 19.23 41.95 42.87l-1.49-.01c1.1-2.53-3.1-17.88-4.81-18.41l-28.43 15.43.28 6.22 29 15.5-1.78 2.6c-3.45-2.16-6.86-4.46-10.41-6.46-4.68-2.64-12.84-7.75-17.47-9.49-2.18-.82-3.25-.5-2.46 1.95 1.77 5.42 7.94 15.93 10.84 21.59 1.34 2.6 3.52 5.31 4.26 7.96l-2.33.93-15.95-30.73-3.91-.02-16.01 30.27-2.2-1.62 15.42-30.22-2.59.11-28.85 15.82-.96-1.83 29.8-17.4v-4.88l-29.81-16.3c-.97-1.16 3.66-7.69 4.69-8.93 7.51-9.02 19.87-15.2 31.72-14.95"/><path fill="#1C232B" d="M1265.47 179.57c6.35.88 7.08 7.71.87 9.44l-3.49-1.55-1.28-2.75c-.11-2.64 1.87-3.97 3.9-5.14m-483.53.04c.74-.02 2.06.67 2.62 1.16 4.97 4.35-1.54 11.36-5.98 6.46-2.62-2.88.18-7.51 3.36-7.62"/></svg>
+  <p style="margin:0"><strong style="color:rgba(255,255,255,.85)">Transition Vélo</strong> — 13 avenue du 8 mai, 07130 Saint-Péray</p>
+  <p style="margin:6px 0 0"><a href="mailto:adrien@transitionvelo.fr">adrien@transitionvelo.fr</a> · 06 58 77 58 36</p>
+  <p style="margin:10px 0 0;font-size:11px;opacity:.6">Simulation indicative · Tarifs HT · Conformité BOSS validée mai 2026 · © Transition Vélo 2026 · <a href="#" data-cookie-settings>Gérer les cookies</a></p>
+</footer>
+
+<!-- ===================== MESURE D'AUDIENCE (GA4 + consentement) ===================== -->
+<script>
+(function(){
+  // >>> Remplacer par votre identifiant de mesure GA4 (Admin > Flux de données > Web)
+  // Réglages lus dans config.js (identifiant GA4, durée du consentement)
+  var CFG = window.TV_CONFIG || {};
+  var GA_ID = String(CFG.ga4Id || '').trim();
+  var KEY = 'tv_consent', MAX_AGE = 1000*60*60*24*(+CFG.consentDays || 182);
+
+  var configured = /^G-[A-Z0-9]{6,}$/.test(GA_ID);
+  var state = 'pending', queue = [], loaded = false;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ window.dataLayer.push(arguments); }
+
+  function readChoice(){
+    try { var c = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (c && Date.now() - c.t < MAX_AGE) return c.v; } catch(e){}
+    return null;
+  }
+  function saveChoice(v){ try { localStorage.setItem(KEY, JSON.stringify({ v:v, t:Date.now() })); } catch(e){} }
+
+  function load(){
+    if (loaded || !configured) return;
+    loaded = true;
+    var s = document.createElement('script');
+    s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+    queue.forEach(function(e){ gtag('event', e[0], e[1]); });
+    queue = [];
+  }
+
+  // API utilisée par les pages : window.tvTrack('nom_evenement', { ... })
+  window.tvTrack = function(name, params){
+    params = params || {};
+    if (!params.page_type) params.page_type = document.body.getAttribute('data-page') || 'site';
+    if (state === 'granted') gtag('event', name, params);
+    else if (state === 'pending' && queue.length < 50) queue.push([name, params]); // envoyés seulement si le visiteur accepte
+  };
+
+  // ---------- Bandeau cookies ----------
+  var banner;
+  function showBanner(){
+    if (!configured) return;
+    if (banner) { banner.style.display = 'flex'; return; }
+    banner = document.createElement('div');
+    banner.setAttribute('role','dialog'); banner.setAttribute('aria-label','Cookies de mesure d\'audience');
+    Object.assign(banner.style, { position:'fixed', left:'16px', right:'16px', bottom:'16px', zIndex:'2000', maxWidth:'560px', margin:'0 auto',
+      background:'#1C232B', color:'#fff', borderRadius:'14px', padding:'18px 20px', boxShadow:'0 16px 50px rgba(0,0,0,.35)',
+      display:'flex', flexWrap:'wrap', alignItems:'center', gap:'14px', fontFamily:"'Hanken Grotesk',system-ui,sans-serif" });
+    var txt = document.createElement('div');
+    Object.assign(txt.style, { flex:'1 1 260px', fontSize:'13.5px', lineHeight:'1.5', color:'rgba(255,255,255,.85)' });
+    txt.textContent = 'Nous mesurons l\'audience du site (Google Analytics) pour améliorer le simulateur. Acceptez-vous ces cookies ?';
+    var btns = document.createElement('div');
+    Object.assign(btns.style, { display:'flex', gap:'8px' });
+    function mk(label, primary, v){
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+      Object.assign(b.style, { fontFamily:'inherit', fontSize:'14px', fontWeight:'700', padding:'10px 18px', borderRadius:'9px', cursor:'pointer',
+        border: primary ? 'none' : '1px solid rgba(255,255,255,.35)', background: primary ? '#D4412B' : 'transparent', color:'#fff' });
+      b.addEventListener('click', function(){ decide(v); });
+      return b;
+    }
+    btns.appendChild(mk('Refuser', false, 'denied'));
+    btns.appendChild(mk('Accepter', true, 'granted'));
+    banner.appendChild(txt); banner.appendChild(btns);
+    document.body.appendChild(banner);
+  }
+  function decide(v){
+    saveChoice(v); state = v;
+    if (banner) banner.style.display = 'none';
+    if (v === 'granted') load();
+    else {
+      queue = [];
+      // retire les cookies GA déjà posés le cas échéant
+      document.cookie.split(';').forEach(function(c){ var n = c.split('=')[0].trim();
+        if (/^_ga/.test(n)) document.cookie = n + '=; Max-Age=0; path=/; domain=' + location.hostname.replace(/^www\./,'.'); });
+    }
+  }
+
+  var choice = readChoice();
+  if (!configured) { state = 'denied'; if (window.console) console.info('[tracking] ga4Id non renseigné dans config.js : aucune donnée envoyée.'); }
+  else if (choice) { state = choice; if (choice === 'granted') load(); }
+  else if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showBanner); else showBanner();
+
+  // ---------- Clics suivis automatiquement ----------
+  function where(el){
+    var z = el.closest('[data-track-loc], header, nav, footer, section[id]');
+    if (!z) return 'page';
+    return z.getAttribute('data-track-loc') || z.id || z.tagName.toLowerCase();
+  }
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('a, button, [data-track], [data-cookie-settings]');
+    if (!el) return;
+    if (el.hasAttribute('data-cookie-settings')) { e.preventDefault(); showBanner(); return; }
+    var href = el.getAttribute('href') || '';
+    if (href.indexOf('tel:') === 0)    window.tvTrack('contact_click', { method:'phone', location: where(el) });
+    else if (href.indexOf('mailto:') === 0) window.tvTrack('contact_click', { method:'email', location: where(el) });
+    else if (/^#(simulateur|contact)$/.test(href)) window.tvTrack('cta_click', { target: href.slice(1), location: where(el), label: (el.textContent || '').trim().slice(0,60) });
+    if (el.hasAttribute('data-track')) window.tvTrack(el.getAttribute('data-track'), { location: where(el), label: (el.textContent || '').trim().slice(0,60) });
+  }, true);
+
+  // ---------- Formulaire HubSpot envoyé = lead ----------
+  var leadSent = false;
+  function lead(){
+    if (leadSent) return; leadSent = true;
+    var v = window.tvSimValues || {};
+    window.tvTrack('generate_lead', Object.assign({ form:'hubspot_simulation' }, v));
+  }
+  window.addEventListener('hs-form-event:on-submission:success', lead);
+  window.addEventListener('message', function(e){ var d = e.data; if (d && d.type === 'hsFormCallback' && d.eventName === 'onFormSubmitted') lead(); });
+})();
+</script>
+
+<script>
+(function(){
+  var CFG = window.TV_CONFIG || {}, HS = CFG.hubspot || {}, CC = CFG.calcul || {};
+  var HS_REGION = HS.region || 'eu1', HS_PORTAL = HS.portalId || '145421861', HS_FORM = HS.formId || '079ed762-8b3e-400f-8242-d5c480381dfb';
+  var HS_SCRIPT = 'https://js-' + HS_REGION + '.hsforms.net/forms/embed/' + HS_PORTAL + '.js';
+  (function(f){ f.setAttribute('data-region', HS_REGION); f.setAttribute('data-portal-id', HS_PORTAL); f.setAttribute('data-form-id', HS_FORM); })(document.querySelector('.hs-form-frame'));
+  var LS_KEY = 'tv_sim_unlocked';
+
+  var s = { step:1, prix:2332, salaire:3000, tmi:11, duree:36, bk:'sal', unlocked:false };
+  try { s.unlocked = localStorage.getItem(LS_KEY) === '1'; } catch(e){}
+
+  var $ = function(id){ return document.getElementById(id); };
+  var fmt = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
+
+  function calc(){
+    var coeff = (CC.coeffDuree || {36:1, 24:1.25, 12:1.7})[s.duree] || 1;
+    var loyer = Math.round(s.prix * (+CC.tauxLoyer || 0.0335) * coeff);
+    var partSal = Math.round(loyer * 0.30);
+    var partEmp = Math.round(loyer * 0.70);
+    var ecoCot = Math.round(partSal * 0.23);
+    var ecoIR = Math.round((partSal - ecoCot) * (s.tmi/100) * 0.9);
+    var coutNetSal = Math.max(0, partSal - ecoCot - ecoIR);
+    var ecoSalPct = Math.round((ecoCot + ecoIR) / partSal * 100);
+    var reduIS = Math.round(partEmp * 0.25);
+    var deductIS = Math.round(partEmp * 0.25 * 0.25);
+    var coutNetEmp = Math.max(0, partEmp - reduIS - deductIS);
+    var ecoEmpPct = Math.round((reduIS + deductIS) / partEmp * 100);
+    var brut = loyer * s.duree;
+    var ecoSalT = (ecoCot + ecoIR) * s.duree;
+    var ecoEmpT = (reduIS + deductIS) * s.duree;
+    return { loyer:loyer, partSal:partSal, partEmp:partEmp, ecoCot:ecoCot, ecoIR:ecoIR, coutNetSal:coutNetSal, ecoSalPct:ecoSalPct,
+             reduIS:reduIS, deductIS:deductIS, coutNetEmp:coutNetEmp, ecoEmpPct:ecoEmpPct, brut:brut, ecoSalT:ecoSalT, ecoEmpT:ecoEmpT, saving:ecoSalT+ecoEmpT };
+  }
+
+  function rangeBg(v,mn,mx){ var p=(v-mn)/(mx-mn)*100; return 'linear-gradient(to right,#D4412B 0%,#D4412B '+p+'%,#E7E2D8 '+p+'%,#E7E2D8 100%)'; }
+  function pct(p,t){ return Math.min(100, Math.round(p/t*100)) + '%'; }
+
+  // ---------- Mesure d'audience ----------
+  var STEP_NAMES = {1:'prix', 2:'profil', 3:'formulaire', 4:'resultats'}, lastStep = 0;
+  function vals(){ var c = calc(); return { velo_prix:s.prix, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
+  function track(name, params){ if (window.tvTrack) window.tvTrack(name, params || {}); }
+
+  // Navigation : on ne peut jamais atteindre l'étape 4 sans avoir rempli le formulaire
+  function go(n){
+    if (n === 4 && !s.unlocked) n = 3;
+    if (n === 3 && s.unlocked) n = 4;
+    s.step = n;
+    if (n === 3) loadHubspot();
+    if (n !== lastStep) {
+      lastStep = n;
+      var ev = { step:n, step_name:STEP_NAMES[n] };
+      if (n >= 3) Object.assign(ev, vals());
+      track('sim_step_view', ev);
+    }
+    render();
+    var top = $('stepper').getBoundingClientRect().top + window.scrollY - 90;
+    if (window.scrollY > top) window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+
+  function renderStepper(c){
+    var tabs = [
+      [1,'Prix du vélo', fmt(s.prix)+' HT'],
+      [2,'Votre profil', fmt(s.salaire)+' · TMI '+s.tmi+'%'],
+      [3,'Coordonnées', s.unlocked ? 'Envoyées' : 'Requis'],
+      [4,'Résultats', s.unlocked ? c.coutNetSal+' €/mois' : 'Verrouillé']
+    ];
+    $('stepper').innerHTML = tabs.map(function(t){
+      var n=t[0], cls = s.step===n ? 'active' : ((n<s.step || (n===3 && s.unlocked)) ? 'done' : 'todo');
+      if (n===4 && !s.unlocked && s.step!==4) cls += ' locked';
+      var num = cls.indexOf('done')===0 ? '✓' : (n===4 && !s.unlocked ? '🔒' : n);
+      return '<button class="tab '+cls+'" data-go="'+n+'"><span class="n">'+num+'</span><span class="tx"><span class="l">'+t[1]+'</span><span class="v">'+t[2]+'</span></span></button>';
+    }).join('');
+  }
+
+  function render(){
+    var c = calc();
+    window.tvSimValues = vals();
+    renderStepper(c);
+    [1,2,3,4].forEach(function(n){ $('p'+n).classList.toggle('show', s.step===n); });
+
+    // étape 1
+    $('prixLabel').textContent = fmt(s.prix);
+    $('prix').value = s.prix;
+    $('prix').style.background = rangeBg(s.prix,600,4000);
+    $('presets').innerHTML = [[639,'VTC 639 €'],[1915,'VAE ville 1 915 €'],[2332,'VAE premium 2 332 €'],[3249,'Gravel élec. 3 249 €'],[3915,'VTT élec. 3 915 €']]
+      .map(function(p){ return '<button class="chip'+(s.prix===p[0]?' on':'')+'" data-prix="'+p[0]+'">'+p[1]+'</button>'; }).join('');
+
+    // étape 2
+    $('salaireLabel').textContent = fmt(s.salaire);
+    $('salaire').value = s.salaire;
+    $('salaire').style.background = rangeBg(s.salaire,1800,7000);
+    $('tmis').innerHTML = [0,11,30,41,45].map(function(v){ return '<button class="seg mono'+(s.tmi===v?' on':'')+'" style="min-width:46px;font-size:12px;font-weight:700" data-tmi="'+v+'">'+v+'%</button>'; }).join('');
+    $('durees').innerHTML = [12,24,36].map(function(d){ return [d, d===36 ? 'Recommandé' : '+'+Math.round(((CC.coeffDuree||{12:1.7,24:1.25,36:1})[d]||1)*100-100)+'% vs 36']; })
+      .map(function(d){ return '<button class="seg'+(s.duree===d[0]?' on':'')+'" data-duree="'+d[0]+'">'+d[0]+' mois<small>'+d[1]+'</small></button>'; }).join('');
+
+    // étape 3 (teaser flouté — valeurs factices tant que non débloqué)
+    $('teaseSal').textContent = '88 €';
+    $('teaseEmp').textContent = '88 €';
+
+    // étape 4 — n'est rempli que si débloqué
+    if (!s.unlocked) return;
+    $('bigSal').textContent = c.coutNetSal;
+    $('bigEmp').textContent = c.coutNetEmp;
+    $('ecoSalPct').textContent = c.ecoSalPct + "% d'économie";
+    $('ecoEmpPct').textContent = c.ecoEmpPct + "% d'économie";
+
+    var tabs = [['sal','Détail salarié'],['emp','Détail employeur'],['total','Bilan '+s.duree+' mois']];
+    $('bkTabs').innerHTML = tabs.map(function(t){ return '<button class="bk-tab'+(s.bk===t[0]?' on':'')+'" data-bk="'+t[0]+'">'+t[1]+'</button>'; }).join('');
+
+    var row = function(label, val, color, bar, small){
+      return '<div class="row"><div class="k'+(small?' sm':'')+'">'+label+'</div>'+
+        (bar ? '<div class="bar"><i style="background:'+bar[0]+';width:'+bar[1]+'"></i></div>' : '<div style="flex:1"></div>')+
+        '<div class="val" style="color:'+color+'">'+val+'</div></div>';
+    };
+    var tot = function(label,val){ return '<div class="tot"><span>'+label+'</span><span>'+val+'</span></div>'; };
+    var R='#D4412B', G='#1F7A45', Y='#C8960C', html='';
+    if (s.bk==='sal') html =
+      row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
+      row('Part salarié (30% HT)', c.partSal+' €/mois', R, [R,'100%']) +
+      row('Économie cotisations sociales', '− '+c.ecoCot+' €/mois', G, [G, pct(c.ecoCot,c.partSal)]) +
+      row('Économie impôt sur le revenu', '− '+c.ecoIR+' €/mois', G, [Y, pct(c.ecoIR,c.partSal)]) +
+      tot('Coût net réel / mois', c.coutNetSal+' €/mois');
+    else if (s.bk==='emp') html =
+      row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
+      row('Part employeur (70% HT)', c.partEmp+' €/mois', R, [R,'100%']) +
+      row('Réduction IS 25% (art. 220 CGI)', '− '+c.reduIS+' €/mois', G, [G, pct(c.reduIS,c.partEmp)]) +
+      row('Charges déductibles (IS 25%)', '− '+c.deductIS+' €/mois', G, [Y, pct(c.deductIS,c.partEmp)]) +
+      tot('Coût net réel / mois', c.coutNetEmp+' €/mois');
+    else html =
+      row('Loyers bruts cumulés', fmt(c.brut), R, [R,'100%']) +
+      row('Économies fiscales salarié', '− '+fmt(c.ecoSalT), G, [G, pct(c.ecoSalT,c.brut)]) +
+      row('Économies fiscales employeur', '− '+fmt(c.ecoEmpT), G, [Y, pct(c.ecoEmpT,c.brut)]) +
+      tot('Économie totale vs achat classique', fmt(c.saving));
+    $('bkBody').innerHTML = html;
+  }
+
+  // ---------- HubSpot ----------
+  function loadHubspot(){
+    if (document.getElementById('hs-embed-js')) return;
+    var sc = document.createElement('script');
+    sc.id = 'hs-embed-js';
+    sc.src = HS_SCRIPT;
+    sc.defer = true;
+    document.body.appendChild(sc);
+  }
+
+  // Le formulaire est prêt : on masque le message de chargement
+  window.addEventListener('hs-form-event:on-ready', function(){ $('hsLoading').style.display = 'none'; });
+  // Filet de sécurité si l'événement "ready" n'est pas émis
+  var mo = new MutationObserver(function(){
+    if (document.querySelector('.hs-form-frame iframe, .hs-form-frame form')) { $('hsLoading').style.display='none'; mo.disconnect(); }
+  });
+  mo.observe(document.querySelector('.hs-form-frame'), { childList:true, subtree:true });
+
+  function unlock(){
+    if (s.unlocked) return;
+    s.unlocked = true;
+    try { localStorage.setItem(LS_KEY,'1'); } catch(e){}
+    $('gateFormWrap').style.display = 'none';
+    $('gateOk').classList.add('show');
+    renderStepper(calc());
+    setTimeout(function(){ go(4); }, 1200);
+  }
+
+  // Nouveaux formulaires HubSpot (embed "hs-form-frame")
+  window.addEventListener('hs-form-event:on-submission:success', unlock);
+  // Anciens formulaires HubSpot (callback global via postMessage)
+  window.addEventListener('message', function(e){
+    var d = e.data;
+    if (d && d.type === 'hsFormCallback' && d.eventName === 'onFormSubmitted') unlock();
+  });
+
+  // ---------- Événements ----------
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-go],[data-prix],[data-tmi],[data-duree],[data-bk]');
+    if (!b) return;
+    if (b.dataset.go)    return go(+b.dataset.go);
+    if (b.dataset.prix)  s.prix = +b.dataset.prix;
+    if (b.dataset.tmi)   s.tmi = +b.dataset.tmi;
+    if (b.dataset.duree) s.duree = +b.dataset.duree;
+    if (b.dataset.bk)  { s.bk = b.dataset.bk; track('sim_detail_tab', { tab:s.bk }); }
+    render();
+  });
+  $('prix').addEventListener('input', function(e){ s.prix = +e.target.value; render(); });
+  $('salaire').addEventListener('input', function(e){ s.salaire = +e.target.value; render(); });
+
+  // Permet de lier directement : simulateur.html#resultats ou ?prix=1915
+  var q = new URLSearchParams(location.search);
+  if (q.get('prix')) s.prix = Math.min(4000, Math.max(600, +q.get('prix') || s.prix));
+
+  go(1);
+})();
+</script>
+</body>
+</html>

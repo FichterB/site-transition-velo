@@ -1,0 +1,65 @@
+# Déploiement du site Transition Vélo par FTP
+# - Push sur main        → préproduction (dossier FTP_DIR_PREPROD), suivi GA désactivé
+# - Lancement manuel     → préproduction ou production (onglet Actions > Déployer > Run workflow)
+#
+# Secrets à créer (Settings > Secrets and variables > Actions > Secrets) :
+#   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD
+# Variables à créer (même écran, onglet Variables) :
+#   FTP_DIR_PROD     ex. /www/          (dossier racine du site public, terminé par /)
+#   FTP_DIR_PREPROD  ex. /www/preprod/  (terminé par /)
+#   FTP_PROTOCOL     ftps (recommandé) ou ftp selon l'hébergeur — optionnel, ftps par défaut
+
+name: Déployer
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/**']
+  workflow_dispatch:
+    inputs:
+      cible:
+        description: 'Où déployer ?'
+        type: choice
+        options: [preprod, production]
+        default: preprod
+
+concurrency:
+  group: deploy-${{ github.event.inputs.cible || 'preprod' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.cible || 'preprod' }}
+    env:
+      CIBLE: ${{ github.event.inputs.cible || 'preprod' }}
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Vérifier la syntaxe de config.js
+        run: node --check site/config.js
+
+      - name: Préprod — couper Google Analytics et bloquer l'indexation
+        if: env.CIBLE == 'preprod'
+        run: |
+          sed -i "s/ga4Id: *'[^']*'/ga4Id: ''/" site/config.js
+          # robots.txt n'est lu qu'à la racine : on passe par un en-tête HTTP (hébergement Apache)
+          printf 'Header set X-Robots-Tag "noindex, nofollow"\n' > site/.htaccess
+
+      - name: Envoyer sur le FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          local-dir: ./site/
+          server-dir: ${{ env.CIBLE == 'production' && vars.FTP_DIR_PROD || vars.FTP_DIR_PREPROD }}
+          exclude: |
+            **/.git
+            **/.git/**
+            **/.gitignore
+            **/.github/**
+            **/node_modules/**
+            **/.DS_Store

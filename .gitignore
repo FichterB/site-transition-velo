@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+node_modules/
+.env
+*.log
+# fichier d'état du déploiement FTP (stocké sur le serveur)
+.ftp-deploy-sync-state.json
+# config locale de prévisualisation (chemin propre à chaque session)
+.claude/launch.json
