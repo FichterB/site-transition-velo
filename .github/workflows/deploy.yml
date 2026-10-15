@@ -42,7 +42,7 @@ jobs:
       CIBLE: ${{ github.event.inputs.cible || 'preprod' }}
     steps:
       - name: Récupérer le code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Vérifier la syntaxe de config.js
         run: node --check site/config.js
