@@ -19,7 +19,7 @@ site/                 ← tout ce qui est publié sur le FTP (et rien d'autre)
   images/             logos SVG + photos
 ressources/           sources non publiées : logo .ai, fiches PDF, photos HD
 docs/                 documentation détaillée (déploiement, règles métier, analytics)
-.github/workflows/    déploiement automatique par FTP
+.github/workflows/    déploiement automatique par SFTP
 ```
 
 ## Les deux pages, deux techniques différentes

@@ -23,7 +23,7 @@ Claude lit automatiquement `CLAUDE.md` à chaque session : il y trouve le contex
 | `docs/REGLES-METIER.md` | règles fiscales (VAE vs speedbike, BOSS, IS) et formule du simulateur |
 | `docs/SUIVI-ANALYTICS.md` | événements Google Analytics et réglages GA4 |
 | `CLAUDE.md` | contexte pour Claude |
-| `.github/workflows/deploy.yml` | déploiement automatique par FTP |
+| `.github/workflows/deploy.yml` | déploiement automatique par SFTP |
 
 ## Exemples de demandes à faire dans l'onglet Code
 

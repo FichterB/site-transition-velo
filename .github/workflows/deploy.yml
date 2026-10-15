@@ -1,13 +1,12 @@
-# Déploiement du site Transition Vélo par FTP
-# - Push sur main        → préproduction (dossier FTP_DIR_PREPROD), suivi GA désactivé
+# Déploiement du site Transition Vélo par SFTP (hébergement OVH mutualisé)
+# - Push sur main        → préproduction (dossier www/preprod/), suivi GA désactivé
 # - Lancement manuel     → préproduction ou production (onglet Actions > Déployer > Run workflow)
 #
-# Secrets à créer (Settings > Secrets and variables > Actions > Secrets) :
-#   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD
-# Variables à créer (même écran, onglet Variables) :
-#   FTP_DIR_PROD     ex. /www/          (dossier racine du site public, terminé par /)
-#   FTP_DIR_PREPROD  ex. /www/preprod/  (terminé par /)
-#   FTP_PROTOCOL     ftps (recommandé) ou ftp selon l'hébergeur — optionnel, ftps par défaut
+# Seul secret à créer (Settings > Secrets and variables > Actions > Secrets) :
+#   FTP_PASSWORD   mot de passe SFTP OVH
+# Le reste des réglages est dans le bloc env ci-dessous.
+#
+# Les fichiers sont envoyés et remplacés, jamais supprimés sur le serveur.
 
 name: Déployer
 
@@ -26,6 +25,14 @@ on:
 concurrency:
   group: deploy-${{ github.event.inputs.cible || 'preprod' }}
   cancel-in-progress: false
+
+env:
+  SFTP_HOST: ftp.cluster029.hosting.ovh.net
+  SFTP_PORT: 22
+  SFTP_USER: xszitdx
+  # dossiers relatifs au dossier personnel du compte OVH
+  DIR_PROD: www/
+  DIR_PREPROD: www/preprod/
 
 jobs:
   deploy:
@@ -47,19 +54,23 @@ jobs:
           # robots.txt n'est lu qu'à la racine : on passe par un en-tête HTTP (hébergement Apache)
           printf 'Header set X-Robots-Tag "noindex, nofollow"\n' > site/.htaccess
 
-      - name: Envoyer sur le FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
-          local-dir: ./site/
-          server-dir: ${{ env.CIBLE == 'production' && vars.FTP_DIR_PROD || vars.FTP_DIR_PREPROD }}
-          exclude: |
-            **/.git
-            **/.git/**
-            **/.gitignore
-            **/.github/**
-            **/node_modules/**
-            **/.DS_Store
+      - name: Installer lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Envoyer en SFTP
+        env:
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          if [ -z "$LFTP_PASSWORD" ]; then
+            echo "::error::Le secret FTP_PASSWORD n'est pas défini (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          if [ "$CIBLE" = "production" ]; then DEST="$DIR_PROD"; else DEST="$DIR_PREPROD"; fi
+          echo "Envoi de site/ vers $DEST"
+          lftp -c "
+            set sftp:auto-confirm yes
+            set net:max-retries 2
+            set net:timeout 30
+            open --env-password -u $SFTP_USER -p $SFTP_PORT sftp://$SFTP_HOST
+            mirror --reverse --verbose --exclude-glob .DS_Store site/ $DEST
+          "

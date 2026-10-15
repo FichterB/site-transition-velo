@@ -22,24 +22,25 @@
 Créer un dépôt **privé** (ex. `transition-velo-site`), puis depuis l'onglet Code, demander à Claude :
 « Initialise git dans ce dossier, fais un premier commit et pousse sur github.com/<compte>/transition-velo-site ».
 
-### 2. Accès FTP (secrets)
-GitHub → dépôt → **Settings → Secrets and variables → Actions**.
+### 2. Accès SFTP
+Hébergement OVH mutualisé, connexion **SFTP** (port 22). Serveur, identifiant et dossiers sont écrits dans `.github/workflows/deploy.yml` (bloc `env`) :
 
-Onglet **Secrets** :
+| Réglage | Valeur |
+|---|---|
+| Serveur | `ftp.cluster029.hosting.ovh.net` (port 22) |
+| Identifiant | `xszitdx` |
+| Dossier production | `www/` |
+| Dossier préproduction | `www/preprod/` |
+
+Seul le mot de passe est à saisir dans GitHub → dépôt → **Settings → Secrets and variables → Actions** → onglet **Secrets** → **New repository secret** :
+
 | Nom | Valeur |
 |---|---|
-| `FTP_SERVER` | adresse du serveur FTP (ex. `ftp.cluster0xx.hosting.ovh.net`) |
-| `FTP_USERNAME` | identifiant FTP |
-| `FTP_PASSWORD` | mot de passe FTP |
-
-Onglet **Variables** :
-| Nom | Valeur |
-|---|---|
-| `FTP_DIR_PROD` | dossier du site public, terminé par `/` (ex. `/www/`) |
-| `FTP_DIR_PREPROD` | dossier de test, terminé par `/` (ex. `/www/preprod/`) |
-| `FTP_PROTOCOL` | `ftps` (recommandé) ou `ftp` si l'hébergeur ne gère pas le chiffrement |
+| `FTP_PASSWORD` | mot de passe SFTP OVH |
 
 Les mots de passe ne doivent **jamais** être écrits dans un fichier du dépôt.
+
+L'envoi remplace les fichiers du même nom mais **ne supprime rien** sur le serveur.
 
 ### 3. Protéger la production (recommandé)
 Settings → **Environments** → `production` → cocher **Required reviewers** et s'ajouter. Chaque mise en production demandera alors une validation.
