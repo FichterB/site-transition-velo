@@ -47,7 +47,8 @@ L'envoi remplace les fichiers du même nom mais **ne supprime rien** sur le serv
 
 1. Missive → Préférences → onglet **API** → **Create a new token** (nécessite le forfait Productive).
 2. GitHub → Settings → Secrets and variables → Actions → **Secrets** : `MISSIVE_TOKEN` = ce jeton.
-3. (Recommandé) Onglet **Variables** : `MISSIVE_ORGANIZATION` = l'ID de l'organisation Missive, pour que la conversation soit visible de toute l'équipe. Sans elle, la conversation n'est visible que du propriétaire du jeton.
+3. (Recommandé) Onglet **Variables** : `MISSIVE_CONVERSATION` = l'ID d'une conversation Missive partagée avec l'équipe, où poster les récaps. Pour le trouver : ouvrir la conversation, menu « … » → **Copier le lien** ; l'ID est la suite de lettres, chiffres et tirets à la fin du lien.
+   Sans cette variable, Missive crée sa propre conversation « Mises en production — transitionvelo.net », visible seulement du propriétaire du jeton (sauf si `MISSIVE_ORGANIZATION` est renseignée).
 
 Sans `MISSIVE_TOKEN`, l'étape est simplement sautée. Un problème côté Missive ne fait jamais échouer la mise en production.
 
