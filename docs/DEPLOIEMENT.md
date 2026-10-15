@@ -50,6 +50,8 @@ L'envoi remplace les fichiers du même nom mais **ne supprime rien** sur le serv
 3. (Recommandé) Onglet **Variables** : `MISSIVE_CONVERSATION` = l'ID d'une conversation Missive partagée avec l'équipe, où poster les récaps. Pour le trouver : ouvrir la conversation, menu « … » → **Copier le lien** ; l'ID est la suite de lettres, chiffres et tirets à la fin du lien.
    Sans cette variable, Missive crée sa propre conversation « Mises en production — transitionvelo.net », visible seulement du propriétaire du jeton (sauf si `MISSIVE_ORGANIZATION` est renseignée).
 
+Avec `MISSIVE_CONVERSATION`, les récaps précédents sont **supprimés** avant de poster le nouveau : la conversation ne garde que le dernier. Seuls les posts signés « Déploiement site » sont supprimés (jamais les emails ni les commentaires). Dans une conversation partagée avec l'organisation, Missive n'autorise cette suppression que si le jeton appartient à un **admin** ; sinon le nouveau récap est quand même posté, à la suite des anciens.
+
 Sans `MISSIVE_TOKEN`, l'étape est simplement sautée. Un problème côté Missive ne fait jamais échouer la mise en production.
 
 La version en ligne est marquée par l'étiquette git `production`, déplacée après chaque mise en production réussie : c'est elle qui sert à calculer « les changements depuis la dernière fois ».
