@@ -1,6 +1,7 @@
 # Déploiement du site Transition Vélo par SFTP (hébergement OVH mutualisé)
-# - Push sur main        → préproduction (dossier www/preprod/), suivi GA désactivé
-# - Lancement manuel     → préproduction ou production (onglet Actions > Déployer > Run workflow)
+# - Push sur main         → préproduction (dossier www/preprod/), GA4 et Clarity coupés
+# - Merge main → production (pull request sur GitHub) → production (dossier www/)
+# - Lancement manuel      → redéployer la préprod (branche choisie) ou la production (branche production)
 #
 # Secrets (Settings > Secrets and variables > Actions > Secrets) :
 #   FTP_PASSWORD     mot de passe SFTP OVH (obligatoire)
@@ -16,7 +17,7 @@ name: Déployer
 
 on:
   push:
-    branches: [main]
+    branches: [main, production]
     paths: ['site/**']
   workflow_dispatch:
     inputs:
@@ -27,7 +28,7 @@ on:
         default: preprod
 
 concurrency:
-  group: deploy-${{ github.event.inputs.cible || 'preprod' }}
+  group: deploy-${{ github.event_name == 'workflow_dispatch' && github.event.inputs.cible || (github.ref_name == 'production' && 'production' || 'preprod') }}
   cancel-in-progress: false
 
 env:
@@ -41,16 +42,17 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write   # pour déplacer l'étiquette git « production » après chaque mise en production
-    environment: ${{ github.event.inputs.cible || 'preprod' }}
+    # Cible : production pour la branche production (ou un lancement manuel « production »), préprod sinon
+    environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.cible || (github.ref_name == 'production' && 'production' || 'preprod') }}
     env:
-      CIBLE: ${{ github.event.inputs.cible || 'preprod' }}
+      CIBLE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.cible || (github.ref_name == 'production' && 'production' || 'preprod') }}
     steps:
       - name: Récupérer le code
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0   # historique complet : sert au récap des changements depuis la dernière production
+          # lancement manuel « production » : toujours la branche production, quelle que soit la branche choisie
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.cible == 'production' && 'production' || '' }}
+          fetch-depth: 0   # historique complet : sert au récap des changements
 
       - name: Vérifier la syntaxe de config.js
         run: node --check site/config.js
@@ -84,18 +86,22 @@ jobs:
           "
 
       # ---------- Récap de mise en production (production uniquement) ----------
-      # L'étiquette git « production » marque la version en ligne : le récap liste les commits depuis la précédente.
+      # Le récap liste les commits apportés par le merge sur la branche production.
       - name: Production — préparer le récap des changements
         if: env.CIBLE == 'production'
         id: recap
+        env:
+          AVANT: ${{ github.event.before }}
         run: |
-          if git rev-parse -q --verify refs/tags/production >/dev/null; then
-            PREV=$(git rev-parse --short production)
-            LOG=$(git log --no-merges --format='- %s' production..HEAD)
-            DEPUIS="depuis la mise en production précédente ($PREV)"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            LOG="- Aucun nouveau changement (redéploiement manuel de la version en ligne)"
+            DEPUIS="dans ce déploiement"
+          elif [ -n "$AVANT" ] && ! echo "$AVANT" | grep -q '^0*$' && git cat-file -e "$AVANT" 2>/dev/null; then
+            LOG=$(git log --no-merges --format='- %s' "$AVANT..HEAD")
+            DEPUIS="depuis la mise en production précédente ($(git rev-parse --short "$AVANT"))"
           else
             LOG=$(git log --no-merges --format='- %s' -n 15)
-            DEPUIS="(première mise en production suivie : 15 derniers changements)"
+            DEPUIS="(15 derniers changements)"
           fi
           [ -z "$LOG" ] && LOG="- Aucun nouveau changement (redéploiement de la même version)"
           {
@@ -158,9 +164,3 @@ jobs:
           curl -sS --fail-with-body -X POST "$API/posts" \
             -H "$AUTH" -H "Content-Type: application/json" \
             --data @payload.json
-
-      - name: Production — marquer la version en ligne
-        if: env.CIBLE == 'production'
-        run: |
-          git tag -f production
-          git push -f origin refs/tags/production

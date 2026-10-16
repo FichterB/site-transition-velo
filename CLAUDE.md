@@ -12,22 +12,27 @@ Le site sert à générer des prospects : le visiteur simule le coût d'un vélo
 
 ```
 site/                 ← tout ce qui est publié sur le FTP (et rien d'autre)
-  index.html          page d'accueil complète (avantages, simulateur, vélos, CGV, contact)
+  index.html          page d'accueil (service, étapes, fiscalité, catalogue de vélos, atelier, contact, conditions)
   simulateur.html     simulateur seul, formulaire HubSpot obligatoire avant les résultats
   config.js           réglages modifiables sans toucher au HTML (GA4, HubSpot, taux de loyer, part salarié)
-  simulateur-calcul.js  formule du simulateur, partagée par les deux pages (window.TV_SIM)
+  simulateur-calcul.js  formule du simulateur + liste des vélos, partagées par les deux pages (window.TV_SIM)
   tracking.js         bandeau cookies + GA4 + Clarity, partagé par les deux pages (window.tvTrack)
-  support.js          moteur de rendu de index.html (ne pas modifier)
   images/             logos SVG + photos
 ressources/           sources non publiées : logo .ai, fiches PDF, photos HD
 docs/                 documentation détaillée (déploiement, règles métier, analytics)
 .github/workflows/    déploiement automatique par SFTP
 ```
 
-## Les deux pages, deux techniques différentes
+## Les deux pages
 
-- **`simulateur.html`** : HTML + CSS + JavaScript classique, autonome. Tout le code est dans le fichier (logo SVG inline compris). Dépend de `config.js`, `simulateur-calcul.js`, du formulaire HubSpot et de Google Fonts.
-- **`index.html`** : écrite avec un framework de maquettage (balises `<x-dc>`, `<sc-for>`, `<sc-if>`, `{{ variables }}`, classe `Component extends DCLogic` dans `<script type="text/x-dc">`). Elle **ne s'affiche pas sans `support.js`**. Respecter cette syntaxe quand on la modifie, ou proposer de la réécrire en HTML classique comme le simulateur (sujet en attente, à valider avec l'utilisateur).
+Les deux pages sont en HTML + CSS + JavaScript classique, sans framework ni étape de construction. Elles dépendent de `config.js`, `simulateur-calcul.js`, `tracking.js` et de Google Fonts (plus le formulaire HubSpot pour le simulateur).
+
+- **`index.html`** : présentation de l'offre. Pas de simulateur intégré : le catalogue permet d'ajouter un ou plusieurs vélos, puis « Simuler ce choix » ouvre `simulateur.html?velos=2,2,5` (index dans la liste des vélos).
+- **`simulateur.html`** : deux parcours.
+  - **Arrivée directe** (pub, email, QR code) : 4 étapes (vélos, profil, formulaire HubSpot, résultats) ; les résultats ne s'affichent qu'après l'envoi du formulaire.
+  - **Venu de l'accueil** (marque `tv_depuis_site` posée par `index.html` dans `sessionStorage`) : 3 étapes, résultats affichés directement, formulaire HubSpot proposé sous les résultats (« Recevoir cette simulation »). Paramètres d'adresse acceptés : `?velos=…` (vélos choisis sur l'accueil) et `?prix=…` (prix libre).
+
+Style « éditorial » voulu, pour éviter le rendu générique type IA : pas de cartes à ombre, pas d'icônes dans des carrés colorés, pas de bordure gauche colorée, pas de pastilles, pas de petits sur-titres en capitales au-dessus de chaque section, pas de chiffres non sourcés. Préférer filets fins, listes, vraies photos, texte concret.
 
 Les deux pages lisent `window.TV_CONFIG` (défini par `config.js`). **Le calcul du simulateur est dans `simulateur-calcul.js`, commun aux deux pages** : toute modification de formule se fait là, une seule fois. Seul l'affichage est propre à chaque page.
 
@@ -61,8 +66,9 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 ## Déploiement (détails : `docs/DEPLOIEMENT.md`)
 
 - Site : **https://transitionvelo.net** — préprod : https://transitionvelo.net/preprod/ (hébergement OVH, SFTP).
-- Push sur `main` → déploiement automatique en **préproduction** (`/preprod/`), avec le suivi GA désactivé.
-- Mise en **production** : manuelle, depuis l'onglet Actions de GitHub (« Déployer » → cible `production`), après vérification de la préprod.
+- Deux branches : `main` (= préprod) et `production` (= site en ligne). Ne jamais pousser directement sur `production`.
+- Push sur `main` → déploiement automatique en **préproduction** (`/preprod/`), avec GA4 et Clarity coupés.
+- Mise en **production** : l'utilisateur ouvre une pull request `main` → `production` sur GitHub et la fusionne (lien : https://github.com/FichterB/site-transition-velo/compare/production...main) ; le déploiement et le récap Missive suivent automatiquement.
 - Seul le dossier `site/` est envoyé sur le FTP.
 
 ## Avant chaque commit
@@ -74,7 +80,8 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 
 ## Chantiers en attente
 
-- Mettre la mention « Offre réservée aux vélos et VAE (25 km/h). Speedbikes non éligibles aux avantages fiscaux » sur les deux pages (proposée, pas encore validée).
-- Le simulateur de `index.html` affiche les résultats sans formulaire : faut-il le rediriger vers `simulateur.html` ?
+- Mention speedbikes : présente sur l'accueil (section fiscalité), à ajouter sur le simulateur.
+- Email de contact : `adrien@transitionvelo.fr` ne peut rien recevoir (domaine inexistant) ; l'accueil affiche `adrien@transitionvelo.net` (à confirmer) ; le simulateur affiche encore l'ancien.
+- Photos manquantes : VAE premium et Gravel électrique (la roue du logo s'affiche à la place).
 - Transmettre les valeurs de simulation à HubSpot dans des champs cachés (besoin des noms de propriétés HubSpot).
 - Fiche `ressources/fiche_technique_roadster4_touring_hs.pdf` : l'en-tête du tableau est illisible (texte sombre sur fond sombre) et la photo montre peut-être une autre version (courroie au lieu du dérailleur XT annoncé).

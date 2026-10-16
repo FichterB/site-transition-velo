@@ -3,17 +3,26 @@
 ## Le circuit
 
 ```
- Onglet </> Code (Mac)  ──git push──►  GitHub (dépôt privé)
+ Onglet </> Code (Mac)  ──git push──►  branche main
                                            │  Action « Déployer » (automatique)
                                            ▼
-                                   /preprod/  (test, non indexé, sans Google Analytics)
+                                   /preprod/  (test, non indexé, sans GA4 ni Clarity)
                                            │  vérification manuelle
-                                           ▼  Action « Déployer » → production (manuel)
+                                           ▼  pull request main → production, puis « Merge »
+                                   branche production
+                                           │  Action « Déployer » (automatique) + récap Missive
+                                           ▼
                                    Site public
 ```
 
+- Deux branches : `main` (travail en cours, = préprod) et `production` (= ce qui est en ligne).
 - Un **push sur `main`** qui touche au dossier `site/` déploie automatiquement en préproduction.
-- La **production** se déploie à la main : GitHub → onglet **Actions** → **Déployer** → **Run workflow** → cible `production`.
+- La **production** ne bouge que par un **merge de `main` dans `production`** :
+  1. Ouvrir https://github.com/FichterB/site-transition-velo/compare/production...main
+  2. **Create pull request** : la page liste les commits et les fichiers qui vont partir en ligne.
+  3. **Merge pull request** → le déploiement en production démarre tout seul.
+- Ce qui est poussé sur `main` après la vérification de la préprod ne part pas en production tant que la pull request n'est pas créée et fusionnée : on voit toujours exactement ce qui part.
+- Redéployer la version en ligne sans changement : Actions → **Déployer** → **Run workflow** → cible `production` (utilise toujours la branche `production`).
 - Seul le contenu de `site/` est envoyé. `docs/`, `ressources/` et les fichiers `.md` ne partent jamais sur le serveur.
 
 ## Mise en place (une seule fois)
@@ -54,9 +63,11 @@ Avec `MISSIVE_CONVERSATION`, les récaps précédents sont **supprimés** avant 
 
 Sans `MISSIVE_TOKEN`, l'étape est simplement sautée. Un problème côté Missive ne fait jamais échouer la mise en production.
 
-La version en ligne est marquée par l'étiquette git `production`, déplacée après chaque mise en production réussie : c'est elle qui sert à calculer « les changements depuis la dernière fois ».
+Le récap liste les commits apportés par le merge dans `production` (« les changements depuis la dernière fois »).
 
 ### 4. Protéger la production (recommandé)
+Settings → **Branches** → **Add branch ruleset** (ou *Add rule*) sur `production` : cocher **Require a pull request before merging** et interdire les suppressions / force push. Ainsi personne (ni Claude) ne peut pousser directement en production.
+
 Settings → **Environments** → `production` → cocher **Required reviewers** et s'ajouter. Chaque mise en production demandera alors une validation.
 
 ### 5. Premier déploiement
@@ -67,7 +78,7 @@ Lancer d'abord l'action en préprod et vérifier `https://transitionvelo.net/pre
 ## Checklist de vérification en préprod
 
 - [ ] `simulateur.html` : les 4 étapes s'enchaînent, le formulaire HubSpot s'affiche, les résultats apparaissent après envoi
-- [ ] `index.html` : la page s'affiche (sinon `support.js` manque), le bouton « Ouvrir le formulaire » fonctionne
+- [ ] `index.html` : la page s'affiche, « Ajouter » sur un vélo puis « Simuler ce choix » ouvre le simulateur avec ces vélos
 - [ ] Logo net en haut et en pied de page, favicon dans l'onglet
 - [ ] Affichage correct sur téléphone
 - [ ] Pas d'erreur dans la console du navigateur

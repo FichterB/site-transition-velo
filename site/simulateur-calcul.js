@@ -13,13 +13,17 @@ window.TV_SIM = (function(){
   var PRIX_MIN = 600, PRIX_MAX = +CC.prixMax || 8000;
 
   // Vélos proposés en raccourci : chaque clic en ajoute un (le même plusieurs fois possible), leurs prix s'additionnent
+  // Liste unique, utilisée par le simulateur (boutons) et l'accueil (catalogue). img = photo dans images/, ou null.
   var VELOS = [
-    { prix: 639,  nom: 'VTC' },
-    { prix: 1915, nom: 'VAE ville' },
-    { prix: 2332, nom: 'VAE premium' },
-    { prix: 3249, nom: 'Gravel élec.' },
-    { prix: 3915, nom: 'VTT élec.' }
+    { prix: 639,  nom: 'VTC',          titre: 'VTC confort',            cat: 'Vélo de ville',            img: 'velo-vtc.png',    usage: 'Pour démarrer à petit prix, trajets jusqu\u2019à 15 km.' },
+    { prix: 832,  nom: 'Gravel',       titre: 'Gravel route et chemin', cat: 'Gravel',                   img: 'velo-gravel.png', usage: 'Routes et chemins, pour les reliefs ardéchois.' },
+    { prix: 1915, nom: 'VAE ville',    titre: 'VAE urbain',             cat: 'Vélo électrique de ville', img: 'velo-ville.png',  usage: 'Trajets domicile-travail, batterie longue portée, porte-bagages.' },
+    { prix: 2332, nom: 'VAE premium',  titre: 'VAE premium',            cat: 'Vélo électrique de ville', img: null,              usage: 'Vélo électrique haut de gamme pour les trajets quotidiens.', defaut: true },
+    { prix: 3249, nom: 'Gravel élec.', titre: 'Gravel électrique',      cat: 'Gravel électrique',        img: null,              usage: 'Gravel à assistance électrique, routes et chemins.' },
+    { prix: 3915, nom: 'VTT élec.',    titre: 'VAE tout-terrain',       cat: 'VTT électrique',           img: 'velo-vtt.png',    usage: 'Salariés en zone rurale ou à fort dénivelé.' },
+    { prix: 3915, nom: 'Cargo élec.',  titre: 'Cargo électrique',       cat: 'Vélo cargo électrique',    img: 'velo-cargo.png',  usage: 'Transport de matériel : artisans, commerces, livraisons.' }
   ];
+  var VELO_DEFAUT = VELOS.findIndex(function(v){ return v.defaut; });
 
   /* s = { prix, tmi, duree, part }  (part = % du loyer payé par le salarié) */
   function calc(s){
@@ -68,10 +72,42 @@ window.TV_SIM = (function(){
     return sel.length > 1 ? sel.length + ' vélos · ' + t : t;
   }
   function borner(prix){ return Math.min(PRIX_MAX, Math.max(PRIX_MIN, prix)); }
+  // Ligne de la liste des vélos (accueil et simulateur) : photo, description, loyer, boutons Ajouter / − n +.
+  // Les pages fournissent le style (classes .bike, .pic, .qty…) et écoutent les clics sur [data-plus] / [data-moins].
+  function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+  function eur(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; }
+  function ligneVelo(i, sel){
+    var v = VELOS[i], n = quantite(sel, i), plein = horsLimite(sel, i);
+    var loyer = calc({ prix: v.prix, tmi: 0, duree: 36, part: 0 }).loyer;
+    var pic = v.img ? '<img src="images/' + v.img + '" alt="' + esc(v.titre) + '" loading="lazy">' : '<img class="wheel" src="images/favicon.svg" alt="">';
+    var qty = n
+      ? '<button type="button" class="pm" data-moins="' + i + '" aria-label="Retirer un ' + esc(v.titre) + '">−</button><span class="n">' + n + '</span>' +
+        '<button type="button" class="pm" data-plus="' + i + '" aria-label="Ajouter un ' + esc(v.titre) + '"' + (plein ? ' disabled' : '') + '>+</button>'
+      : '<button type="button" class="add" data-plus="' + i + '"' + (plein ? ' disabled' : '') + '>Ajouter</button>';
+    return '<li class="bike' + (n ? ' on' : '') + '" data-bike="' + esc(v.titre) + '" data-bike-prix="' + v.prix + '">' +
+      '<div class="pic">' + pic + '</div>' +
+      '<div><div class="cat">' + esc(v.cat) + '</div><h3>' + esc(v.titre) + '</h3><p>' + esc(v.usage) + '</p></div>' +
+      '<p class="loyer">dès <b>' + loyer + ' €</b> HT/mois<br><small>vélo ' + eur(v.prix) + ' HT</small></p>' +
+      '<div class="qty">' + qty + '</div></li>';
+  }
+
+  // Sélection transmise dans l'adresse : simulateur.html?velos=2,2,5 (index dans VELOS)
+  function lireSelection(texte){
+    var sel = [];
+    String(texte || '').split(',').forEach(function(t){
+      var i = parseInt(t, 10);
+      if (i >= 0 && i < VELOS.length) { var n = ajouter(sel, i); if (n) sel = n; }
+    });
+    return sel;
+  }
 
   return {
     calc: calc,
     velos: VELOS,
+    ligneVelo: ligneVelo,
+    eur: eur,
+    veloDefaut: VELO_DEFAUT,
+    lireSelection: lireSelection,
     prixMin: PRIX_MIN,
     prixMax: PRIX_MAX,
     total: total,
