@@ -107,12 +107,13 @@
   .choix .resume{font-weight:700}
   .choix .resume small{display:block;font-weight:400;color:var(--muted);font-size:14px}
   .bikes-foot{font-size:14px;color:var(--soft);margin-top:20px}
-  .marques{display:grid;grid-template-columns:auto 1fr;gap:12px 40px;align-items:baseline;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
+  .marques{display:grid;grid-template-columns:auto 1fr;gap:12px 40px;align-items:center;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
   .marques h3{font-size:15px;color:var(--muted);font-weight:600;margin:0}
-  .marques ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 40px}
-  .marques li{font-size:clamp(20px,2.4vw,28px);font-weight:700;letter-spacing:-.01em}
-  .marques li small{display:block;font-size:13px;font-weight:500;color:var(--soft);letter-spacing:0}
-  .marques li.vedette{color:var(--red)}
+  .marques ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:20px 56px}
+  .marques img{display:block;width:auto;mix-blend-mode:multiply}   /* fond blanc des logos fondu dans la page */
+  .marques .moustache{height:46px}
+  .marques .kalkhoff{height:22px}
+  .marques .riese{height:20px}
   @media (max-width:760px){ .marques{grid-template-columns:1fr} }
 
   /* Atelier */
@@ -122,12 +123,14 @@
 
   /* Témoignage */
   .temoin{background:var(--cream)}
-  .temoin figure{margin:0;max-width:820px}
-  .temoin blockquote{margin:0;font-size:clamp(20px,2.2vw,26px);line-height:1.45;font-weight:500}
-  .temoin blockquote::before{content:"«";display:block;font-family:'Anton',sans-serif;color:var(--red);font-size:64px;line-height:.8;margin-bottom:8px}
-  .temoin figcaption{display:flex;align-items:center;gap:14px;margin-top:24px;color:var(--muted);font-size:15px}
-  .temoin figcaption b{color:var(--ink)}
-  .temoin figcaption img{width:52px;height:52px;border-radius:50%;object-fit:cover}
+  .temoin{padding:64px 0}
+  .temoin figure{margin:0;display:grid;grid-template-columns:170px 1fr;gap:40px;align-items:start;max-width:900px}
+  .temoin .logo-client{width:170px;height:auto;mix-blend-mode:multiply}
+  .temoin blockquote{margin:0;font-size:17px;line-height:1.6;color:var(--ink)}
+  .temoin blockquote::before{content:"«";display:block;font-family:'Anton',sans-serif;color:var(--red);font-size:40px;line-height:.8;margin-bottom:6px}
+  .temoin .cap{margin:14px 0 0;color:var(--muted);font-size:14px}
+  .temoin .cap b{color:var(--ink)}
+  @media (max-width:760px){ .temoin figure{grid-template-columns:1fr;gap:20px} .temoin .logo-client{width:130px} }
 
   /* Contact */
   .contact{background:var(--ink);color:#fff}
@@ -288,9 +291,9 @@
       <div class="marques">
         <h3>Nos marques</h3>
         <ul>
-          <li class="vedette">Moustache<small>vélos électriques, France</small></li>
-          <li>Kalkhoff<small>Allemagne</small></li>
-          <li>Riese &amp; Müller<small>Allemagne</small></li>
+          <li><img class="moustache" src="images/marque-moustache.png" alt="Moustache Bikes" loading="lazy"></li>
+          <li><img class="kalkhoff" src="images/marque-kalkhoff.png" alt="Kalkhoff" loading="lazy"></li>
+          <li><img class="riese" src="images/marque-riese-muller.jpg" alt="Riese &amp; Müller" loading="lazy"></li>
         </ul>
       </div>
     </div>
@@ -317,8 +320,11 @@
   <section class="temoin" data-track-section="temoignage">
     <div class="wrap">
       <figure>
+        <img class="logo-client" src="images/client-honexia.webp" alt="Honexia" loading="lazy">
+        <div>
         <blockquote>Nous sommes ravis de notre expérience avec Cyclable à Saint-Péray ! Nous louons un vélo électrique chaque mois pour notre agence Honexia, une solution idéale pour nos nombreux petits déplacements chez nos partenaires bancaires, qui devenaient compliqués à effectuer en voiture au quotidien. Une équipe accueillante et un service au top ! Merci à eux, nous recommandons avec plaisir !</blockquote>
-        <figcaption><span><b>Honexia</b> · location d'un vélo électrique</span></figcaption>
+        <p class="cap"><b>Honexia</b> · location d'un vélo électrique</p>
+        </div>
       </figure>
     </div>
   </section>
