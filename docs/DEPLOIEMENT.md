@@ -92,4 +92,4 @@ Ou sur GitHub : Actions → un ancien déploiement réussi → **Re-run jobs**.
 
 ## Cache navigateur
 
-Après une mise à jour de `config.js`, certains visiteurs peuvent garder l'ancienne version quelques heures. Pour forcer le rechargement, changer la référence dans les deux pages : `config.js?v=2`, `config.js?v=3`, etc.
+Après une mise à jour de `config.js`, `simulateur-calcul.js` ou `tracking.js`, les navigateurs peuvent garder l'ancienne version. Les deux pages les chargent avec un numéro de version (`config.js?v=20261020`) : le changer à chaque modification de ces fichiers force le rechargement.

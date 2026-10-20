@@ -11,6 +11,9 @@ window.TV_SIM = (function(){
   var COEFF = CC.coeffDuree || { 12: 1.7, 24: 1.25, 36: 1 };
   var TAUX = +CC.tauxLoyer || 0.0335;
   var PRIX_MIN = 600, PRIX_MAX = +CC.prixMax || 8000;
+  var FIN = CC.finDeContrat || {};
+  var VR = FIN.valeurResiduelle || { 12: 0.5, 24: 0.25, 36: 0.1 };
+  var REVENTE = FIN.revente != null ? +FIN.revente : 0.3;
 
   // Vélos proposés en raccourci : chaque clic en ajoute un (le même plusieurs fois possible), leurs prix s'additionnent
   // Liste unique, utilisée par le simulateur (boutons) et l'accueil (catalogue). img = photo dans images/, ou null.
@@ -41,7 +44,15 @@ window.TV_SIM = (function(){
     var brut = loyer * s.duree;
     var ecoSalT = (ecoCot + ecoIR) * s.duree;
     var ecoEmpT = (reduIS + deductIS) * s.duree;
-    return { loyer:loyer, partSal:partSal, partEmp:partEmp, ecoCot:ecoCot, ecoIR:ecoIR, coutNetSal:coutNetSal, ecoSalPct:ecoSalPct,
+    // Fin de contrat : le salarié rachète le vélo à la valeur résiduelle, puis le revend (estimation)
+    var rachat = Math.round(s.prix * (VR[s.duree] || 0));
+    var revente = Math.round(s.prix * REVENTE);
+    var payeSal = coutNetSal * s.duree;
+    var resteSal = payeSal + rachat - revente;
+    var finUtile = revente > rachat;   // la revente ne rapporte rien si elle vaut moins que le rachat (contrats courts)
+    return { rachat:rachat, revente:revente, payeSal:payeSal, resteSal:resteSal, finUtile:finUtile,
+             vrPct:Math.round((VR[s.duree] || 0) * 100), reventePct:Math.round(REVENTE * 100),
+             loyer:loyer, partSal:partSal, partEmp:partEmp, ecoCot:ecoCot, ecoIR:ecoIR, coutNetSal:coutNetSal, ecoSalPct:ecoSalPct,
              reduIS:reduIS, deductIS:deductIS, coutNetEmp:coutNetEmp, ecoEmpPct:ecoEmpPct, brut:brut, ecoSalT:ecoSalT, ecoEmpT:ecoEmpT, saving:ecoSalT+ecoEmpT };
   }
 

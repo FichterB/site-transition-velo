@@ -73,6 +73,8 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 
 ## Avant chaque commit
 
+0. Si `config.js`, `simulateur-calcul.js` ou `tracking.js` change : mettre à jour le numéro de version `?v=AAAAMMJJ` de leurs balises `<script>` dans **les deux pages** (sinon les navigateurs gardent l'ancienne version en cache).
+
 1. Ouvrir `site/simulateur.html` dans un navigateur : parcours complet en 4 étapes, aucune erreur dans la console.
 2. Vérifier l'affichage mobile (390 px de large) et ordinateur.
 3. Si `config.js` change : vérifier que la syntaxe JavaScript reste valide (`node --check site/config.js`).

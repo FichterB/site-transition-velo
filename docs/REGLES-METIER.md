@@ -39,6 +39,10 @@ Un speedbike peut être loué en LLD, mais il est traité comme un véhicule de 
 ```
 loyer mensuel HT   = prix HT × tauxLoyer (0,0335) × coeffDuree (36 mois : 1 ; 24 : 1,25 ; 12 : 1,7)
 prix HT           = prix d'un vélo, ou somme des vélos suggérés ajoutés (le même modèle peut compter plusieurs fois) (8 000 € HT max, config.js > prixMax)
+fin de contrat     = rachat à la valeur résiduelle (CGV : 50 % à 12 mois, 25 % à 24 mois, 10 % à 36 mois)
+                     puis revente estimée à 30 % du prix neuf (config.js > finDeContrat)
+  reste à charge salarié = coût net salarié × durée + rachat − revente
+  (bloc masqué quand la revente vaut moins que le rachat, ex. 12 mois)
 part salarié       = X % du loyer (choix du visiteur, 30 % par défaut — config.js > partSalarie)
   économie cotisations = 23 % de la part salarié
   économie IR          = (part salarié − économie cotisations) × TMI × 0,9

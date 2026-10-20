@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<script src="./config.js"></script>
-<script src="./simulateur-calcul.js"></script>
+<script src="./config.js?v=20261020"></script>
+<script src="./simulateur-calcul.js?v=20261020"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur vélo de fonction — Transition Vélo</title>
 <meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
@@ -296,6 +296,13 @@
         <div style="padding:18px 24px" id="bkBody"></div>
       </div>
 
+      <!-- Fin de contrat : rachat à la valeur résiduelle puis revente estimée (config.js > finDeContrat) -->
+      <div class="card" id="finBox" style="padding:20px 24px;margin-top:16px">
+        <div style="font-weight:700;font-size:17px;margin-bottom:4px">Fin de contrat : le vélo peut rester au salarié</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px" id="finIntro"></div>
+        <div id="finBody"></div>
+      </div>
+
       <div class="boss">
         <svg width="20" height="20" viewBox="0 0 20 20" style="flex-shrink:0"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M6 10l2.6 2.6L14 7" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <div><strong>Calcul validé BOSS — 7 mai 2026.</strong> Exonération cotisations confirmée · Part salarié 30% HT · Art. 220 undecies A CGI · Rescrit BOI-RES-TVA-000161</div>
@@ -324,7 +331,7 @@
 </footer>
 
 <!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
-<script src="./tracking.js"></script>
+<script src="./tracking.js?v=20261020"></script>
 
 <script>
 (function(){
@@ -469,6 +476,17 @@
       row('Économies fiscales employeur', '− '+fmt(c.ecoEmpT), G, [Y, pct(c.ecoEmpT,c.brut)]) +
       tot('Économie totale vs achat classique', fmt(c.saving));
     $('bkBody').innerHTML = html;
+
+    // Fin de contrat
+    $('finBox').style.display = c.finUtile ? '' : 'none';
+    if (c.finUtile) {
+      $('finIntro').textContent = 'Au bout de '+s.duree+' mois, le salarié peut racheter le vélo '+c.vrPct+' % de son prix, puis le revendre (estimation : '+c.reventePct+' % du prix neuf).';
+      $('finBody').innerHTML =
+        row('Payé par le salarié sur '+s.duree+' mois (net)', fmt(c.payeSal), R, null) +
+        row('Rachat du vélo ('+c.vrPct+' %)', '+ '+fmt(c.rachat), R, null) +
+        row('Revente estimée ('+c.reventePct+' %)', '− '+fmt(c.revente), G, null) +
+        tot(c.resteSal >= 0 ? 'Reste à charge du salarié' : 'Gain pour le salarié', fmt(Math.abs(c.resteSal)));
+    }
   }
 
   // ---------- HubSpot ----------
