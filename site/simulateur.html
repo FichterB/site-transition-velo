@@ -439,7 +439,7 @@
     $('bigSal').textContent = c.coutNetSal;
     $('bigEmp').textContent = c.coutNetEmp;
     $('ecoSalPct').textContent = c.partSal ? c.ecoSalPct + "% d'économie" : "Pris en charge à 100 %";
-    $('ecoEmpPct').textContent = c.ecoEmpPct + "% d'économie";
+    $('ecoEmpPct').textContent = c.partEmp ? c.ecoEmpPct + "% d'économie" : "Aucun coût pour l'entreprise";
 
     var tabs = [['sal','Détail salarié'],['emp','Détail employeur'],['total','Bilan '+s.duree+' mois']];
     $('bkTabs').innerHTML = tabs.map(function(t){ return '<button class="bk-tab'+(s.bk===t[0]?' on':'')+'" data-bk="'+t[0]+'">'+t[1]+'</button>'; }).join('');

@@ -48,6 +48,7 @@ window.TV_SIM = (function(){
   // Texte sous le sélecteur de part salarié
   function partInfo(part){
     return part === 0 ? 'Vélo 100 % pris en charge par l\'employeur'
+      : part === 100 ? 'Vélo 100 % payé par le salarié'
       : 'Salarié ' + part + ' % · Employeur ' + (100 - part) + ' %';
   }
 
@@ -120,7 +121,7 @@ window.TV_SIM = (function(){
     borner: borner,
     partInfo: partInfo,
     dureeNote: dureeNote,
-    partChoix: PART.choix || [0, 10, 20, 30, 40, 50],
+    partChoix: PART.choix || [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
     partDefaut: PART.defaut != null ? +PART.defaut : 30
   };
 })();

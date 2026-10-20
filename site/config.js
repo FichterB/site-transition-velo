@@ -28,6 +28,6 @@ window.TV_CONFIG = {
     prixMax: 8000,                           // total HT maximum du simulateur (plusieurs vélos cumulés)
     coeffDuree: { 12: 1.7, 24: 1.25, 36: 1 }, // majoration des contrats courts
     // Part du loyer payée par le salarié (en %), le reste par l'employeur
-    partSalarie: { defaut: 30, choix: [0, 10, 20, 30, 40, 50] }
+    partSalarie: { defaut: 30, choix: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100] }
   }
 };
