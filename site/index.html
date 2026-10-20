@@ -107,6 +107,13 @@
   .choix .resume{font-weight:700}
   .choix .resume small{display:block;font-weight:400;color:var(--muted);font-size:14px}
   .bikes-foot{font-size:14px;color:var(--soft);margin-top:20px}
+  .marques{display:grid;grid-template-columns:auto 1fr;gap:12px 40px;align-items:baseline;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
+  .marques h3{font-size:15px;color:var(--muted);font-weight:600;margin:0}
+  .marques ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 40px}
+  .marques li{font-size:clamp(20px,2.4vw,28px);font-weight:700;letter-spacing:-.01em}
+  .marques li small{display:block;font-size:13px;font-weight:500;color:var(--soft);letter-spacing:0}
+  .marques li.vedette{color:var(--red)}
+  @media (max-width:760px){ .marques{grid-template-columns:1fr} }
 
   /* Atelier */
   .atelier{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:center}
@@ -278,6 +285,14 @@
       <ul class="bikes" id="bikes"></ul>
       <div class="choix" id="choix" aria-live="polite"></div>
       <p class="bikes-foot">Prix HT. Catalogue complet sur demande. Valeur résiduelle : 10 % à 36 mois.</p>
+      <div class="marques">
+        <h3>Nos marques</h3>
+        <ul>
+          <li class="vedette">Moustache<small>vélos électriques, France</small></li>
+          <li>Kalkhoff<small>Allemagne</small></li>
+          <li>Riese &amp; Müller<small>Allemagne</small></li>
+        </ul>
+      </div>
     </div>
   </section>
 
