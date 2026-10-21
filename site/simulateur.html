@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<script src="./config.js?v=20261021c"></script>
-<script src="./simulateur-calcul.js?v=20261021c"></script>
+<script src="./config.js?v=20261021d"></script>
+<script src="./simulateur-calcul.js?v=20261021d"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur vélo de fonction — Transition Vélo</title>
 <meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
@@ -280,13 +280,13 @@
         <div class="big-card" style="background:#fff;border:2px solid var(--red)">
           <div class="big-l" style="color:var(--red)">Coût réel salarié / mois</div>
           <div class="big-n" id="bigSal"></div>
-          <div style="font-size:14px;color:var(--muted);margin-bottom:12px">€ net / mois</div>
+          <div style="font-size:14px;color:var(--muted);margin-bottom:12px">€ TTC / mois, après économies</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.4"><strong id="ecoSalPct" style="color:var(--green);display:block;font-size:13px"></strong>vs achat sur salaire net</div>
         </div>
         <div class="big-card" style="background:var(--ink)">
           <div class="big-l" style="color:rgba(255,255,255,.55)">Coût réel employeur / mois</div>
           <div class="big-n" id="bigEmp" style="color:#fff"></div>
-          <div style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:12px">€ net / mois</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:12px">€ HT / mois, après impôt</div>
           <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.4"><strong id="ecoEmpPct" style="color:#5BE0A0;display:block;font-size:13px"></strong>après IS 25% + déductibilité</div>
         </div>
       </div>
@@ -305,7 +305,7 @@
 
       <div class="boss">
         <svg width="20" height="20" viewBox="0 0 20 20" style="flex-shrink:0"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M6 10l2.6 2.6L14 7" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div><strong>Calcul validé BOSS — 7 mai 2026.</strong> Exonération cotisations confirmée · Part salarié 30% HT · Art. 220 undecies A CGI · Rescrit BOI-RES-TVA-000161</div>
+        <div><strong>Calcul validé BOSS — 7 mai 2026.</strong> Exonération cotisations confirmée · Art. 220 undecies A CGI · Rescrit BOI-RES-TVA-000161</div>
       </div>
 
       <!-- Visite venue de l'accueil : le formulaire est proposé ici, après les résultats -->
@@ -331,7 +331,7 @@
 </footer>
 
 <!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
-<script src="./tracking.js?v=20261021c"></script>
+<script src="./tracking.js?v=20261021d"></script>
 
 <script>
 (function(){
@@ -459,19 +459,21 @@
     var tot = function(label,val){ return '<div class="tot"><span>'+label+'</span><span>'+val+'</span></div>'; };
     var R='#D4412B', G='#1F7A45', Y='#C8960C', html='';
     if (s.bk==='sal') html =
-      row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
-      row('Part salarié ('+s.part+'% HT)', c.partSal+' €/mois', R, [R,'100%']) +
+      row('Loyer mensuel', c.loyer+' € HT', R, null, true) +
+      row('Part salarié : '+s.part+' % du loyer', c.partSalHT+' € HT', R, null, true) +
+      row('+ TVA '+c.tvaPct+' % (non récupérable par le salarié)', '+ '+c.tvaSal+' €', R, null, true) +
+      row('Part salarié payée', c.partSal+' € TTC/mois', R, [R,'100%']) +
       row('Économie cotisations sociales', '− '+c.ecoCot+' €/mois', G, [G, pct(c.ecoCot,c.partSal)]) +
       row('Économie impôt sur le revenu', '− '+c.ecoIR+' €/mois', G, [Y, pct(c.ecoIR,c.partSal)]) +
-      tot('Coût net réel / mois', c.coutNetSal+' €/mois');
+      tot('Coût net réel / mois', c.coutNetSal+' € TTC/mois');
     else if (s.bk==='emp') html =
-      row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
-      row('Part employeur ('+(100-s.part)+'% HT)', c.partEmp+' €/mois', R, [R,'100%']) +
+      row('Loyer mensuel', c.loyer+' € HT', R, null, true) +
+      row('Part employeur : '+(100-s.part)+' % du loyer', c.partEmp+' € HT/mois', R, [R,'100%']) +
       row('Réduction IS 25% (art. 220 CGI)', '− '+c.reduIS+' €/mois', G, [G, pct(c.reduIS,c.partEmp)]) +
       row('Charges déductibles (IS 25%)', '− '+c.deductIS+' €/mois', G, [Y, pct(c.deductIS,c.partEmp)]) +
-      tot('Coût net réel / mois', c.coutNetEmp+' €/mois');
+      tot('Coût net réel / mois', c.coutNetEmp+' € HT/mois');
     else html =
-      row('Loyers bruts cumulés', fmt(c.brut), R, [R,'100%']) +
+      row('Loyers cumulés', fmt(c.brut)+' HT', R, [R,'100%']) +
       row('Économies fiscales salarié', '− '+fmt(c.ecoSalT), G, [G, pct(c.ecoSalT,c.brut)]) +
       row('Économies fiscales employeur', '− '+fmt(c.ecoEmpT), G, [Y, pct(c.ecoEmpT,c.brut)]) +
       tot('Économie totale vs achat classique', fmt(c.saving));
@@ -480,11 +482,11 @@
     // Fin de contrat
     $('finBox').style.display = c.finUtile ? '' : 'none';
     if (c.finUtile) {
-      $('finIntro').textContent = 'Au bout de '+s.duree+' mois, le salarié peut racheter le vélo '+c.vrPct+' % de son prix, puis le revendre (estimation : '+c.reventePct+' % du prix neuf).';
+      $('finIntro').textContent = 'Au bout de '+s.duree+' mois, le salarié peut racheter le vélo '+c.vrPct+' % de son prix TTC, puis le revendre (estimation : '+c.reventePct+' % du prix neuf TTC).';
       $('finBody').innerHTML =
-        row('Payé par le salarié sur '+s.duree+' mois (net)', fmt(c.payeSal), R, null) +
-        row('Rachat du vélo ('+c.vrPct+' %)', '+ '+fmt(c.rachat), R, null) +
-        row('Revente estimée ('+c.reventePct+' %)', '− '+fmt(c.revente), G, null) +
+        row('Payé par le salarié sur '+s.duree+' mois (net, TTC)', fmt(c.payeSal), R, null) +
+        row('Rachat du vélo ('+c.vrPct+' % du prix TTC)', '+ '+fmt(c.rachat), R, null) +
+        row('Revente estimée ('+c.reventePct+' % du prix TTC)', '− '+fmt(c.revente), G, null) +
         tot(c.resteSal >= 0 ? 'Reste à charge du salarié' : 'Gain pour le salarié', fmt(Math.abs(c.resteSal)));
     }
   }

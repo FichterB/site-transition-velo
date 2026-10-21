@@ -14,6 +14,8 @@ window.TV_SIM = (function(){
   var FIN = CC.finDeContrat || {};
   var VR = FIN.valeurResiduelle || { 12: 0.5, 24: 0.25, 36: 0.1 };
   var REVENTE = FIN.revente != null ? +FIN.revente : 0.3;
+  // TVA : l'entreprise récupère la TVA (loyer en HT) ; le salarié, particulier, paie sa part TTC
+  var TVA = CC.tva != null ? +CC.tva : 0.2;
 
   // Vélos proposés en raccourci : chaque clic en ajoute un (le même plusieurs fois possible), leurs prix s'additionnent
   // Liste unique, utilisée par le simulateur (boutons) et l'accueil (catalogue). img = photo dans images/, ou null.
@@ -28,11 +30,14 @@ window.TV_SIM = (function(){
   ];
   var VELO_DEFAUT = VELOS.findIndex(function(v){ return v.defaut; });
 
-  /* s = { prix, tmi, duree, part }  (part = % du loyer payé par le salarié) */
+  /* s = { prix (HT), tmi, duree, part }  (part = % du loyer HT payé par le salarié)
+     Montants entreprise en HT ; montants salarié en TTC (il ne récupère pas la TVA). */
   function calc(s){
-    var loyer = Math.round(s.prix * TAUX * (COEFF[s.duree] || 1));
-    var partSal = Math.round(loyer * s.part / 100);
-    var partEmp = loyer - partSal;
+    var loyer = Math.round(s.prix * TAUX * (COEFF[s.duree] || 1));            // HT
+    var partSalHT = Math.round(loyer * s.part / 100);
+    var partEmp = loyer - partSalHT;                                           // HT : la TVA collectée sur la part salarié est reversée
+    var partSal = Math.round(partSalHT * (1 + TVA));                           // TTC, réellement payé par le salarié
+    var tvaSal = partSal - partSalHT;
     var ecoCot = Math.round(partSal * 0.23);
     var ecoIR = Math.round((partSal - ecoCot) * (s.tmi / 100) * 0.9);
     var coutNetSal = Math.max(0, partSal - ecoCot - ecoIR);
@@ -44,14 +49,16 @@ window.TV_SIM = (function(){
     var brut = loyer * s.duree;
     var ecoSalT = (ecoCot + ecoIR) * s.duree;
     var ecoEmpT = (reduIS + deductIS) * s.duree;
-    // Fin de contrat : le salarié rachète le vélo à la valeur résiduelle, puis le revend (estimation)
-    var rachat = Math.round(s.prix * (VR[s.duree] || 0));
-    var revente = Math.round(s.prix * REVENTE);
+    // Fin de contrat : le salarié rachète le vélo à la valeur résiduelle (TTC), puis le revend (estimation sur le prix TTC)
+    var prixTTC = s.prix * (1 + TVA);
+    var rachat = Math.round(prixTTC * (VR[s.duree] || 0));
+    var revente = Math.round(prixTTC * REVENTE);
     var payeSal = coutNetSal * s.duree;
     var resteSal = payeSal + rachat - revente;
     var finUtile = revente > rachat;   // la revente ne rapporte rien si elle vaut moins que le rachat (contrats courts)
     return { rachat:rachat, revente:revente, payeSal:payeSal, resteSal:resteSal, finUtile:finUtile,
              vrPct:Math.round((VR[s.duree] || 0) * 100), reventePct:Math.round(REVENTE * 100),
+             partSalHT:partSalHT, tvaSal:tvaSal, tvaPct:Math.round(TVA * 100),
              loyer:loyer, partSal:partSal, partEmp:partEmp, ecoCot:ecoCot, ecoIR:ecoIR, coutNetSal:coutNetSal, ecoSalPct:ecoSalPct,
              reduIS:reduIS, deductIS:deductIS, coutNetEmp:coutNetEmp, ecoEmpPct:ecoEmpPct, brut:brut, ecoSalT:ecoSalT, ecoEmpT:ecoEmpT, saving:ecoSalT+ecoEmpT };
   }
