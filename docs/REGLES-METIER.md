@@ -41,7 +41,8 @@ loyer mensuel HT   = prix HT × tauxLoyer (0,0335) × coeffDuree (36 mois : 1 ; 
 prix HT           = prix d'un vélo, ou somme des vélos suggérés ajoutés (le même modèle peut compter plusieurs fois) (8 000 € HT max, config.js > prixMax)
 fin de contrat     = rachat à la valeur résiduelle sur le prix TTC (CGV : 50 % à 12 mois, 25 % à 24 mois, 10 % à 36 mois)
                      puis revente estimée à 30 % du prix neuf TTC (config.js > finDeContrat)
-  reste à charge salarié = coût net salarié × durée + rachat − revente
+  reste à charge salarié = montant payé + rachat TTC − revente TTC
+  montant payé = coût net salarié calculé sur la part HT × durée (choix validé : HT pour cette ligne, TTC pour rachat et revente)
   (bloc masqué quand la revente vaut moins que le rachat, ex. 12 mois)
 part salarié HT    = X % du loyer HT (choix du visiteur, 30 % par défaut — config.js > partSalarie)
 part salarié TTC   = part salarié HT × (1 + TVA 20 %)   ← le salarié est un particulier : il paie la TVA (config.js > tva)
