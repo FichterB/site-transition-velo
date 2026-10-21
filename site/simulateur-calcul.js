@@ -18,22 +18,26 @@ window.TV_SIM = (function(){
   var TVA = CC.tva != null ? +CC.tva : 0.2;
 
   // Vélos proposés en raccourci : chaque clic en ajoute un (le même plusieurs fois possible), leurs prix s'additionnent
-  // Liste unique, utilisée par le simulateur (boutons) et l'accueil (catalogue). img = photo dans images/, ou null.
+  // Liste unique, utilisée par le simulateur et l'accueil. Prix et loyers : grille « Prix Vélo LLD » (octobre 2026).
+  // ttc = prix public TTC ; loyer = loyer mensuel HT sur 36 mois ; prix HT = ttc / 1,2. img = photo dans images/, ou null.
   var VELOS = [
-    { prix: 639,  nom: 'VTC',          titre: 'VTC confort',            cat: 'Vélo de ville',            img: 'velo-vtc.png',    usage: 'Pour démarrer à petit prix, trajets jusqu\u2019à 15 km.' },
-    { prix: 832,  nom: 'Gravel',       titre: 'Gravel route et chemin', cat: 'Gravel',                   img: 'velo-gravel.jpg', usage: 'Routes et chemins, pour les reliefs ardéchois.' },
-    { prix: 1915, nom: 'VAE ville',    titre: 'VAE urbain',             cat: 'Vélo électrique de ville', img: 'velo-ville.png',  usage: 'Trajets domicile-travail, batterie longue portée, porte-bagages.' },
-    { prix: 2332, nom: 'VAE premium',  titre: 'VAE premium',            cat: 'Vélo électrique de ville', img: 'velo-vae-premium.jpg', usage: 'Vélo électrique haut de gamme pour les trajets quotidiens.', defaut: true },
-    { prix: 3249, nom: 'Gravel élec.', titre: 'Gravel électrique',      cat: 'Gravel électrique',        img: 'velo-gravel-elec.jpg',              usage: 'Gravel à assistance électrique, routes et chemins.' },
-    { prix: 3915, nom: 'VTT élec.',    titre: 'VAE tout-terrain',       cat: 'VTT électrique',           img: 'velo-vtt.png',    usage: 'Salariés en zone rurale ou à fort dénivelé.' },
-    { prix: 3915, nom: 'Cargo élec.',  titre: 'Cargo électrique',       cat: 'Vélo cargo électrique',    img: 'velo-cargo.jpg',  usage: 'Transport de matériel : artisans, commerces, livraisons.' }
+    { ttc: 699,  loyer: 20,  nom: 'VTC',          titre: 'VTC confort',            cat: 'Vélo de ville',            img: 'velo-vtc.png',         usage: 'Pour démarrer à petit prix, trajets jusqu\u2019à 15 km.' },
+    { ttc: 999,  loyer: 30,  nom: 'Gravel',       titre: 'Gravel route et chemin', cat: 'Gravel',                   img: 'velo-gravel.jpg',      usage: 'Routes et chemins, pour les reliefs ardéchois.' },
+    { ttc: 2399, loyer: 70,  nom: 'VAE ville',    titre: 'VAE urbain',             cat: 'Vélo électrique de ville', img: 'velo-ville.png',       usage: 'Trajets domicile-travail, batterie longue portée, porte-bagages.' },
+    { ttc: 2999, loyer: 90,  nom: 'VAE premium',  titre: 'VAE premium',            cat: 'Vélo électrique de ville', img: 'velo-vae-premium.jpg', usage: 'Vélo électrique haut de gamme pour les trajets quotidiens.', defaut: true },
+    { ttc: 3899, loyer: 110, nom: 'Gravel élec.', titre: 'Gravel électrique',      cat: 'Gravel électrique',        img: 'velo-gravel-elec.jpg', usage: 'Gravel à assistance électrique, routes et chemins.' },
+    { ttc: 4699, loyer: 130, nom: 'VTT élec.',    titre: 'VAE tout-terrain',       cat: 'VTT électrique',           img: 'velo-vtt.png',         usage: 'Salariés en zone rurale ou à fort dénivelé.' },
+    { ttc: 4699, loyer: 130, nom: 'Cargo élec.',  titre: 'Cargo électrique',       cat: 'Vélo cargo électrique',    img: 'velo-cargo.jpg',       usage: 'Transport de matériel : artisans, commerces, livraisons.' }
   ];
+  VELOS.forEach(function(v){ v.prix = v.ttc / 1.2; });   // prix HT
   var VELO_DEFAUT = VELOS.findIndex(function(v){ return v.defaut; });
 
-  /* s = { prix (HT), tmi, duree, part }  (part = % du loyer HT payé par le salarié)
+  /* s = { prix (HT), sel?, tmi, duree, part }  (part = % du loyer HT payé par le salarié)
+     sel = vélos choisis dans la liste : leur loyer est celui de la grille ; sinon (prix libre) loyer = prix × tauxLoyer.
      Montants entreprise en HT ; part salarié = sa quote-part du loyer, sans TVA ajoutée (montant net pour lui). */
   function calc(s){
-    var loyer = Math.round(s.prix * TAUX * (COEFF[s.duree] || 1));            // HT
+    var base36 = (s.sel && s.sel.length) ? loyerGrille(s.sel) : s.prix * TAUX;   // loyer HT sur 36 mois
+    var loyer = Math.round(base36 * (COEFF[s.duree] || 1));                    // HT, majoré pour 12 et 24 mois
     var partSalHT = Math.round(loyer * s.part / 100);
     var partEmp = loyer - partSalHT;
     var partSal = partSalHT;                                                   // payé par le salarié, sans TVA ajoutée
@@ -74,6 +78,9 @@ window.TV_SIM = (function(){
     return d === 36 ? 'Recommandé' : '+' + Math.round((COEFF[d] || 1) * 100 - 100) + '% vs 36';
   }
 
+  // Somme des loyers 36 mois de la grille pour les vélos choisis
+  function loyerGrille(sel){ return sel.reduce(function(t, i){ return t + VELOS[i].loyer; }, 0); }
+
   // sel = liste d'index dans VELOS, un par vélo choisi (ex. [1, 1] = deux VAE ville)
   function total(sel){ return sel.reduce(function(t, i){ return t + VELOS[i].prix; }, 0); }
   function quantite(sel, i){ return sel.filter(function(j){ return j === i; }).length; }
@@ -83,7 +90,7 @@ window.TV_SIM = (function(){
   function retirer(sel, i){ var k = sel.lastIndexOf(i); return k < 0 ? sel : sel.slice(0, k).concat(sel.slice(k + 1)); }
   // Un vélo de plus ferait-il dépasser le maximum ?
   function horsLimite(sel, i){ return total(sel) + VELOS[i].prix > PRIX_MAX; }
-  function libelleVelo(i, n){ return VELOS[i].nom + ' ' + VELOS[i].prix.toLocaleString('fr-FR') + ' €' + (n > 1 ? ' ×' + n : ''); }
+  function libelleVelo(i, n){ return VELOS[i].nom + ' ' + Math.round(VELOS[i].prix).toLocaleString('fr-FR') + ' €' + (n > 1 ? ' ×' + n : ''); }
   // Valeur affichée dans l'onglet « Prix du vélo »
   function resumePrix(prix, sel){
     var t = Math.round(prix).toLocaleString('fr-FR') + ' € HT';
@@ -96,7 +103,7 @@ window.TV_SIM = (function(){
   function eur(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; }
   function ligneVelo(i, sel){
     var v = VELOS[i], n = quantite(sel, i), plein = horsLimite(sel, i);
-    var loyer = calc({ prix: v.prix, tmi: 0, duree: 36, part: 0 }).loyer;
+    var loyer = calc({ prix: v.prix, sel: [i], tmi: 0, duree: 36, part: 0 }).loyer;
     var pic = v.img ? '<img src="images/' + v.img + '" alt="' + esc(v.titre) + '" loading="lazy">' : '<img class="wheel" src="images/favicon.svg" alt="">';
     var qty = n
       ? '<button type="button" class="pm" data-moins="' + i + '" aria-label="Retirer un ' + esc(v.titre) + '">−</button><span class="n">' + n + '</span>' +

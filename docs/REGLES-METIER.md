@@ -37,7 +37,12 @@ Un speedbike peut être loué en LLD, mais il est traité comme un véhicule de 
 ## Formule du simulateur
 
 ```
-loyer mensuel HT   = prix HT × tauxLoyer (0,0335) × coeffDuree (36 mois : 1 ; 24 : 1,25 ; 12 : 1,7)
+loyer mensuel HT   = somme des loyers 36 mois de la grille des vélos choisis × coeffDuree (36 mois : 1 ; 24 : 1,25 ; 12 : 1,7)
+                     prix libre (vélo hors liste) : prix HT × tauxLoyer (0,0335) × coeffDuree
+
+Grille « Prix Vélo LLD » (octobre 2026) :
+  VTC confort 699 € TTC → 20 € HT/mois · Gravel route et chemin 999 € → 30 € · VAE urbain 2 399 € → 70 €
+  VAE premium 2 999 € → 90 € · Gravel électrique 3 899 € → 110 € · VAE tout-terrain 4 699 € → 130 € · Cargo électrique 4 699 € → 130 €
 prix HT           = prix d'un vélo, ou somme des vélos suggérés ajoutés (le même modèle peut compter plusieurs fois) (8 000 € HT max, config.js > prixMax)
 fin de contrat     = rachat à la valeur résiduelle sur le prix TTC (CGV : 50 % à 12 mois, 25 % à 24 mois, 10 % à 36 mois)
                      puis revente estimée à 30 % du prix neuf TTC (config.js > finDeContrat)
@@ -51,7 +56,7 @@ part employeur     = loyer HT − part salarié
   réduction IS         = 25 % de la part employeur
   déductibilité        = 25 % × 25 % de la part employeur
 ```
-`tauxLoyer` et `coeffDuree` se règlent dans `site/config.js`. Les autres taux sont dans le code des deux pages (fonction `calc`).
+La grille (prix TTC et loyer de chaque vélo) est dans `site/simulateur-calcul.js` (liste `VELOS`). `tauxLoyer` et `coeffDuree` se règlent dans `site/config.js`. Les autres taux sont dans la fonction `calc` de `simulateur-calcul.js`.
 
 ## Sources
 

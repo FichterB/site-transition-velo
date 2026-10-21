@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<script src="./config.js?v=20261021f"></script>
-<script src="./simulateur-calcul.js?v=20261021f"></script>
+<script src="./config.js?v=20261021g"></script>
+<script src="./simulateur-calcul.js?v=20261021g"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur vélo de fonction — Transition Vélo</title>
 <meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
@@ -331,7 +331,7 @@
 </footer>
 
 <!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
-<script src="./tracking.js?v=20261021f"></script>
+<script src="./tracking.js?v=20261021g"></script>
 
 <script>
 (function(){
@@ -420,7 +420,7 @@
     $('prixLabel').textContent = fmt(curseur);
     $('prix').value = curseur;
     $('prix').style.background = rangeBg(curseur, SIM.prixMin, SIM.prixMax);
-    var loyerTxt = function(p){ return '<small>Loyer indicatif : '+SIM.eur(SIM.calc({ prix:p, tmi:0, duree:36, part:0 }).loyer)+' HT/mois sur 36 mois</small>'; };
+    var loyerTxt = function(p){ return '<small>Loyer indicatif : '+SIM.eur(SIM.calc({ prix:p, sel:s.sel, tmi:0, duree:36, part:0 }).loyer)+' HT/mois sur 36 mois</small>'; };
     $('choix').innerHTML = s.sel.length ? '<div class="resume">'+SIM.resumePrix(s.prix, s.sel)+loyerTxt(s.prix)+'</div>'
       : s.libre ? '<div class="resume">Vélo à '+fmt(s.prix)+' HT'+loyerTxt(s.prix)+'</div>'
       : '<div class="resume">Aucun vélo choisi<small>Ajoutez au moins un vélo, ou indiquez un prix, pour continuer.</small></div>';
