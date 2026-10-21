@@ -84,6 +84,5 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 
 - Mention speedbikes : présente sur l'accueil (section fiscalité), à ajouter sur le simulateur.
 - Email de contact : `adrien@transitionvelo.fr` ne peut rien recevoir (domaine inexistant) ; l'accueil affiche `adrien@transitionvelo.net` (à confirmer) ; le simulateur affiche encore l'ancien.
-- Photos manquantes : VAE premium et Gravel électrique (la roue du logo s'affiche à la place).
 - Transmettre les valeurs de simulation à HubSpot dans des champs cachés (besoin des noms de propriétés HubSpot).
 - Fiche `ressources/fiche_technique_roadster4_touring_hs.pdf` : l'en-tête du tableau est illisible (texte sombre sur fond sombre) et la photo montre peut-être une autre version (courroie au lieu du dérailleur XT annoncé).

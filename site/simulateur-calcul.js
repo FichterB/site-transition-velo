@@ -21,8 +21,8 @@ window.TV_SIM = (function(){
     { prix: 639,  nom: 'VTC',          titre: 'VTC confort',            cat: 'Vélo de ville',            img: 'velo-vtc.png',    usage: 'Pour démarrer à petit prix, trajets jusqu\u2019à 15 km.' },
     { prix: 832,  nom: 'Gravel',       titre: 'Gravel route et chemin', cat: 'Gravel',                   img: 'velo-gravel.png', usage: 'Routes et chemins, pour les reliefs ardéchois.' },
     { prix: 1915, nom: 'VAE ville',    titre: 'VAE urbain',             cat: 'Vélo électrique de ville', img: 'velo-ville.png',  usage: 'Trajets domicile-travail, batterie longue portée, porte-bagages.' },
-    { prix: 2332, nom: 'VAE premium',  titre: 'VAE premium',            cat: 'Vélo électrique de ville', img: null,              usage: 'Vélo électrique haut de gamme pour les trajets quotidiens.', defaut: true },
-    { prix: 3249, nom: 'Gravel élec.', titre: 'Gravel électrique',      cat: 'Gravel électrique',        img: null,              usage: 'Gravel à assistance électrique, routes et chemins.' },
+    { prix: 2332, nom: 'VAE premium',  titre: 'VAE premium',            cat: 'Vélo électrique de ville', img: 'velo-vae-premium.jpg', usage: 'Vélo électrique haut de gamme pour les trajets quotidiens.', defaut: true },
+    { prix: 3249, nom: 'Gravel élec.', titre: 'Gravel électrique',      cat: 'Gravel électrique',        img: 'velo-gravel-elec.jpg',              usage: 'Gravel à assistance électrique, routes et chemins.' },
     { prix: 3915, nom: 'VTT élec.',    titre: 'VAE tout-terrain',       cat: 'VTT électrique',           img: 'velo-vtt.png',    usage: 'Salariés en zone rurale ou à fort dénivelé.' },
     { prix: 3915, nom: 'Cargo élec.',  titre: 'Cargo électrique',       cat: 'Vélo cargo électrique',    img: 'velo-cargo.png',  usage: 'Transport de matériel : artisans, commerces, livraisons.' }
   ];
