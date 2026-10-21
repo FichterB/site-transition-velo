@@ -42,13 +42,12 @@ prix HT           = prix d'un vélo, ou somme des vélos suggérés ajoutés (le
 fin de contrat     = rachat à la valeur résiduelle sur le prix TTC (CGV : 50 % à 12 mois, 25 % à 24 mois, 10 % à 36 mois)
                      puis revente estimée à 30 % du prix neuf TTC (config.js > finDeContrat)
   reste à charge salarié = montant payé + rachat TTC − revente TTC
-  montant payé = coût net salarié calculé sur la part HT × durée (choix validé : HT pour cette ligne, TTC pour rachat et revente)
+  montant payé = coût net salarié × durée (rachat et revente sur le prix TTC : le salarié achète et revend comme un particulier)
   (bloc masqué quand la revente vaut moins que le rachat, ex. 12 mois)
-part salarié HT    = X % du loyer HT (choix du visiteur, 30 % par défaut — config.js > partSalarie)
-part salarié TTC   = part salarié HT × (1 + TVA 20 %)   ← le salarié est un particulier : il paie la TVA (config.js > tva)
-  économie cotisations = 23 % de la part salarié TTC
-  économie IR          = (part salarié TTC − économie cotisations) × TMI × 0,9
-part employeur     = loyer HT − part salarié HT   (la TVA collectée sur la part salarié est reversée)
+part salarié       = X % du loyer HT, sans TVA ajoutée (montant net pour le salarié ; 30 % par défaut — config.js > partSalarie)
+  économie cotisations = 23 % de la part salarié
+  économie IR          = (part salarié − économie cotisations) × TMI × 0,9
+part employeur     = loyer HT − part salarié
   réduction IS         = 25 % de la part employeur
   déductibilité        = 25 % × 25 % de la part employeur
 ```

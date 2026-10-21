@@ -25,7 +25,7 @@ window.TV_CONFIG = {
      Loyer mensuel HT = prix HT du vélo × tauxLoyer × coefficient de durée */
   calcul: {
     tauxLoyer: 0.0335,                       // 3,35 % du prix HT par mois (base 36 mois)
-    tva: 0.2,                                // TVA : le salarié paie sa part TTC (l'entreprise est en HT)
+    tva: 0.2,                                // TVA : rachat et revente du vélo en fin de contrat calculés sur le prix TTC
     prixMax: 8000,                           // total HT maximum du simulateur (plusieurs vélos cumulés)
     coeffDuree: { 12: 1.7, 24: 1.25, 36: 1 }, // majoration des contrats courts
     // Part du loyer payée par le salarié (en %), le reste par l'employeur

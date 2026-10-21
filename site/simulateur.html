@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<script src="./config.js?v=20261021e"></script>
-<script src="./simulateur-calcul.js?v=20261021e"></script>
+<script src="./config.js?v=20261021f"></script>
+<script src="./simulateur-calcul.js?v=20261021f"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur vélo de fonction — Transition Vélo</title>
 <meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
@@ -280,7 +280,7 @@
         <div class="big-card" style="background:#fff;border:2px solid var(--red)">
           <div class="big-l" style="color:var(--red)">Coût réel salarié / mois</div>
           <div class="big-n" id="bigSal"></div>
-          <div style="font-size:14px;color:var(--muted);margin-bottom:12px">€ TTC / mois, après économies</div>
+          <div style="font-size:14px;color:var(--muted);margin-bottom:12px">€ net / mois, après économies</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.4"><strong id="ecoSalPct" style="color:var(--green);display:block;font-size:13px"></strong>vs achat sur salaire net</div>
         </div>
         <div class="big-card" style="background:var(--ink)">
@@ -331,7 +331,7 @@
 </footer>
 
 <!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
-<script src="./tracking.js?v=20261021e"></script>
+<script src="./tracking.js?v=20261021f"></script>
 
 <script>
 (function(){
@@ -460,11 +460,10 @@
     var R='#D4412B', G='#1F7A45', Y='#C8960C', html='';
     if (s.bk==='sal') html =
       row('Loyer mensuel', c.loyer+' € HT', R, null, true) +
-      row('Part salarié : '+s.part+' % du loyer', c.partSalHT+' € HT', R, null, true) +
-      row('Part salarié payée', c.partSal+' € TTC/mois', R, [R,'100%']) +
+      row('Part salarié : '+s.part+' % du loyer', c.partSal+' €/mois', R, [R,'100%']) +
       row('Économie cotisations sociales', '− '+c.ecoCot+' €/mois', G, [G, pct(c.ecoCot,c.partSal)]) +
       row('Économie impôt sur le revenu', '− '+c.ecoIR+' €/mois', G, [Y, pct(c.ecoIR,c.partSal)]) +
-      tot('Coût net réel / mois', c.coutNetSal+' € TTC/mois');
+      tot('Coût net réel / mois', c.coutNetSal+' €/mois');
     else if (s.bk==='emp') html =
       row('Loyer mensuel', c.loyer+' € HT', R, null, true) +
       row('Part employeur : '+(100-s.part)+' % du loyer', c.partEmp+' € HT/mois', R, [R,'100%']) +
