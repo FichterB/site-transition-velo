@@ -52,7 +52,7 @@ Logo : `site/images/logo-transition-velo.svg` (fond clair), `logo-transition-vel
 ## Règles métier à respecter (détails : `docs/REGLES-METIER.md`)
 
 - L'offre et les avantages fiscaux concernent **uniquement les vélos et VAE** (assistance coupée à 25 km/h, 250 W max). **Les speedbikes (45 km/h) sont des cyclomoteurs** : pas d'exonération BOSS, pas de réduction d'IS. Ne jamais afficher d'avantage fiscal pour un speedbike.
-- Formule du simulateur : `loyer mensuel HT = prix HT × tauxLoyer × coeffDuree[durée]` (valeurs dans `config.js`). Le visiteur peut ajouter plusieurs vélos suggérés, y compris le même plusieurs fois (« − » pour en retirer) : leurs prix s'additionnent (total max `prixMax`, 8 000 € HT). Part salarié choisie par le visiteur (0 à 50 %, 30 % par défaut, réglable dans `config.js`), le reste pour l'employeur.
+- Formule du simulateur : pour les vélos de la liste, `loyer mensuel HT = somme des loyers 36 mois de la grille × coeffDuree[durée]` (grille « Prix Vélo LLD » : prix TTC et loyer de chaque vélo dans `simulateur-calcul.js`, prix HT = TTC / 1,2) ; pour un prix libre, `loyer = prix HT × tauxLoyer × coeffDuree` (`config.js`). Le visiteur peut ajouter plusieurs vélos suggérés, y compris le même plusieurs fois (« − » pour en retirer) : leurs prix s'additionnent (total max `prixMax`, 8 000 € HT). Part salarié choisie par le visiteur (0 à 100 %, 30 % par défaut, réglable dans `config.js`), le reste pour l'employeur. **HT / TTC** : les montants entreprise sont en HT. La part salarié est sa quote-part du loyer, **sans TVA ajoutée**, affichée en « € net » (ex. 30 % de 131 € HT = 39 €). Seuls le rachat et la revente du vélo en fin de contrat sont calculés sur le prix **TTC**.
 - Le cumul « participation du salarié + réduction d'IS de 25 % » est juridiquement discutable (la loi exige une mise à disposition gratuite). Ne pas renforcer les promesses fiscales sans validation d'un expert-comptable.
 
 ## Formulaire HubSpot
@@ -73,6 +73,8 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 
 ## Avant chaque commit
 
+0. Si `config.js`, `simulateur-calcul.js` ou `tracking.js` change : mettre à jour le numéro de version `?v=AAAAMMJJ` de leurs balises `<script>` dans **les deux pages** (sinon les navigateurs gardent l'ancienne version en cache).
+
 1. Ouvrir `site/simulateur.html` dans un navigateur : parcours complet en 4 étapes, aucune erreur dans la console.
 2. Vérifier l'affichage mobile (390 px de large) et ordinateur.
 3. Si `config.js` change : vérifier que la syntaxe JavaScript reste valide (`node --check site/config.js`).
@@ -82,6 +84,5 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 
 - Mention speedbikes : présente sur l'accueil (section fiscalité), à ajouter sur le simulateur.
 - Email de contact : `adrien@transitionvelo.fr` ne peut rien recevoir (domaine inexistant) ; l'accueil affiche `adrien@transitionvelo.net` (à confirmer) ; le simulateur affiche encore l'ancien.
-- Photos manquantes : VAE premium et Gravel électrique (la roue du logo s'affiche à la place).
 - Transmettre les valeurs de simulation à HubSpot dans des champs cachés (besoin des noms de propriétés HubSpot).
 - Fiche `ressources/fiche_technique_roadster4_touring_hs.pdf` : l'en-tête du tableau est illisible (texte sombre sur fond sombre) et la photo montre peut-être une autre version (courroie au lieu du dérailleur XT annoncé).

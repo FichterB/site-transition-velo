@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<script src="./config.js"></script>
-<script src="./simulateur-calcul.js"></script>
+<script src="./config.js?v=20261021g"></script>
+<script src="./simulateur-calcul.js?v=20261021g"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur vélo de fonction — Transition Vélo</title>
 <meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
@@ -280,13 +280,13 @@
         <div class="big-card" style="background:#fff;border:2px solid var(--red)">
           <div class="big-l" style="color:var(--red)">Coût réel salarié / mois</div>
           <div class="big-n" id="bigSal"></div>
-          <div style="font-size:14px;color:var(--muted);margin-bottom:12px">€ net / mois</div>
+          <div style="font-size:14px;color:var(--muted);margin-bottom:12px">€ net / mois, après économies</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.4"><strong id="ecoSalPct" style="color:var(--green);display:block;font-size:13px"></strong>vs achat sur salaire net</div>
         </div>
         <div class="big-card" style="background:var(--ink)">
           <div class="big-l" style="color:rgba(255,255,255,.55)">Coût réel employeur / mois</div>
           <div class="big-n" id="bigEmp" style="color:#fff"></div>
-          <div style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:12px">€ net / mois</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:12px">€ HT / mois, après impôt</div>
           <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.4"><strong id="ecoEmpPct" style="color:#5BE0A0;display:block;font-size:13px"></strong>après IS 25% + déductibilité</div>
         </div>
       </div>
@@ -296,9 +296,16 @@
         <div style="padding:18px 24px" id="bkBody"></div>
       </div>
 
+      <!-- Fin de contrat : rachat à la valeur résiduelle puis revente estimée (config.js > finDeContrat) -->
+      <div class="card" id="finBox" style="padding:20px 24px;margin-top:16px">
+        <div style="font-weight:700;font-size:17px;margin-bottom:4px">Fin de contrat : le vélo peut rester au salarié</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px" id="finIntro"></div>
+        <div id="finBody"></div>
+      </div>
+
       <div class="boss">
         <svg width="20" height="20" viewBox="0 0 20 20" style="flex-shrink:0"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M6 10l2.6 2.6L14 7" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div><strong>Calcul validé BOSS — 7 mai 2026.</strong> Exonération cotisations confirmée · Part salarié 30% HT · Art. 220 undecies A CGI · Rescrit BOI-RES-TVA-000161</div>
+        <div><strong>Calcul validé BOSS — 7 mai 2026.</strong> Exonération cotisations confirmée · Art. 220 undecies A CGI · Rescrit BOI-RES-TVA-000161</div>
       </div>
 
       <!-- Visite venue de l'accueil : le formulaire est proposé ici, après les résultats -->
@@ -324,7 +331,7 @@
 </footer>
 
 <!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
-<script src="./tracking.js"></script>
+<script src="./tracking.js?v=20261021g"></script>
 
 <script>
 (function(){
@@ -413,7 +420,7 @@
     $('prixLabel').textContent = fmt(curseur);
     $('prix').value = curseur;
     $('prix').style.background = rangeBg(curseur, SIM.prixMin, SIM.prixMax);
-    var loyerTxt = function(p){ return '<small>Loyer indicatif : '+SIM.eur(SIM.calc({ prix:p, tmi:0, duree:36, part:0 }).loyer)+' HT/mois sur 36 mois</small>'; };
+    var loyerTxt = function(p){ return '<small>Loyer indicatif : '+SIM.eur(SIM.calc({ prix:p, sel:s.sel, tmi:0, duree:36, part:0 }).loyer)+' HT/mois sur 36 mois</small>'; };
     $('choix').innerHTML = s.sel.length ? '<div class="resume">'+SIM.resumePrix(s.prix, s.sel)+loyerTxt(s.prix)+'</div>'
       : s.libre ? '<div class="resume">Vélo à '+fmt(s.prix)+' HT'+loyerTxt(s.prix)+'</div>'
       : '<div class="resume">Aucun vélo choisi<small>Ajoutez au moins un vélo, ou indiquez un prix, pour continuer.</small></div>';
@@ -439,7 +446,7 @@
     $('bigSal').textContent = c.coutNetSal;
     $('bigEmp').textContent = c.coutNetEmp;
     $('ecoSalPct').textContent = c.partSal ? c.ecoSalPct + "% d'économie" : "Pris en charge à 100 %";
-    $('ecoEmpPct').textContent = c.ecoEmpPct + "% d'économie";
+    $('ecoEmpPct').textContent = c.partEmp ? c.ecoEmpPct + "% d'économie" : "Aucun coût pour l'entreprise";
 
     var tabs = [['sal','Détail salarié'],['emp','Détail employeur'],['total','Bilan '+s.duree+' mois']];
     $('bkTabs').innerHTML = tabs.map(function(t){ return '<button class="bk-tab'+(s.bk===t[0]?' on':'')+'" data-bk="'+t[0]+'">'+t[1]+'</button>'; }).join('');
@@ -452,23 +459,34 @@
     var tot = function(label,val){ return '<div class="tot"><span>'+label+'</span><span>'+val+'</span></div>'; };
     var R='#D4412B', G='#1F7A45', Y='#C8960C', html='';
     if (s.bk==='sal') html =
-      row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
-      row('Part salarié ('+s.part+'% HT)', c.partSal+' €/mois', R, [R,'100%']) +
+      row('Loyer mensuel', c.loyer+' € HT', R, null, true) +
+      row('Part salarié : '+s.part+' % du loyer', c.partSal+' €/mois', R, [R,'100%']) +
       row('Économie cotisations sociales', '− '+c.ecoCot+' €/mois', G, [G, pct(c.ecoCot,c.partSal)]) +
       row('Économie impôt sur le revenu', '− '+c.ecoIR+' €/mois', G, [Y, pct(c.ecoIR,c.partSal)]) +
       tot('Coût net réel / mois', c.coutNetSal+' €/mois');
     else if (s.bk==='emp') html =
-      row('Base de calcul (loyer mensuel)', c.loyer+' €/mois', R, null, true) +
-      row('Part employeur ('+(100-s.part)+'% HT)', c.partEmp+' €/mois', R, [R,'100%']) +
+      row('Loyer mensuel', c.loyer+' € HT', R, null, true) +
+      row('Part employeur : '+(100-s.part)+' % du loyer', c.partEmp+' € HT/mois', R, [R,'100%']) +
       row('Réduction IS 25% (art. 220 CGI)', '− '+c.reduIS+' €/mois', G, [G, pct(c.reduIS,c.partEmp)]) +
       row('Charges déductibles (IS 25%)', '− '+c.deductIS+' €/mois', G, [Y, pct(c.deductIS,c.partEmp)]) +
-      tot('Coût net réel / mois', c.coutNetEmp+' €/mois');
+      tot('Coût net réel / mois', c.coutNetEmp+' € HT/mois');
     else html =
-      row('Loyers bruts cumulés', fmt(c.brut), R, [R,'100%']) +
+      row('Loyers cumulés', fmt(c.brut)+' HT', R, [R,'100%']) +
       row('Économies fiscales salarié', '− '+fmt(c.ecoSalT), G, [G, pct(c.ecoSalT,c.brut)]) +
       row('Économies fiscales employeur', '− '+fmt(c.ecoEmpT), G, [Y, pct(c.ecoEmpT,c.brut)]) +
       tot('Économie totale vs achat classique', fmt(c.saving));
     $('bkBody').innerHTML = html;
+
+    // Fin de contrat
+    $('finBox').style.display = c.finUtile ? '' : 'none';
+    if (c.finUtile) {
+      $('finIntro').textContent = 'Au bout de '+s.duree+' mois, le salarié peut racheter le vélo '+c.vrPct+' % de son prix TTC, puis le revendre (estimation : '+c.reventePct+' % du prix neuf TTC).';
+      $('finBody').innerHTML =
+        row('Payé par le salarié sur '+s.duree+' mois (net)', fmt(c.payeSal), R, null) +
+        row('Rachat du vélo ('+c.vrPct+' % du prix TTC)', '+ '+fmt(c.rachat), R, null) +
+        row('Revente estimée ('+c.reventePct+' % du prix TTC)', '− '+fmt(c.revente), G, null) +
+        tot(c.resteSal >= 0 ? 'Reste à charge du salarié' : 'Gain pour le salarié', fmt(Math.abs(c.resteSal)));
+    }
   }
 
   // ---------- HubSpot ----------
