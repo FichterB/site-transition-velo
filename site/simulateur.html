@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<script src="./config.js?v=20261021d"></script>
-<script src="./simulateur-calcul.js?v=20261021d"></script>
+<script src="./config.js?v=20261021e"></script>
+<script src="./simulateur-calcul.js?v=20261021e"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur vélo de fonction — Transition Vélo</title>
 <meta name="description" content="Simulez le coût réel d'un vélo de fonction en LLD pour le salarié et l'employeur, après avantages fiscaux.">
@@ -331,7 +331,7 @@
 </footer>
 
 <!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
-<script src="./tracking.js?v=20261021d"></script>
+<script src="./tracking.js?v=20261021e"></script>
 
 <script>
 (function(){
@@ -461,7 +461,6 @@
     if (s.bk==='sal') html =
       row('Loyer mensuel', c.loyer+' € HT', R, null, true) +
       row('Part salarié : '+s.part+' % du loyer', c.partSalHT+' € HT', R, null, true) +
-      row('+ TVA '+c.tvaPct+' % (non récupérable par le salarié)', '+ '+c.tvaSal+' €', R, null, true) +
       row('Part salarié payée', c.partSal+' € TTC/mois', R, [R,'100%']) +
       row('Économie cotisations sociales', '− '+c.ecoCot+' €/mois', G, [G, pct(c.ecoCot,c.partSal)]) +
       row('Économie impôt sur le revenu', '− '+c.ecoIR+' €/mois', G, [Y, pct(c.ecoIR,c.partSal)]) +
@@ -484,7 +483,7 @@
     if (c.finUtile) {
       $('finIntro').textContent = 'Au bout de '+s.duree+' mois, le salarié peut racheter le vélo '+c.vrPct+' % de son prix TTC, puis le revendre (estimation : '+c.reventePct+' % du prix neuf TTC).';
       $('finBody').innerHTML =
-        row('Payé par le salarié sur '+s.duree+' mois (net, TTC)', fmt(c.payeSal), R, null) +
+        row('Payé par le salarié sur '+s.duree+' mois (net)', fmt(c.payeSal), R, null) +
         row('Rachat du vélo ('+c.vrPct+' % du prix TTC)', '+ '+fmt(c.rachat), R, null) +
         row('Revente estimée ('+c.reventePct+' % du prix TTC)', '− '+fmt(c.revente), G, null) +
         tot(c.resteSal >= 0 ? 'Reste à charge du salarié' : 'Gain pour le salarié', fmt(Math.abs(c.resteSal)));

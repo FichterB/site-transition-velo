@@ -53,7 +53,9 @@ window.TV_SIM = (function(){
     var prixTTC = s.prix * (1 + TVA);
     var rachat = Math.round(prixTTC * (VR[s.duree] || 0));
     var revente = Math.round(prixTTC * REVENTE);
-    var payeSal = coutNetSal * s.duree;
+    // Montant payé affiché en fin de contrat : net calculé sur la part HT (choix Transition Vélo)
+    var ecoCotHT = Math.round(partSalHT * 0.23);
+    var payeSal = Math.max(0, partSalHT - ecoCotHT - Math.round((partSalHT - ecoCotHT) * (s.tmi / 100) * 0.9)) * s.duree;
     var resteSal = payeSal + rachat - revente;
     var finUtile = revente > rachat;   // la revente ne rapporte rien si elle vaut moins que le rachat (contrats courts)
     return { rachat:rachat, revente:revente, payeSal:payeSal, resteSal:resteSal, finUtile:finUtile,
