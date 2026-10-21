@@ -123,15 +123,15 @@
   .atelier ul{padding-left:18px;color:var(--muted);margin:0 0 20px}
 
   /* Témoignage */
-  .temoin{background:var(--cream)}
-  .temoin{padding:64px 0}
-  .temoin figure{margin:0;display:grid;grid-template-columns:170px 1fr;gap:40px;align-items:start;max-width:900px}
-  .temoin .logo-client{width:170px;height:auto;mix-blend-mode:multiply}
-  .temoin blockquote{margin:0;font-size:17px;line-height:1.6;color:var(--ink)}
+  .temoin{background:var(--cream);padding:64px 0}
+  .temoins{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+  .temoin figure{margin:0;display:flex;flex-direction:column}
+  .temoin .logo-client{height:56px;width:auto;align-self:flex-start;mix-blend-mode:multiply;margin-bottom:18px}
+  .temoin blockquote{margin:0;font-size:16.5px;line-height:1.6;color:var(--ink)}
   .temoin blockquote::before{content:"«";display:block;font-family:'Anton',sans-serif;color:var(--red);font-size:40px;line-height:.8;margin-bottom:6px}
   .temoin .cap{margin:14px 0 0;color:var(--muted);font-size:14px}
   .temoin .cap b{color:var(--ink)}
-  @media (max-width:760px){ .temoin figure{grid-template-columns:1fr;gap:20px} .temoin .logo-client{width:130px} }
+  @media (max-width:760px){ .temoins{grid-template-columns:1fr;gap:40px} }
 
   /* Contact */
   .contact{background:var(--ink);color:#fff}
@@ -322,15 +322,17 @@
     </div>
   </section>
 
-  <!-- Témoignage (texte fourni par le client, sans retouche hors émojis) -->
+  <!-- Témoignages clients : textes fournis par les clients, sans réécriture (émojis retirés, coupes signalées par […]) -->
   <section class="temoin" data-track-section="temoignage">
-    <div class="wrap">
+    <div class="wrap temoins">
       <figure>
         <img class="logo-client" src="images/client-honexia.webp" alt="Honexia" loading="lazy">
-        <div>
         <blockquote>Nous sommes ravis de notre expérience avec Cyclable à Saint-Péray ! Nous louons un vélo électrique chaque mois pour notre agence Honexia, une solution idéale pour nos nombreux petits déplacements chez nos partenaires bancaires, qui devenaient compliqués à effectuer en voiture au quotidien. Une équipe accueillante et un service au top ! Merci à eux, nous recommandons avec plaisir !</blockquote>
         <p class="cap"><b>Honexia</b> · location d'un vélo électrique</p>
-        </div>
+      </figure>
+      <figure>
+        <blockquote>En tant que chef d'entreprise, je suis très satisfait d'avoir fait appel à Cyclable Saint-Péray pour la location de vélos électriques pour 4 de mes collaborateurs et collaboratrices. Une équipe accueillante, à l'écoute et de très bon conseil […]. Je recommande vraiment !</blockquote>
+        <p class="cap"><b>Michel Mathieu</b>, chef d'entreprise · 4 vélos électriques</p>
       </figure>
     </div>
   </section>
