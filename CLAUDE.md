@@ -4,7 +4,7 @@ Contexte projet pour Claude (onglet Code). À lire avant toute modification.
 
 ## Le projet
 
-Transition Vélo (Saint-Péray, 07) propose des **vélos de fonction en location longue durée (LLD)** aux entreprises de la Drôme et de l'Ardèche. Contact commercial : Adrien Wicart — 06 58 77 58 36 — adrien@transitionvelo.fr.
+Transition Vélo (Saint-Péray, 07) propose des **vélos de fonction en location longue durée (LLD)** aux entreprises de la Drôme et de l'Ardèche. Contact commercial : Adrien Wicart — 06 58 77 58 36 — adrien@transitionvelo.net (le domaine `transitionvelo.fr` n'existe pas : ne jamais l'utiliser).
 
 Le site sert à générer des prospects : le visiteur simule le coût d'un vélo, laisse ses coordonnées dans le formulaire HubSpot, puis Adrien le rappelle.
 
@@ -83,6 +83,5 @@ Google Analytics 4 et Microsoft Clarity (code commun : `site/tracking.js`), char
 ## Chantiers en attente
 
 - Mention speedbikes : présente sur l'accueil (section fiscalité), à ajouter sur le simulateur.
-- Email de contact : `adrien@transitionvelo.fr` ne peut rien recevoir (domaine inexistant) ; l'accueil affiche `adrien@transitionvelo.net` (à confirmer) ; le simulateur affiche encore l'ancien.
 - Transmettre les valeurs de simulation à HubSpot dans des champs cachés (besoin des noms de propriétés HubSpot).
 - Fiche `ressources/fiche_technique_roadster4_touring_hs.pdf` : l'en-tête du tableau est illisible (texte sombre sur fond sombre) et la photo montre peut-être une autre version (courroie au lieu du dérailleur XT annoncé).
