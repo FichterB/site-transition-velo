@@ -124,9 +124,12 @@
 
   /* Témoignage */
   .temoin{background:var(--cream);padding:64px 0}
-  .temoins{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+  .temoins{display:grid;grid-template-columns:repeat(3,1fr);gap:48px}
+  @media (max-width:1000px){ .temoins{grid-template-columns:1fr 1fr} }
   .temoin figure{margin:0;display:flex;flex-direction:column}
   .temoin .logo-client{height:56px;width:auto;align-self:flex-start;mix-blend-mode:multiply;margin-bottom:18px}
+  .temoin .sans-logo{padding-top:74px}   /* même hauteur que les témoignages avec logo (56 px + 18 px) */
+  @media (max-width:760px){ .temoin .sans-logo{padding-top:0} }
   .temoin blockquote{margin:0;font-size:16.5px;line-height:1.6;color:var(--ink)}
   .temoin blockquote::before{content:"«";display:block;font-family:'Anton',sans-serif;color:var(--red);font-size:40px;line-height:.8;margin-bottom:6px}
   .temoin .cap{margin:14px 0 0;color:var(--muted);font-size:14px}
@@ -334,6 +337,10 @@
         <img class="logo-client" src="images/client-saint-peray-audition.png" alt="Saint-Péray Audition" loading="lazy">
         <blockquote>En tant que chef d'entreprise, je suis très satisfait d'avoir fait appel à Cyclable Saint-Péray pour la location de vélos électriques pour 4 de mes collaborateurs et collaboratrices. Une équipe accueillante, à l'écoute et de très bon conseil, qui prend le temps de comprendre les besoins et de proposer des solutions adaptées. Une belle expérience, avec un vrai sens du service et une approche humaine. Je recommande vraiment !</blockquote>
         <p class="cap"><b>Michel Mathieu</b>, Saint-Péray Audition · 4 vélos électriques</p>
+      </figure>
+      <figure class="sans-logo">
+        <blockquote>Ça fait un peu plus d'un an que j'ai rencontré Adrien et toute l'équipe Cyclable. Quelle belle rencontre ! Quel plaisir d'avoir à faire à des gens passionnés et professionnels, à l'écoute de leurs clients. Leur gamme de VTT électrique est incroyable : un régal de (re)découvrir les chemins de notre région Ardéchoise. Je recommande vivement !</blockquote>
+        <p class="cap"><b>Florent Bourdin</b>, Expert Immo Dauphiné · VTT électrique</p>
       </figure>
     </div>
   </section>
