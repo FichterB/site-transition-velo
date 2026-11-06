@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--
+  Story Instagram animée, 1080 × 1920, 8 secondes.
+  Export MP4 : node ressources/instagram/export-video.mjs  (Chrome sans fenêtre, aucun logiciel à installer)
+  Ouverte dans un navigateur, la page joue l'animation en boucle.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;800&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#111;display:flex;justify-content:center}
+  canvas{width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+const W = 1080, H = 1920, DUREE = 8;
+const c = document.getElementById('c'), x = c.getContext('2d');
+const IMG = {};
+const SOURCES = {
+  cyclable: 'logo-cyclable.jpg', moustache: 'logo-moustache.png',
+  ville: 'lundi-27-6.webp', trekking: 'samedi-28-es.webp', route: 'dimanche-28-4.webp', vtt: 'game-160-7.webp'
+};
+const TUILES = [
+  ['Ville', 'ville', 72, 862], ['Trekking & VTC', 'trekking', 548, 862],
+  ['Route & gravel', 'route', 72, 1118], ['VTT', 'vtt', 548, 1118]
+];
+
+const clamp = v => Math.max(0, Math.min(1, v));
+const p = (t, debut, duree) => clamp((t - debut) / duree);          // avancement 0 → 1
+const sortie = k => 1 - Math.pow(1 - k, 3);                          // ralenti en fin
+const rebond = k => { const s = 1.7; k -= 1; return k * k * ((s + 1) * k + s) + 1; };
+
+function rect(px, py, w, h, r, couleur) {
+  x.fillStyle = couleur; x.beginPath(); x.roundRect(px, py, w, h, r); x.fill();
+}
+function texte(t, px, py, police, couleur, align = 'center') {
+  x.font = police; x.fillStyle = couleur; x.textAlign = align; x.textBaseline = 'alphabetic'; x.fillText(t, px, py);
+}
+
+function dessine(t) {
+  x.setTransform(1, 0, 0, 1, 0, 0);
+  x.globalAlpha = 1;
+  x.fillStyle = '#1C232B'; x.fillRect(0, 0, W, H);
+
+  // Logos
+  let k = sortie(p(t, 0.1, 0.6));
+  x.globalAlpha = k; x.save(); x.translate(0, (1 - k) * -30);
+  rect(324, 250, 186, 81, 10, '#fff'); x.drawImage(IMG.cyclable, 342, 262, 150, 57);
+  texte('×', 535, 302, '26px Arial', '#8A8271');
+  rect(560, 258, 196, 66, 10, '#fff'); x.drawImage(IMG.moustache, 578, 270, 160, 42);
+  x.restore();
+
+  // Titre
+  k = sortie(p(t, 0.5, 0.7));
+  x.globalAlpha = k;
+  texte('SAISON DES CADEAUX', 540, 495 + (1 - k) * 60, '112px Anton', '#fff');
+
+  // Remise : apparition avec rebond, puis léger battement
+  k = p(t, 1.1, 0.6);
+  if (k > 0) {
+    let s = 0.4 + 0.6 * rebond(k);
+    if (t > 2) s *= 1 + 0.035 * Math.sin((t - 2) * Math.PI * 1.6);
+    x.globalAlpha = clamp(k * 2); x.save(); x.translate(540, 612); x.scale(s, s);
+    texte('JUSQU’À −37 %', 0, 52, '150px Anton', '#FF8A72');
+    x.restore();
+  }
+
+  // Sous-titre
+  k = sortie(p(t, 1.7, 0.6));
+  x.globalAlpha = k;
+  texte('21 vélos électriques Moustache', 540, 738 + (1 - k) * 20, '800 36px "Hanken Grotesk"', '#fff');
+  texte('de la ville au VTT · quantités limitées', 540, 787 + (1 - k) * 20, '36px "Hanken Grotesk"', '#D8D3C8');
+
+  // Vélos, l'un après l'autre
+  TUILES.forEach(([nom, img, tx, ty], i) => {
+    const kk = sortie(p(t, 2.3 + i * 0.25, 0.6));
+    if (!kk) return;
+    x.globalAlpha = kk; x.save(); x.translate(0, (1 - kk) * 80);
+    rect(tx, ty, 460, 240, 14, '#fff');
+    x.save(); x.beginPath(); x.roundRect(tx, ty, 460, 240, 14); x.clip();
+    x.drawImage(IMG[img], tx + 75, ty + 19, 310, 232);
+    x.restore();
+    x.letterSpacing = '1px';
+    texte(nom.toUpperCase(), tx + 18, ty + 36, '800 21px "Hanken Grotesk"', '#1C232B', 'left');
+    x.letterSpacing = '0px';
+    x.restore();
+  });
+
+  // Téléphone
+  k = sortie(p(t, 3.6, 0.6));
+  x.globalAlpha = k;
+  texte('04 86 84 10 32', 540, 1448 + (1 - k) * 30, '800 64px "Hanken Grotesk"', '#fff');
+  texte('Cyclable Valence – Saint-Péray', 540, 1500 + (1 - k) * 30, '30px "Hanken Grotesk"', '#D8D3C8');
+  x.globalAlpha = 1;
+}
+
+async function prepare() {
+  await Promise.all(Object.entries(SOURCES).map(([k, src]) => new Promise((ok, ko) => {
+    const i = new Image(); i.onload = () => { IMG[k] = i; ok(); }; i.onerror = ko; i.src = src;
+  })));
+  await Promise.all(['112px Anton', '800 36px "Hanken Grotesk"', '36px "Hanken Grotesk"'].map(f => document.fonts.load(f)));
+}
+
+// Lecture en boucle (aperçu dans un navigateur)
+async function boucle() {
+  await prepare();
+  const t0 = performance.now();
+  (function f() { dessine(((performance.now() - t0) / 1000) % DUREE); requestAnimationFrame(f); })();
+}
+
+// Export MP4 (appelé par export-video.mjs) : le canevas occupe toute la page, chaque image est ensuite dessinée et capturée.
+window.preparePourExport = async function () {
+  document.body.style.cssText = 'margin:0;display:block';
+  c.style.cssText = 'width:1080px;height:1920px;display:block';
+  await prepare();
+  return DUREE;
+};
+
+if (!location.hash.includes('export')) boucle();
+</script>
+</body>
+</html>
