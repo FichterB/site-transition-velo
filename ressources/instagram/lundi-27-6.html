@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- Visuel Instagram 1080 × 1350 (format portrait 4:5). Export PNG : voir ressources/instagram/README (commande Chrome headless). -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;overflow:hidden}
+  body{background:#1C232B;color:#fff;font-family:'Hanken Grotesk',Arial,sans-serif;position:relative}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:56px 64px 0}
+  .logos{display:flex;align-items:center;gap:18px}
+  .tuile{background:#fff;border-radius:10px;padding:12px 18px;display:flex;align-items:center}
+  .tuile img{display:block}
+  .x{color:#8A8271;font-size:26px}
+  .op{font-family:'Anton',Impact,sans-serif;font-size:30px;letter-spacing:1px;text-transform:uppercase;color:#B9B3A6}
+  body{display:flex;flex-direction:column;padding-bottom:52px}
+  h1{font-family:'Anton',Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:104px;line-height:1.02;padding:44px 64px 0}
+  h1 span{color:#FF8A72}
+  .sous{padding:16px 64px 0;font-size:30px;color:#D8D3C8}
+  .photo{position:relative;margin:34px 64px 0;height:500px;background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .photo img{width:740px;height:auto;display:block}
+  .remise{position:absolute;top:26px;right:26px;background:#D4412B;color:#fff;font-family:'Anton',Impact,sans-serif;font-size:60px;line-height:1;padding:16px 22px 14px;border-radius:12px}
+  .prix{margin:30px 64px 0;display:flex;align-items:baseline;gap:24px}
+  .prix .p{font-weight:800;font-size:92px;line-height:1;color:#fff;letter-spacing:-2px}
+  .prix .o{font-weight:700;font-size:42px;color:#8A8271;text-decoration:line-through;text-decoration-thickness:3px}
+  .prix .ttc{font-size:28px;color:#B9B3A6}
+  .bas{margin:auto 64px 0;display:flex;justify-content:space-between;align-items:flex-end;border-top:2px solid #39424C;padding-top:24px;font-size:27px;color:#D8D3C8}
+  .bas b{color:#fff;font-size:40px;font-weight:800;display:block}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="logos">
+      <div class="tuile"><img src="logo-cyclable.jpg" width="150" height="57" alt="Cyclable"></div>
+      <span class="x">×</span>
+      <div class="tuile"><img src="logo-moustache.png" width="160" height="42" alt="Moustache Bikes"></div>
+    </div>
+    <div class="op">Saison des cadeaux</div>
+  </div>
+
+  <h1>Moustache<br><span>Lundi 27.6</span></h1>
+  <p class="sous">Vélo électrique de ville · 4 coloris · quantités limitées</p>
+
+  <div class="photo">
+    <img src="lundi-27-6.webp" alt="Moustache Lundi 27.6 bleu nuit">
+    <div class="remise">−28&nbsp;%</div>
+  </div>
+
+  <div class="prix">
+    <span class="p">3&#8239;095&nbsp;€</span>
+    <span class="o">4&#8239;299&nbsp;€</span>
+    <span class="ttc">TTC</span>
+  </div>
+
+  <div class="bas">
+    <div><b>04 86 84 10 32</b>Cyclable Valence – Saint-Péray</div>
+    <div style="text-align:right">13 avenue du 8 Mai<br>07130 Saint-Péray</div>
+  </div>
+</body>
+</html>
