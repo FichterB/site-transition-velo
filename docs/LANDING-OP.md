@@ -1,34 +1,41 @@
-# Landing pages d'opération (OP)
+# Landing pages d'opération B2C (magasin)
 
-Une page à part par opération commerciale (salon, partenariat, offre limitée…), à l'adresse :
+Pages autonomes pour les opérations commerciales du **magasin Cyclable Valence – Saint-Péray** (activité B2C, exploitée par Transition Vélo SAS). Elles ne sont **pas liées au site B2B** : pas de lien depuis l'accueil, pas de lien vers le simulateur.
 
 - production : `https://transitionvelo.net/op/<nom-de-l-op>/`
 - préprod : `https://transitionvelo.net/preprod/op/<nom-de-l-op>/`
 
-Chaque OP est un dossier `site/op/<nom-de-l-op>/` contenant un `index.html`. Apache sert ce fichier tout seul : aucune configuration serveur.
+Chaque OP est un dossier `site/op/<nom-de-l-op>/` avec son `index.html` et ses photos dans `img/`. Apache sert le dossier tout seul : aucune configuration serveur.
 
-## Créer une OP
+## OP en ligne
 
-1. Copier `site/op/modele/` en `site/op/<nom-de-l-op>/` (minuscules, chiffres et tirets, ex. `salon-valence-2026`).
-2. Dans le nouveau `index.html` :
-   - bloc `window.TV_OP` : `slug` (= nom du dossier), `velos` (vélos mis en avant, index de la liste de `simulateur-calcul.js`), `finLe` (date de fin, facultative) ;
-   - `<body data-page="op-<nom-de-l-op>">` (sert au suivi GA4) ;
-   - `<title>`, `<meta name="description">` et tous les textes entre crochets `[ … ]` ;
-   - `<meta name="robots">` : garder `noindex` si l'OP n'est diffusée que par email, pub ou QR code ; le retirer si elle doit apparaître dans Google.
+| Dossier | Opération | Contenu |
+|---|---|---|
+| `op/saison-des-cadeaux/` | Saison des cadeaux Moustache (déstockage) | 21 modèles Moustache, filtres par famille, tri, recherche, coloris |
+
+## Créer une nouvelle OP
+
+1. Copier un dossier existant (ex. `op/saison-des-cadeaux/`) en `site/op/<nom>/` (minuscules, chiffres, tirets).
+2. Dans `index.html` :
+   - `<title>`, `<meta name="description">`, titre et texte du bandeau ;
+   - `const OP = '<nom>'` (suivi GA4) et `<body data-page="op-<nom>">` ;
+   - `MODELS` : les vélos et leurs variantes (prix initial `o`, prix remisé `p`, remise `d`, tailles `s`, etc.) ;
+   - `PHOTOS` : une photo par modèle, placée dans `img/`, avec le coloris qu'elle montre ;
+   - `FORM_URL` : le formulaire HubSpot B2C (actuellement `share-eu1.hsforms.com/2B57XYos-QA-CQtXEgDgd-w2ekw85`).
 3. Pousser sur `main` → vérifier en préprod → pull request `main` → `production`.
 
 ## Ce que fait la page
 
-- Les chemins partent de la racine du site grâce à `<base href="../../">` : images, scripts et liens fonctionnent depuis n'importe quel dossier d'OP, en préprod comme en production.
-- Liste des vélos de l'OP (mêmes prix et loyers que le reste du site), sélection de plusieurs vélos, puis « Simuler ce choix » → `simulateur.html?velos=…&op=<nom-de-l-op>`.
-- Le simulateur garde le **formulaire HubSpot avant les résultats** pour un visiteur arrivé directement sur l'OP (capture du prospect).
-- GA4 : les événements de la page portent `page_type = op-<nom-de-l-op>` ; la simulation porte le paramètre `operation = <nom-de-l-op>`.
+- « Demander plus d'infos » ouvre le formulaire HubSpot B2C dans un nouvel onglet, avec le message pré-rempli (modèle, coloris, prix).
+- Suivi GA4 (après consentement, via `tracking.js`) : événement `op_demande_infos` avec `operation`, `modele` et `velo_prix`. Aucune donnée personnelle.
+- Mise en page : chaque carte partage les rangées de sa ligne (CSS `subgrid`) pour que photos, listes de prix et boutons soient alignés.
+- Polices et couleurs de la charte (Anton pour le titre, Hanken Grotesk pour le texte).
 
 ## Liens de campagne
 
 Ajouter les paramètres UTM à l'adresse diffusée, ex. :
-`https://transitionvelo.net/op/salon-valence-2026/?utm_source=salon&utm_medium=qrcode&utm_campaign=salon-valence-2026`
+`https://transitionvelo.net/op/saison-des-cadeaux/?utm_source=facebook&utm_medium=social&utm_campaign=saison-des-cadeaux`
 
 ## Fin d'une OP
 
-Supprimer le dossier dans le dépôt ne l'efface pas du serveur (le déploiement ne supprime jamais rien). Pour la retirer : la remplacer par une page qui renvoie vers l'accueil, ou supprimer le dossier dans FileZilla.
+Le déploiement ne supprime jamais rien sur le serveur : supprimer le dossier du dépôt ne retire pas la page en ligne. Pour l'arrêter, remplacer son contenu par un message de fin d'offre, ou supprimer le dossier dans FileZilla.

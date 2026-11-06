@@ -19,13 +19,14 @@ Pour ajouter une mesure : `window.tvTrack('nom_evenement', { param: valeur })`. 
 | Événement | Déclencheur | Paramètres |
 |---|---|---|
 | `generate_lead` | formulaire HubSpot envoyé — **événement clé** | `form` + les valeurs de simulation |
-| `sim_step_view` | chaque étape du simulateur | `step`, `step_name` (prix, profil, formulaire, resultats) ; à partir de l'étape 3 : `velo_prix` (total HT), `nb_velos`, `parcours` (direct = formulaire avant les résultats, accueil = résultats directs), `operation` (nom de la landing page d'OP d'où vient le visiteur, voir docs/LANDING-OP.md), `salaire_brut`, `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie`, `cout_net_employeur` |
+| `sim_step_view` | chaque étape du simulateur | `step`, `step_name` (prix, profil, formulaire, resultats) ; à partir de l'étape 3 : `velo_prix` (total HT), `nb_velos`, `parcours` (direct = formulaire avant les résultats, accueil = résultats directs), `salaire_brut`, `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie`, `cout_net_employeur` |
 | `sim_param_change` | réglage du simulateur modifié (un envoi par réglage, 0,8 s après le dernier mouvement) | `param` (prix, nb_velos, salaire, tmi, duree, part_salarie), `value` |
 | `form_view` | formulaire HubSpot affiché et prêt | `form` |
 | `contact_click` | clic téléphone ou email — **événement clé** (téléphone) | `method` (phone, email), `location` |
 | `cta_click` | liens vers `#simulateur` ou `#contact` | `target`, `location`, `label` |
 | `sim_detail_tab` | onglets détail salarié / employeur / bilan | `tab` |
 | `section_view` | section de l'accueil vue (moitié visible, ou moitié de l'écran), une fois par page | `section` (hero, avantages, etapes, fiscalite, velos, atelier, contact, cgv) |
+| `op_demande_infos` | clic sur « Demander plus d'infos » d'une page d'opération B2C (`site/op/…`) | `operation`, `modele`, `velo_prix` (prix remisé TTC) |
 | `bike_click` | clic sur une carte du catalogue de vélos (accueil) | `modele`, `velo_prix` |
 
 Tous les événements portent `page_type` (`simulateur` ou `accueil`). L'accueil n'a plus de simulateur : il envoie vers `simulateur.html` (avec les vélos choisis).
@@ -35,7 +36,7 @@ Marquage dans le HTML : `data-track-section="…"` sur une section, `data-bike="
 ## Réglages à faire dans GA4
 
 1. **Admin → Définitions personnalisées** :
-   - Dimensions (portée événement) : `operation`, `parcours`, `page_type`, `step_name`, `method`, `location`, `target`, `tab`, `param`, `section`, `modele`
+   - Dimensions (portée événement) : `operation`, `modele`, `parcours`, `page_type`, `step_name`, `method`, `location`, `target`, `tab`, `param`, `section`, `modele`
    - Métriques : `velo_prix` (devise), `nb_velos`, `salaire_brut` (devise), `tmi`, `duree_mois`, `part_salarie_pct`, `cout_net_salarie` (devise), `cout_net_employeur` (devise)
 2. **Admin → Événements** : marquer `generate_lead` et `contact_click` comme **événements clés**.
 3. **Explorer → Exploration de l'entonnoir** : `sim_step_view` (prix → profil → formulaire), `form_view`, `generate_lead`.
