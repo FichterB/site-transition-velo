@@ -21,13 +21,13 @@ Chaque OP est un dossier `site/op/<nom-de-l-op>/` avec son `index.html` et ses p
    - `const OP = '<nom>'` (suivi GA4) et `<body data-page="op-<nom>">` ;
    - `MODELS` : les vélos et leurs variantes (prix initial `o`, prix remisé `p`, remise `d`, tailles `s`, etc.) ;
    - `PHOTOS` : une photo par modèle, placée dans `img/`, avec le coloris qu'elle montre ;
-   - `FORM_URL` : le formulaire HubSpot B2C (actuellement `share-eu1.hsforms.com/2B57XYos-QA-CQtXEgDgd-w2ekw85`).
+   - le popup « Réserver ce vélo » (`<dialog id="appel">`) : téléphone, horaires et email du magasin.
 3. Pousser sur `main` → vérifier en préprod → pull request `main` → `production`.
 
 ## Ce que fait la page
 
-- « Demander plus d'infos » ouvre le formulaire HubSpot B2C dans un nouvel onglet, avec le message pré-rempli (modèle, coloris, prix).
-- Suivi GA4 (après consentement, via `tracking.js`) : événement `op_demande_infos` avec `operation`, `modele` et `velo_prix`. Aucune donnée personnelle.
+- « Réserver ce vélo » ouvre un popup qui rappelle le vélo choisi (modèle, coloris, prix) et affiche le téléphone du magasin en grand (cliquable sur mobile), les horaires et l'email. Pas de formulaire.
+- Suivi GA4 (après consentement, via `tracking.js`) : ouverture du popup = `op_demande_infos` (`operation`, `modele`, `velo_prix`) ; clic sur le numéro = `contact_click` (méthode `phone`), compté automatiquement. Aucune donnée personnelle.
 - Mise en page : chaque carte partage les rangées de sa ligne (CSS `subgrid`) pour que photos, listes de prix et boutons soient alignés.
 - Polices et couleurs de la charte (Anton pour le titre, Hanken Grotesk pour le texte).
 
