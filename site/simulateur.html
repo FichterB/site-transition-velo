@@ -344,6 +344,8 @@
   // sel = vélos choisis ; libre = prix saisi au curseur (vélo hors liste) ; filtre = n'afficher que les vélos choisis (arrivée depuis l'accueil)
   // Visite venue de l'accueil (marque posée par index.html) : résultats affichés sans formulaire préalable,
   // le formulaire HubSpot est proposé sous les résultats. Arrivée directe (pub, email, QR code) : formulaire d'abord.
+  // Venu d'une landing page d'opération (site/op/<nom>/) : son nom part dans GA4 avec la simulation
+  var OP_NOM = (new URLSearchParams(location.search).get('op') || '').replace(/[^a-z0-9-]/gi, '').slice(0, 40);
   var depuisSite = false;
   try { depuisSite = sessionStorage.getItem('tv_depuis_site') === '1'; } catch(e){}
   var s = { step:1, gate:!depuisSite, prix:0, sel:[], libre:false, filtre:false, salaire:3000, tmi:11, duree:36, part:SIM.partDefaut, bk:'sal', unlocked:false };
@@ -363,7 +365,7 @@
 
   // ---------- Mesure d'audience ----------
   var STEP_NAMES = {1:'prix', 2:'profil', 3:'formulaire', 4:'resultats'}, lastStep = 0;
-  function vals(){ var c = calc(); return { velo_prix:s.prix, nb_velos:s.sel.length || 1, parcours:s.gate ? 'direct' : 'accueil', salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
+  function vals(){ var c = calc(); return { velo_prix:s.prix, nb_velos:s.sel.length || 1, parcours:s.gate ? 'direct' : 'accueil', operation:OP_NOM || undefined, salaire_brut:s.salaire, tmi:s.tmi, duree_mois:s.duree, part_salarie_pct:s.part, cout_net_salarie:c.coutNetSal, cout_net_employeur:c.coutNetEmp }; }
   function track(name, params){ if (window.tvTrack) window.tvTrack(name, params || {}); }
   function trackParam(param, value){ if (window.tvTrackParam) window.tvTrackParam(param, value); }
 

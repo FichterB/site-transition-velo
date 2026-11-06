@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  MODÈLE DE LANDING PAGE D'OPÉRATION (OP)
+  Adresse : transitionvelo.net/op/<nom-de-l-op>/  (préprod : transitionvelo.net/preprod/op/<nom-de-l-op>/)
+  Pour une nouvelle OP : copier ce dossier en site/op/<nom-de-l-op>/, puis remplir le bloc OP ci-dessous
+  et les textes marqués [ … ]. Voir docs/LANDING-OP.md.
+-->
+<!-- Les chemins (images, scripts, liens) partent de la racine du site, quel que soit le dossier de l'OP -->
+<base href="../../">
+<title>[Titre de l'opération] — Transition Vélo</title>
+<meta name="description" content="[Phrase de description de l'opération, 150 caractères environ]">
+<!-- Le modèle n'est jamais indexé. Pour une vraie OP : garder noindex si elle n'est diffusée que par email, pub ou QR code. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="./config.js?v=20261021g"></script>
+<script src="./simulateur-calcul.js?v=20261021g"></script>
+<script>
+  /* ===================== BLOC OP : seuls réglages à modifier ===================== */
+  window.TV_OP = {
+    slug: 'modele',          // = nom du dossier (sert au suivi GA4 et au lien vers le simulateur)
+    velos: [2, 3, 5],        // vélos mis en avant, index dans la liste de simulateur-calcul.js
+                             // 0 VTC · 1 Gravel · 2 VAE urbain · 3 VAE premium · 4 Gravel élec. · 5 VAE tout-terrain · 6 Cargo
+    finLe: ''                // date de fin de l'OP au format AAAA-MM-JJ (vide = pas de date affichée)
+  };
+</script>
+<style>
+  :root{
+    --red:#D4412B; --red-dark:#B5341F; --ink:#1C232B; --night:#141A20;
+    --paper:#FCFBF9; --cream:#F4F0E7; --line:#E3DDD0;
+    --muted:#6B6454; --soft:#8A8271; --green:#1F7A45;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  h1,h2{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.005em;line-height:1.02;margin:0}
+  h1{font-size:clamp(2.4rem,5.6vw,4.2rem)}
+  h2{font-size:clamp(1.8rem,3.2vw,2.4rem)}
+  h3{font-size:18px;line-height:1.35;margin:0 0 6px}
+  p{margin:0 0 1em}
+  .lead{font-size:clamp(18px,1.6vw,20px);color:var(--muted);max-width:36em}
+  section{padding:72px 0}
+  .btn{display:inline-block;background:var(--red);color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:14px 24px;border-radius:8px;transition:background .15s}
+  .btn:hover{background:var(--red-dark)}
+
+  header{border-bottom:1px solid var(--line);background:var(--paper)}
+  .bar{display:flex;align-items:center;gap:24px;height:68px}
+  .bar .logo img{height:30px;width:auto}
+  .bar .tel{margin-left:auto;font-weight:700;text-decoration:none;font-size:15px}
+
+  /* Haut de page de l'OP */
+  .hero{padding:64px 0 56px}
+  .hero h1 em{font-style:normal;color:var(--red)}
+  .offre{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;margin:28px 0 24px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .offre b{font-size:clamp(22px,2.6vw,30px)}
+  .offre span{color:var(--muted)}
+  .fin{color:var(--red);font-weight:700}
+
+  /* Vélos (lignes générées par simulateur-calcul.js > ligneVelo) */
+  .velos{background:var(--cream)}
+  .bikes{list-style:none;padding:0;margin:32px 0 0;border-top:1px solid var(--line)}
+  .bike{display:grid;grid-template-columns:150px 1fr 150px 150px;gap:28px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+  .bike .pic{aspect-ratio:4/3;background:#fff;display:flex;align-items:center;justify-content:center}
+  .bike .pic img{max-width:92%;max-height:92%;object-fit:contain}
+  .bike .pic img.wheel{width:38%;opacity:.35}
+  .bike .cat{font-size:13px;color:var(--soft)}
+  .bike h3{margin:0 0 2px}
+  .bike p{font-size:15px;color:var(--muted);margin:0}
+  .bike .loyer{font-size:15px;margin:0}
+  .bike .loyer b{font-family:'JetBrains Mono',monospace;font-size:20px}
+  .bike .loyer small{color:var(--soft)}
+  .qty{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+  .qty button{font:inherit;font-weight:700;cursor:pointer;border-radius:8px}
+  .qty .add{background:#fff;border:1.5px solid var(--ink);color:var(--ink);padding:8px 16px}
+  .qty .add:hover{border-color:var(--red);color:var(--red)}
+  .qty .pm{width:36px;height:36px;border:1.5px solid var(--red);background:#fff;color:var(--red);font-size:18px;line-height:1;padding:0}
+  .qty button:disabled{opacity:.35;cursor:not-allowed}
+  .qty .n{font-family:'JetBrains Mono',monospace;font-weight:700;min-width:1.2em;text-align:center}
+  .choix{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:24px;padding:18px 22px;background:var(--paper);border-radius:8px}
+  .choix .resume{font-weight:700}
+  .choix .resume small{display:block;font-weight:400;color:var(--muted);font-size:14px}
+
+  /* Conditions de l'OP */
+  .conditions ul{padding-left:18px;color:var(--muted);margin:16px 0 0;max-width:46em}
+
+  footer{background:var(--night);color:rgba(255,255,255,.6);font-size:14px;padding:40px 0 48px}
+  footer .row{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:center}
+  footer img{height:24px;width:auto}
+  footer a{color:rgba(255,255,255,.8)}
+  footer button{background:none;border:0;padding:0;font:inherit;color:rgba(255,255,255,.8);text-decoration:underline;cursor:pointer}
+
+  .mbar{display:none}
+  @media (max-width:960px){
+    .bike{grid-template-columns:120px 1fr 130px;gap:20px}
+    .bike .qty{grid-column:2 / -1;justify-content:flex-start}
+  }
+  @media (max-width:760px){
+    body{font-size:16px;padding-bottom:72px}
+    .wrap{padding:0 16px}
+    section{padding:56px 0}
+    .hero{padding:40px 0 40px}
+    .bar .tel{display:none}
+    .bike{grid-template-columns:96px 1fr;gap:6px 16px;align-items:start}
+    .bike .pic{grid-row:span 3}
+    .bike .loyer,.bike .qty{grid-column:2}
+    .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--line)}
+    .mbar a{flex:1;text-align:center;padding:12px;border-radius:8px;font-weight:700;text-decoration:none}
+    .mbar .call{border:1.5px solid var(--ink);color:var(--ink)}
+    .mbar .sim{background:var(--red);color:#fff}
+  }
+</style>
+</head>
+<body data-page="op-modele">
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="index.html" aria-label="Transition Vélo, accueil"><img src="images/logo-transition-velo.svg" alt="Transition Vélo"></a>
+    <a class="tel" href="tel:+33658775836">06 58 77 58 36</a>
+  </div>
+</header>
+
+<main>
+  <!-- Haut de page : l'offre en une phrase -->
+  <section class="hero" data-track-section="op-offre">
+    <div class="wrap">
+      <h1>[Titre de l'opération,]<br><em>[en deux lignes.]</em></h1>
+      <p class="lead" style="margin-top:18px">[Une ou deux phrases qui expliquent l'offre : pour qui, ce qui est offert, jusqu'à quand.]</p>
+      <div class="offre">
+        <b>[L'avantage chiffré, ex. 1er mois offert]</b>
+        <span>[précision, ex. pour tout contrat de 36 mois signé avant le 31 décembre]</span>
+        <span class="fin" id="fin" hidden></span>
+      </div>
+      <a class="btn" id="cta" href="simulateur.html">Simuler mon offre</a>
+    </div>
+  </section>
+
+  <!-- Vélos mis en avant pour l'OP -->
+  <section class="velos" data-track-section="op-velos">
+    <div class="wrap">
+      <h2>[Les vélos de l'opération]</h2>
+      <p class="lead" style="margin-top:12px">Ajoutez un ou plusieurs vélos : la simulation reprendra votre choix. Loyer indicatif sur 36 mois, assurance et entretien compris.</p>
+      <ul class="bikes" id="bikes"></ul>
+      <div class="choix" id="choix" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Conditions de l'OP -->
+  <section class="conditions" data-track-section="op-conditions">
+    <div class="wrap">
+      <h2>Conditions de l'offre</h2>
+      <ul>
+        <li>[Condition 1, ex. offre réservée aux entreprises de la Drôme et de l'Ardèche]</li>
+        <li>[Condition 2, ex. à partir de 5 vélos]</li>
+        <li>Offre réservée aux vélos et vélos à assistance électrique (25 km/h). Les speedbikes ne sont pas éligibles aux avantages fiscaux.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <img src="images/logo-transition-velo-blanc.svg" alt="Transition Vélo">
+    <span>13 avenue du 8 mai, 07130 Saint-Péray</span>
+    <a href="tel:+33658775836">06 58 77 58 36</a>
+    <a href="mailto:adrien@transitionvelo.net">adrien@transitionvelo.net</a>
+    <span>Prix HT · © Transition Vélo 2026</span>
+    <button type="button" data-cookie-settings>Gérer les cookies</button>
+  </div>
+</footer>
+
+<div class="mbar" aria-label="Actions rapides">
+  <a class="call" href="tel:+33658775836">Appeler Adrien</a>
+  <a class="sim" href="simulateur.html">Simuler mon offre</a>
+</div>
+
+<script>
+// Vélos de l'OP, sélection et lien vers le simulateur (même logique que l'accueil, limitée aux vélos de l'OP)
+(function(){
+  var SIM = window.TV_SIM, OP = window.TV_OP || {}, sel = [], eur = SIM.eur;
+  var liste = (OP.velos || []).filter(function(i){ return SIM.velos[i]; });
+
+  // Lien vers le simulateur : vélos choisis + nom de l'OP (pour le suivi GA4)
+  function lien(){
+    var p = ['op=' + encodeURIComponent(OP.slug || '')];
+    if (sel.length) p.unshift('velos=' + sel.slice().sort(function(a,b){ return a-b; }).join(','));
+    return 'simulateur.html?' + p.join('&');
+  }
+
+  function render(){
+    document.getElementById('bikes').innerHTML = liste.map(function(i){ return SIM.ligneVelo(i, sel); }).join('');
+    var total = SIM.total(sel), l = lien();
+    document.getElementById('choix').innerHTML = sel.length
+      ? '<div class="resume">'+SIM.resumePrix(total, sel)+'<small>Loyer indicatif : '+eur(SIM.calc({ prix:total, sel:sel, tmi:0, duree:36, part:0 }).loyer)+' HT/mois sur 36 mois</small></div><a class="btn" href="'+l+'">Simuler ce choix</a>'
+      : '<div class="resume">Aucun vélo choisi<small>Ajoutez des vélos ci-dessus, ou simulez directement.</small></div><a class="btn" href="'+l+'">Simuler mon offre</a>';
+    document.getElementById('cta').href = l;
+    var m = document.querySelector('.mbar .sim');
+    m.href = l; m.textContent = sel.length > 1 ? 'Simuler ' + sel.length + ' vélos' : 'Simuler mon offre';
+  }
+
+  document.getElementById('bikes').addEventListener('click', function(e){
+    var b = e.target.closest('[data-plus],[data-moins]');
+    if (!b) return;
+    var next = b.dataset.plus != null ? SIM.ajouter(sel, +b.dataset.plus) : SIM.retirer(sel, +b.dataset.moins);
+    if (!next) return;
+    sel = next; render();
+    if (window.tvTrackParam) { window.tvTrackParam('nb_velos', sel.length); window.tvTrackParam('prix', SIM.total(sel)); }
+  });
+
+  // Date de fin de l'OP
+  if (OP.finLe) {
+    var d = new Date(OP.finLe + 'T23:59:59');
+    var fin = document.getElementById('fin');
+    fin.textContent = 'Jusqu’au ' + d.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+    fin.hidden = false;
+  }
+  render();
+})();
+</script>
+
+<!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
+<script src="./tracking.js?v=20261021g"></script>
+</body>
+</html>

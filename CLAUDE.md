@@ -17,6 +17,7 @@ site/                 ← tout ce qui est publié sur le FTP (et rien d'autre)
   config.js           réglages modifiables sans toucher au HTML (GA4, HubSpot, taux de loyer, part salarié)
   simulateur-calcul.js  formule du simulateur + liste des vélos, partagées par les deux pages (window.TV_SIM)
   tracking.js         bandeau cookies + GA4 + Clarity, partagé par les deux pages (window.tvTrack)
+  op/<nom>/index.html landing page d'une opération commerciale (modèle : op/modele/, procédure : docs/LANDING-OP.md)
   images/             logos SVG + photos
 ressources/           sources non publiées : logo .ai, fiches PDF, photos HD
 docs/                 documentation détaillée (déploiement, règles métier, analytics)
