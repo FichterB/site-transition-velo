@@ -26,7 +26,7 @@ Pour ajouter une mesure : `window.tvTrack('nom_evenement', { param: valeur })`. 
 | `cta_click` | liens vers `#simulateur` ou `#contact` | `target`, `location`, `label` |
 | `sim_detail_tab` | onglets détail salarié / employeur / bilan | `tab` |
 | `section_view` | section de l'accueil vue (moitié visible, ou moitié de l'écran), une fois par page | `section` (hero, avantages, etapes, fiscalite, velos, atelier, contact, cgv) |
-| `op_demande_infos` | clic sur « Demander plus d'infos » d'une page d'opération B2C (`site/op/…`) | `operation`, `modele`, `velo_prix` (prix remisé TTC) |
+| `op_demande_infos` | ouverture du popup « Réserver ce vélo » d'une page d'opération B2C (`site/op/…`) | `operation`, `modele`, `velo_prix` (prix remisé TTC) |
 | `bike_click` | clic sur une carte du catalogue de vélos (accueil) | `modele`, `velo_prix` |
 
 Tous les événements portent `page_type` (`simulateur` ou `accueil`). L'accueil n'a plus de simulateur : il envoie vers `simulateur.html` (avec les vélos choisis).

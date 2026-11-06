@@ -96,7 +96,27 @@
   .action{padding-top:14px;padding-bottom:18px;align-self:end}
   .cta{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:13px 16px;border-radius:8px;transition:background .15s}
   .cta:hover{background:var(--red)}
+  .cta{width:100%;border:0;cursor:pointer;font-family:inherit}
   .cta-note{font-size:13px;color:var(--muted);text-align:center;margin:8px 0 0}
+
+  /* Popup « Réserver ce vélo » */
+  dialog.appel{border:0;padding:0;border-radius:12px;width:min(440px,calc(100vw - 32px));color:var(--ink);box-shadow:0 24px 60px rgba(20,26,32,.35)}
+  dialog.appel::backdrop{background:rgba(20,26,32,.6)}
+  .appel .in{padding:28px 26px 24px;position:relative}
+  .appel .close{position:absolute;top:10px;right:10px;width:36px;height:36px;border:0;background:none;font-size:26px;line-height:1;color:var(--muted);cursor:pointer;border-radius:8px}
+  .appel .close:hover{background:var(--cream);color:var(--ink)}
+  .appel .velo{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin:0 40px 4px 0}
+  .appel h2{font-size:24px;font-weight:800;line-height:1.15;margin:0 40px 4px 0}
+  .appel .prix{margin:0 0 18px;color:var(--muted)}
+  .appel .prix b{color:var(--red);font-size:20px}
+  .appel p{margin:0 0 14px}
+  .appel .tel{display:block;text-align:center;background:var(--red);color:#fff;text-decoration:none;font-size:30px;font-weight:800;padding:14px 16px;border-radius:10px;transition:background .15s}
+  .appel .tel:hover{background:var(--red-dark)}
+  .appel .tel small{display:block;font-size:13px;font-weight:600;opacity:.9}
+  .appel .hours{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--ink)}
+  .appel .hours .closed{color:var(--soft)}
+  .appel .mail{margin:14px 0 0;font-size:14px;color:var(--muted)}
+  .appel .mail a{color:var(--ink);font-weight:600;overflow-wrap:anywhere}
   .empty{padding:40px 0;color:var(--muted)}
 
   /* Bas de page */
@@ -178,7 +198,7 @@
 
 <section class="infos" aria-label="Réserver et conditions">
   <div class="wrap">
-    <div><h3>Essayer et réserver</h3><p>Cliquez sur « Demander plus d’infos » sous le vélo qui vous plaît, ou venez essayer ces modèles chez Cyclable Valence – Saint-Péray. Nous vérifions la disponibilité de votre taille auprès de Moustache et nous nous occupons du réglage à la livraison.</p></div>
+    <div><h3>Essayer et réserver</h3><p>Cliquez sur « Réserver ce vélo » sous le modèle qui vous plaît et appelez-nous, ou venez essayer ces modèles chez Cyclable Valence – Saint-Péray. Nous vérifions la disponibilité de votre taille auprès de Moustache et nous nous occupons du réglage à la livraison.</p></div>
     <div><h3>Conditions</h3><p>Prix publics TTC, arrondis à l’euro inférieur. Remise calculée sur le prix de vente initial conseillé. Offre valable dans la limite des stocks disponibles. « Stock limité » signale moins de 10 exemplaires disponibles. Photos Moustache Bikes, non contractuelles.</p></div>
   </div>
 </section>
@@ -199,10 +219,27 @@
   </div>
 </footer>
 
+<dialog class="appel" id="appel" aria-labelledby="appelModele" data-track-loc="popup-reserver">
+  <div class="in">
+    <button type="button" class="close" aria-label="Fermer">×</button>
+    <p class="velo" id="appelFamille"></p>
+    <h2 id="appelModele"></h2>
+    <p class="prix" id="appelPrix"></p>
+    <p>Pour réserver ce vélo ou vérifier votre taille, appelez le magasin&nbsp;:</p>
+    <a class="tel num" href="tel:+33486841032">04 86 84 10 32<small>Cyclable Valence – Saint-Péray</small></a>
+    <div class="hours num">
+      <span>Lundi</span><span class="closed">Fermé</span>
+      <span>Mardi – vendredi</span><span>9h–13h · 15h–19h</span>
+      <span>Samedi</span><span>10h–18h</span>
+      <span>Dimanche</span><span class="closed">Fermé</span>
+    </div>
+    <p class="mail">Ou par email&nbsp;: <a href="mailto:valence.saint-peray@cyclable.com">valence.saint-peray@cyclable.com</a></p>
+  </div>
+</dialog>
+
 <script>
 /* ===================== DONNÉES DE L'OPÉRATION ===================== */
 const OP = 'saison-des-cadeaux';
-const FORM_URL = 'https://share-eu1.hsforms.com/2B57XYos-QA-CQtXEgDgd-w2ekw85';   // formulaire HubSpot B2C
 /* m = modèle, f = famille, v = variantes : c/cn = coloris (clé / nom affiché), hex, fr = cadre, eq = équipé,
    b = batterie Wh, s = tailles, o = prix initial TTC, p = prix remisé TTC, d = remise %, y = millésime, lim = stock limité */
 const MODELS = [{"m": "Lundi 27 ES", "f": "Ville", "v": [{"c": "Curry", "cn": "Curry", "hex": "#E5C11C", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 2699, "p": 2429, "d": 10, "y": "2026", "lim": false}]}, {"m": "Lundi 27.3", "f": "Ville", "v": [{"c": "Pastel Green", "cn": "Menthe", "hex": "#CFE0D3", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 3199, "p": 2879, "d": 10, "y": "2025/26", "lim": true}]}, {"m": "Lundi 27.4", "f": "Ville", "v": [{"c": "Curry", "cn": "Curry", "hex": "#E5C11C", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 3299, "p": 2969, "d": 10, "y": "2025/26", "lim": true}, {"c": "Curry", "cn": "Curry", "hex": "#E5C11C", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 3499, "p": 3149, "d": 10, "y": "2025/26", "lim": false}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 3299, "p": 2969, "d": 10, "y": "2025/26", "lim": true}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 3499, "p": 3149, "d": 10, "y": "2025/26", "lim": true}]}, {"m": "Lundi 27.6", "f": "Ville", "v": [{"c": "Midnight Blue", "cn": "Bleu nuit", "hex": "#22305A", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": false}, {"c": "Midnight Blue", "cn": "Bleu nuit", "hex": "#22305A", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 4499, "p": 3239, "d": 28, "y": "2025/26", "lim": false}, {"c": "Stone Grey", "cn": "Gris pierre", "hex": "#CFCAC0", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": true}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": true}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 4499, "p": 3239, "d": 28, "y": "2025/26", "lim": false}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": true}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 4499, "p": 3239, "d": 28, "y": "2025/26", "lim": false}]}, {"m": "Mardi 27.2", "f": "Ville", "v": [{"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Open", "eq": false, "b": 540, "s": ["L", "XL"], "o": 3399, "p": 2753, "d": 19, "y": "2026", "lim": false}]}, {"m": "Samedi 28 ES", "f": "Trekking & VTC", "v": [{"c": "Deep Blue", "cn": "Bleu profond", "hex": "#22355E", "fr": "Open", "eq": false, "b": 500, "s": ["L"], "o": 2499, "p": 2024, "d": 19, "y": "2026", "lim": false}, {"c": "Deep Blue", "cn": "Bleu profond", "hex": "#22355E", "fr": "Classique", "eq": false, "b": 500, "s": ["S", "M", "L", "XL"], "o": 2499, "p": 1912, "d": 23, "y": "2026", "lim": true}, {"c": "Titanium", "cn": "Titane", "hex": "#A79C8E", "fr": "Classique", "eq": false, "b": 500, "s": ["S", "M", "L", "XL"], "o": 2499, "p": 1912, "d": 23, "y": "2026", "lim": false}]}, {"m": "XRoad ES", "f": "Trekking & VTC", "v": [{"c": "Dark Blue", "cn": "Bleu foncé", "hex": "#3A4357", "fr": "Open", "eq": false, "b": 500, "s": ["S", "M", "L"], "o": 2699, "p": 2429, "d": 10, "y": "2026", "lim": true}]}, {"m": "Samedi 28.4", "f": "Trekking & VTC", "v": [{"c": "Red", "cn": "Rouge", "hex": "#C8141C", "fr": "Classique", "eq": false, "b": 500, "s": ["M"], "o": 2899, "p": 2218, "d": 23, "y": "2025/26", "lim": true}, {"c": "Red", "cn": "Rouge", "hex": "#C8141C", "fr": "Classique", "eq": false, "b": 625, "s": ["M"], "o": 3099, "p": 2371, "d": 23, "y": "2025/26", "lim": false}]}, {"m": "XRoad FS 4", "f": "Trekking & VTC", "v": [{"c": "Titanium", "cn": "Titane", "hex": "#A79C8E", "fr": "Classique", "eq": false, "b": 500, "s": ["XL"], "o": 4399, "p": 2969, "d": 33, "y": "2025", "lim": false}, {"c": "Titanium", "cn": "Titane", "hex": "#A79C8E", "fr": "Classique", "eq": false, "b": 625, "s": ["XL"], "o": 4599, "p": 3104, "d": 33, "y": "2025", "lim": false}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 500, "s": ["XL"], "o": 4399, "p": 2969, "d": 33, "y": "2025", "lim": false}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 625, "s": ["XL"], "o": 4599, "p": 3104, "d": 33, "y": "2025", "lim": false}]}, {"m": "Dimanche 28.4", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 400, "s": ["XL"], "o": 4599, "p": 2897, "d": 37, "y": "2024/25", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 400, "s": ["XS", "S"], "o": 4599, "p": 2897, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Dimanche 28.6", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 400, "s": ["L", "XL"], "o": 5999, "p": 3779, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Dimanche 29.6", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 400, "s": ["XL"], "o": 5699, "p": 3590, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Dimanche 29.4", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": true, "b": 400, "s": ["S"], "o": 4899, "p": 3086, "d": 37, "y": "2024/25", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 400, "s": ["XS", "S"], "o": 4699, "p": 2960, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Off 4", "f": "Trekking & VTC", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 625, "s": ["M", "XL"], "o": 3499, "p": 2834, "d": 19, "y": "2026", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 625, "s": ["S", "M"], "o": 3499, "p": 2834, "d": 19, "y": "2026", "lim": false}]}, {"m": "Off 2", "f": "Trekking & VTC", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 500, "s": ["L", "XL"], "o": 2799, "p": 2267, "d": 19, "y": "2023/24/25/26", "lim": false}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 625, "s": ["L", "XL"], "o": 2999, "p": 2429, "d": 19, "y": "2023/24/25/26", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 500, "s": ["M", "L"], "o": 2799, "p": 2267, "d": 19, "y": "2023/24/25/26", "lim": false}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 625, "s": ["M", "L"], "o": 2999, "p": 2429, "d": 19, "y": "2023/24/25/26", "lim": false}]}, {"m": "Trail 150.4", "f": "VTT", "v": [{"c": "Ocre", "cn": "Ocre", "hex": "#C98C2C", "fr": "Classique", "eq": true, "b": 750, "s": ["XL"], "o": 5299, "p": 3338, "d": 37, "y": "2025", "lim": true}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 750, "s": ["XL"], "o": 5099, "p": 3212, "d": 37, "y": "2025", "lim": false}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": true, "b": 750, "s": ["XL"], "o": 5299, "p": 3338, "d": 37, "y": "2025", "lim": true}]}, {"m": "Game 160.9", "f": "VTT", "v": [{"c": "Launch Edition", "cn": "Wild Violet", "hex": "#6A49A6", "fr": "Classique", "eq": false, "b": 600, "s": ["S"], "o": 8999, "p": 6479, "d": 28, "y": "2025", "lim": true}, {"c": "Launch Edition", "cn": "Wild Violet", "hex": "#6A49A6", "fr": "Classique", "eq": false, "b": 750, "s": ["S"], "o": 9299, "p": 6695, "d": 28, "y": "2025", "lim": false}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 8999, "p": 6884, "d": 24, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 9299, "p": 7114, "d": 23, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 8999, "p": 6884, "d": 24, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 9299, "p": 7114, "d": 23, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 8999, "p": 6884, "d": 24, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 9299, "p": 7114, "d": 23, "y": "2025/26", "lim": true}, {"c": "Race", "cn": "High Voltage Green", "hex": "#4E9B1F", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 9599, "p": 7343, "d": 24, "y": "2026", "lim": true}, {"c": "Race", "cn": "High Voltage Green", "hex": "#4E9B1F", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 9899, "p": 7573, "d": 23, "y": "2026", "lim": false}]}, {"m": "Game 150.7", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 5999, "p": 4724, "d": 21, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6299, "p": 4961, "d": 21, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 5999, "p": 4724, "d": 21, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6299, "p": 4961, "d": 21, "y": "2025/26", "lim": false}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 5999, "p": 4724, "d": 21, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 6299, "p": 4961, "d": 21, "y": "2025/26", "lim": true}]}, {"m": "Game 150.8", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6999, "p": 5512, "d": 21, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7299, "p": 5748, "d": 21, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6999, "p": 5512, "d": 21, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7299, "p": 5748, "d": 21, "y": "2025/26", "lim": false}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 6999, "p": 5512, "d": 21, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 7299, "p": 5748, "d": 21, "y": "2025/26", "lim": true}]}, {"m": "Game 160.7", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6499, "p": 4972, "d": 23, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6799, "p": 5201, "d": 24, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6499, "p": 4972, "d": 23, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6799, "p": 5201, "d": 24, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 6499, "p": 4972, "d": 23, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 6799, "p": 5201, "d": 24, "y": "2025/26", "lim": false}]}, {"m": "Game 160.8", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 7499, "p": 5737, "d": 23, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7799, "p": 5966, "d": 24, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 7499, "p": 5737, "d": 23, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7799, "p": 5966, "d": 24, "y": "2025/26", "lim": false}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 7499, "p": 5737, "d": 23, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 7799, "p": 5966, "d": 24, "y": "2025/26", "lim": false}]}];
@@ -242,10 +279,6 @@ function variantSpec(v){
   if (v.eq) parts.push('version équipée');
   return parts.join(' · ');
 }
-function ctaUrl(m, col, min){
-  const msg = `Demande d'infos – Saison des cadeaux : Moustache ${m.m}` + (col.c === 'Coloris unique' ? '' : ` (${col.cn})`) + ` – à partir de ${String(min).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €. Taille souhaitée : `;
-  return FORM_URL + '?message=' + encodeURIComponent(msg);
-}
 function fillCard(el, m){
   const vs = m.v.filter(v => v.c === m.sel).sort((a, b) => a.p - b.p);
   const col = m.colors.find(c => c.c === m.sel);
@@ -270,8 +303,8 @@ function fillCard(el, m){
         <span class="pr num"><span class="now">${eur(v.p)}</span><span class="was"><s>${eur(v.o)}</s>−${v.d}&nbsp;%</span></span>
       </div>`).join('')}</div>
     <div class="action">
-      <a class="cta" href="${ctaUrl(m, col, min)}" target="_blank" rel="noopener" data-modele="${esc(m.m)}" data-prix="${min}">Demander plus d’infos <span aria-hidden="true">→</span></a>
-      <p class="cta-note">Laissez vos coordonnées, nous vous rappelons pour ce vélo.</p>
+      <button type="button" class="cta" data-modele="${esc(m.m)}" data-coloris="${esc(col.c === 'Coloris unique' ? '' : col.cn)}" data-famille="${esc(m.f)}" data-prix="${min}">Réserver ce vélo <span aria-hidden="true">→</span></button>
+      <p class="cta-note">Appelez le magasin : nous vérifions votre taille et le mettons de côté.</p>
     </div>`;
   el.querySelectorAll('.sw').forEach(b => b.addEventListener('click', () => { m.sel = b.dataset.c; fillCard(el, m); }));
 }
@@ -286,11 +319,21 @@ function render(){
   document.getElementById('empty').hidden = list.length > 0;
 }
 
-/* Suivi GA4 (après consentement) : clic sur « Demander plus d'infos », sans donnée personnelle */
+/* « Réserver ce vélo » : popup avec le téléphone du magasin.
+   Suivi GA4 (après consentement, sans donnée personnelle) : ouverture du popup = op_demande_infos ;
+   le clic sur le numéro est compté automatiquement par tracking.js (contact_click, méthode phone). */
+const dlg = document.getElementById('appel');
 document.getElementById('grid').addEventListener('click', e => {
   const a = e.target.closest('.cta');
-  if (a && window.tvTrack) window.tvTrack('op_demande_infos', { operation: OP, modele: a.dataset.modele, velo_prix: +a.dataset.prix });
+  if (!a) return;
+  document.getElementById('appelFamille').textContent = a.dataset.famille;
+  document.getElementById('appelModele').textContent = 'Moustache ' + a.dataset.modele + (a.dataset.coloris ? ' · ' + a.dataset.coloris : '');
+  document.getElementById('appelPrix').innerHTML = 'dès <b class="num">' + eur(+a.dataset.prix) + '</b> TTC';
+  if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  if (window.tvTrack) window.tvTrack('op_demande_infos', { operation: OP, modele: a.dataset.modele, velo_prix: +a.dataset.prix });
 });
+dlg.querySelector('.close').addEventListener('click', () => dlg.close());
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });   // clic à côté du popup
 render();
 </script>
 
