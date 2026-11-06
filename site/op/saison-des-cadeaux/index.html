@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  OPÉRATION B2C (magasin Cyclable Valence – Saint-Péray) : « Saison des cadeaux » Moustache
+  Page autonome, non liée au site B2B. Adresse : transitionvelo.net/op/saison-des-cadeaux/
+  Données des vélos : tableau MODELS en bas de page. Procédure : docs/LANDING-OP.md
+-->
+<title>Saison des cadeaux Moustache — Cyclable Valence – Saint-Péray</title>
+<meta name="description" content="Vélos électriques Moustache en déstockage jusqu'à −37 % chez Cyclable Valence – Saint-Péray : ville, trekking, gravel et VTT. Quantités limitées.">
+<link rel="icon" type="image/jpeg" href="img/logo-cyclable.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="../../config.js?v=20261021g"></script>
+<style>
+  :root{
+    --red:#D4412B; --red-dark:#B5341F; --ink:#1C232B; --night:#141A20;
+    --paper:#FCFBF9; --cream:#F4F0E7; --line:#E3DDD0;
+    --muted:#6B6454; --soft:#8A8271; --green:#1F7A45;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* Bandeau */
+  .band{background:var(--ink);color:#fff}
+  .band .wrap{padding-top:28px;padding-bottom:40px}
+  .brands{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brands .tile{background:#fff;border-radius:8px;height:52px;padding:10px 16px;display:flex;align-items:center}
+  .brands .tile img{height:100%;width:auto}
+  .brands .x{opacity:.55;font-size:18px}
+  .brands .agree{font-size:13px;opacity:.7}
+  .contact{margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 28px;font-size:18px}
+  .contact a{color:#fff;text-decoration:none;font-weight:700;white-space:nowrap}
+  .contact a:hover{color:#FF8A72}
+  .contact .tel{font-size:26px;font-weight:800}
+  .contact .mail{font-weight:600;color:rgba(255,255,255,.85)}
+  h1{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.005em;line-height:1.02;font-size:clamp(2.4rem,6vw,4.4rem);margin:34px 0 18px}
+  h1 em{font-style:normal;color:#FF8A72}
+  .lede{max-width:44em;margin:0;font-size:18px;color:rgba(255,255,255,.82)}
+  .facts{display:flex;flex-wrap:wrap;gap:12px 40px;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.18)}
+  .facts b{display:block;font-size:30px;font-weight:800;line-height:1.1}
+  .facts span{font-size:13px;color:rgba(255,255,255,.65)}
+
+  /* Filtres */
+  .rail{position:sticky;top:0;z-index:5;background:rgba(252,251,249,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .rail .wrap{padding-top:12px;padding-bottom:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .cats{display:flex;flex-wrap:wrap;gap:6px}
+  .cats button{font:600 14px 'Hanken Grotesk',sans-serif;border:1px solid var(--line);background:#fff;color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer}
+  .cats button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tools{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+  select,input{font:500 14px 'Hanken Grotesk',sans-serif;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+  input{width:210px}
+  button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+  /* Grille : chaque carte partage les rangées de sa ligne (subgrid) → photos, prix et boutons alignés */
+  main .wrap{padding-top:28px;padding-bottom:56px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));column-gap:20px;align-items:stretch}
+  .card{display:grid;grid-template-rows:subgrid;grid-row:span 6;row-gap:0;margin-bottom:24px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0}
+  .card > *:not(.stage){padding-left:18px;padding-right:18px}
+  .stage{position:relative;aspect-ratio:4/3;background:#fff;border-bottom:1px solid var(--line)}
+  .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:34px 14px 10px}
+  .stage .cat{position:absolute;top:12px;left:14px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
+  .stage .off{position:absolute;top:10px;right:12px;background:var(--red);color:#fff;font-weight:800;font-size:15px;padding:3px 9px;border-radius:6px}
+  .stage .cat,.stage .off,.stage .pnote{z-index:1}   /* badges et mention devant la photo */
+  .stage .pnote{position:absolute;bottom:8px;left:12px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.9);padding:1px 6px;border-radius:4px}
+  .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;padding-top:16px;padding-bottom:12px}
+  .head h2{font-size:22px;font-weight:800;line-height:1.15;margin:0}
+  .from{font-size:14px;color:var(--muted)}
+  .from b{font-size:20px;color:var(--red)}
+  .lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-bottom:6px}
+  .colors,.sizes-row{padding-bottom:14px}
+  .swatches{display:flex;flex-wrap:wrap;gap:6px}
+  .sw{display:flex;align-items:center;gap:7px;font:600 13px 'Hanken Grotesk',sans-serif;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 11px 4px 5px;cursor:pointer}
+  .sw i{width:18px;height:18px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+  .sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+  .single{font-size:14px;color:var(--muted)}
+  .sizes{display:flex;flex-wrap:wrap;gap:6px}
+  .size{min-width:34px;text-align:center;border:1px solid var(--ink);border-radius:6px;padding:2px 7px;font-weight:700;font-size:13px}
+  .vlist{border-top:1px solid var(--line)}
+  .v{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .v:last-child{border-bottom:0}
+  .spec{font-weight:600;font-size:14px}
+  .sub{font-size:13px;color:var(--muted);grid-column:1}
+  .sub .lim{color:var(--red);font-weight:700}
+  .pr{grid-column:2;grid-row:1 / span 2;text-align:right;align-self:center}
+  .pr .now{display:block;font-weight:800;font-size:21px;line-height:1.1;color:var(--red)}
+  .pr .was{font-size:13px;color:var(--muted)}
+  .pr .was s{margin-right:4px}
+  .action{padding-top:14px;padding-bottom:18px;align-self:end}
+  .cta{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:13px 16px;border-radius:8px;transition:background .15s}
+  .cta:hover{background:var(--red)}
+  .cta-note{font-size:13px;color:var(--muted);text-align:center;margin:8px 0 0}
+  .empty{padding:40px 0;color:var(--muted)}
+
+  /* Bas de page */
+  .infos{border-top:1px solid var(--line)}
+  .infos .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:40px;padding-bottom:48px}
+  .infos h3{font-size:18px;margin:0 0 6px}
+  .infos p{margin:0;color:var(--muted);max-width:60ch}
+  .store{background:var(--ink);color:#fff}
+  .store .wrap{padding-top:40px;padding-bottom:48px}
+  .cols{display:grid;gap:28px;grid-template-columns:repeat(4,1fr)}
+  .cols h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6);font-weight:700}
+  .cols p{margin:0;font-size:15px;line-height:1.6}
+  .cols a{color:#fff;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,.4)}
+  .cols a:hover{text-decoration-color:#FF8A72}
+  .big{font-size:22px;font-weight:800}
+  .hours{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;font-size:14px}
+  .hours .closed{opacity:.55}
+  .legal{font-size:13px;color:rgba(255,255,255,.55);border-top:1px solid rgba(255,255,255,.15);margin-top:32px;padding-top:16px;display:flex;flex-wrap:wrap;gap:8px 24px}
+  .legal button{background:none;border:0;padding:0;font:inherit;color:rgba(255,255,255,.8);text-decoration:underline;cursor:pointer}
+
+  @media (max-width:900px){ .cols{grid-template-columns:1fr 1fr} .infos .wrap{grid-template-columns:1fr;gap:24px} }
+  @media (max-width:640px){
+    .wrap{padding:0 16px}
+    .tools{margin-left:0;width:100%}
+    .tools > *{flex:1;min-width:0}
+    input{width:auto}
+    .grid{grid-template-columns:1fr}
+    .brands .tile{height:44px;padding:8px 12px}
+    .contact{margin-left:0;width:100%;padding-top:8px;font-size:16px}
+    .contact .tel{font-size:24px}
+    .cols{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body data-page="op-saison-des-cadeaux">
+
+<header class="band">
+  <div class="wrap">
+    <div class="brands">
+      <span class="tile"><img src="img/logo-cyclable.jpg" alt="Cyclable"></span>
+      <span class="x" aria-hidden="true">×</span>
+      <span class="tile"><img src="../../images/marque-moustache.png" alt="Moustache Bikes"></span>
+      <span class="agree">Revendeur agréé</span>
+      <div class="contact">
+        <a class="tel num" href="tel:+33486841032">04 86 84 10 32</a>
+        <a class="mail" href="mailto:valence.saint-peray@cyclable.com">valence.saint-peray@cyclable.com</a>
+      </div>
+    </div>
+    <h1>Saison des cadeaux&nbsp;: les Moustache <em>jusqu’à −<span id="maxOff" class="num"></span>&nbsp;%</em></h1>
+    <p class="lede">Une sélection de vélos électriques Moustache en déstockage, de la balade en ville au VTT enduro. Choisissez votre coloris pour voir les tailles et les prix. Les quantités sont limitées&nbsp;: réservez le vôtre en boutique avant qu’il ne parte.</p>
+    <div class="facts">
+      <div><b id="nbModels" class="num"></b><span>modèles</span></div>
+      <div><b id="fromPrice" class="num"></b><span>prix d’entrée</span></div>
+      <div><b id="maxSave" class="num"></b><span>d’économie max.</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="rail" aria-label="Filtres">
+  <div class="wrap">
+    <div class="cats" id="cats"></div>
+    <div class="tools">
+      <select id="sort" aria-label="Trier">
+        <option value="d">Plus forte remise</option>
+        <option value="pa">Prix croissant</option>
+        <option value="pd">Prix décroissant</option>
+      </select>
+      <input id="q" type="search" placeholder="Modèle, couleur, taille…" aria-label="Rechercher">
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="empty" hidden>Aucun vélo ne correspond à ces critères. Essayez une autre catégorie ou effacez la recherche.</p>
+  </div>
+</main>
+
+<section class="infos" aria-label="Réserver et conditions">
+  <div class="wrap">
+    <div><h3>Essayer et réserver</h3><p>Cliquez sur « Demander plus d’infos » sous le vélo qui vous plaît, ou venez essayer ces modèles chez Cyclable Valence – Saint-Péray. Nous vérifions la disponibilité de votre taille auprès de Moustache et nous nous occupons du réglage à la livraison.</p></div>
+    <div><h3>Conditions</h3><p>Prix publics TTC, arrondis à l’euro inférieur. Remise calculée sur le prix de vente initial conseillé. Offre valable dans la limite des stocks disponibles. « Stock limité » signale moins de 10 exemplaires disponibles. Photos Moustache Bikes, non contractuelles.</p></div>
+  </div>
+</section>
+
+<footer class="store" aria-label="Nos coordonnées">
+  <div class="wrap">
+    <div class="cols">
+      <div><h4>Magasin</h4><p>Cyclable Valence – Saint-Péray<br>13 avenue du 8 Mai<br>07130 Saint-Péray</p><p style="margin-top:8px"><a href="https://www.google.com/maps/search/?api=1&amp;query=Cyclable+13+avenue+du+8+Mai+07130+Saint-P%C3%A9ray" target="_blank" rel="noopener">Voir l’itinéraire</a></p></div>
+      <div><h4>Nous appeler</h4><p class="big num"><a href="tel:+33486841032" style="text-decoration:none">04 86 84 10 32</a></p><h4 style="margin-top:14px">Nous écrire</h4><p style="overflow-wrap:anywhere"><a href="mailto:valence.saint-peray@cyclable.com">valence.saint-peray@cyclable.com</a></p></div>
+      <div><h4>Horaires</h4><div class="hours num">
+        <span>Lundi</span><span class="closed">Fermé</span>
+        <span>Mardi – vendredi</span><span>9h–13h · 15h–19h</span>
+        <span>Samedi</span><span>10h–18h</span>
+        <span>Dimanche</span><span class="closed">Fermé</span></div></div>
+      <div><h4>En ligne</h4><p><a href="https://valence-saint-peray.cyclable.com/" target="_blank" rel="noopener">valence-saint-peray.cyclable.com</a></p><p style="margin-top:6px"><a href="https://agenda.cyclable.com/rdv/valence-saint-peray" target="_blank" rel="noopener">Prendre rendez-vous</a></p></div>
+    </div>
+    <p class="legal"><span>Cyclable Valence – Saint-Péray, exploité par Transition Vélo SAS. Moustache Bikes et Cyclable sont des marques de leurs propriétaires respectifs.</span><button type="button" data-cookie-settings>Gérer les cookies</button></p>
+  </div>
+</footer>
+
+<script>
+/* ===================== DONNÉES DE L'OPÉRATION ===================== */
+const OP = 'saison-des-cadeaux';
+const FORM_URL = 'https://share-eu1.hsforms.com/2B57XYos-QA-CQtXEgDgd-w2ekw85';   // formulaire HubSpot B2C
+/* m = modèle, f = famille, v = variantes : c/cn = coloris (clé / nom affiché), hex, fr = cadre, eq = équipé,
+   b = batterie Wh, s = tailles, o = prix initial TTC, p = prix remisé TTC, d = remise %, y = millésime, lim = stock limité */
+const MODELS = [{"m": "Lundi 27 ES", "f": "Ville", "v": [{"c": "Curry", "cn": "Curry", "hex": "#E5C11C", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 2699, "p": 2429, "d": 10, "y": "2026", "lim": false}]}, {"m": "Lundi 27.3", "f": "Ville", "v": [{"c": "Pastel Green", "cn": "Menthe", "hex": "#CFE0D3", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 3199, "p": 2879, "d": 10, "y": "2025/26", "lim": true}]}, {"m": "Lundi 27.4", "f": "Ville", "v": [{"c": "Curry", "cn": "Curry", "hex": "#E5C11C", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 3299, "p": 2969, "d": 10, "y": "2025/26", "lim": true}, {"c": "Curry", "cn": "Curry", "hex": "#E5C11C", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 3499, "p": 3149, "d": 10, "y": "2025/26", "lim": false}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 3299, "p": 2969, "d": 10, "y": "2025/26", "lim": true}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 3499, "p": 3149, "d": 10, "y": "2025/26", "lim": true}]}, {"m": "Lundi 27.6", "f": "Ville", "v": [{"c": "Midnight Blue", "cn": "Bleu nuit", "hex": "#22305A", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": false}, {"c": "Midnight Blue", "cn": "Bleu nuit", "hex": "#22305A", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 4499, "p": 3239, "d": 28, "y": "2025/26", "lim": false}, {"c": "Stone Grey", "cn": "Gris pierre", "hex": "#CFCAC0", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": true}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": true}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 4499, "p": 3239, "d": 28, "y": "2025/26", "lim": false}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 500, "s": ["Taille unique"], "o": 4299, "p": 3095, "d": 28, "y": "2025/26", "lim": true}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 625, "s": ["Taille unique"], "o": 4499, "p": 3239, "d": 28, "y": "2025/26", "lim": false}]}, {"m": "Mardi 27.2", "f": "Ville", "v": [{"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Open", "eq": false, "b": 540, "s": ["L", "XL"], "o": 3399, "p": 2753, "d": 19, "y": "2026", "lim": false}]}, {"m": "Samedi 28 ES", "f": "Trekking & VTC", "v": [{"c": "Deep Blue", "cn": "Bleu profond", "hex": "#22355E", "fr": "Open", "eq": false, "b": 500, "s": ["L"], "o": 2499, "p": 2024, "d": 19, "y": "2026", "lim": false}, {"c": "Deep Blue", "cn": "Bleu profond", "hex": "#22355E", "fr": "Classique", "eq": false, "b": 500, "s": ["S", "M", "L", "XL"], "o": 2499, "p": 1912, "d": 23, "y": "2026", "lim": true}, {"c": "Titanium", "cn": "Titane", "hex": "#A79C8E", "fr": "Classique", "eq": false, "b": 500, "s": ["S", "M", "L", "XL"], "o": 2499, "p": 1912, "d": 23, "y": "2026", "lim": false}]}, {"m": "XRoad ES", "f": "Trekking & VTC", "v": [{"c": "Dark Blue", "cn": "Bleu foncé", "hex": "#3A4357", "fr": "Open", "eq": false, "b": 500, "s": ["S", "M", "L"], "o": 2699, "p": 2429, "d": 10, "y": "2026", "lim": true}]}, {"m": "Samedi 28.4", "f": "Trekking & VTC", "v": [{"c": "Red", "cn": "Rouge", "hex": "#C8141C", "fr": "Classique", "eq": false, "b": 500, "s": ["M"], "o": 2899, "p": 2218, "d": 23, "y": "2025/26", "lim": true}, {"c": "Red", "cn": "Rouge", "hex": "#C8141C", "fr": "Classique", "eq": false, "b": 625, "s": ["M"], "o": 3099, "p": 2371, "d": 23, "y": "2025/26", "lim": false}]}, {"m": "XRoad FS 4", "f": "Trekking & VTC", "v": [{"c": "Titanium", "cn": "Titane", "hex": "#A79C8E", "fr": "Classique", "eq": false, "b": 500, "s": ["XL"], "o": 4399, "p": 2969, "d": 33, "y": "2025", "lim": false}, {"c": "Titanium", "cn": "Titane", "hex": "#A79C8E", "fr": "Classique", "eq": false, "b": 625, "s": ["XL"], "o": 4599, "p": 3104, "d": 33, "y": "2025", "lim": false}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 500, "s": ["XL"], "o": 4399, "p": 2969, "d": 33, "y": "2025", "lim": false}, {"c": "Black", "cn": "Noir", "hex": "#1B1C1D", "fr": "Classique", "eq": false, "b": 625, "s": ["XL"], "o": 4599, "p": 3104, "d": 33, "y": "2025", "lim": false}]}, {"m": "Dimanche 28.4", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 400, "s": ["XL"], "o": 4599, "p": 2897, "d": 37, "y": "2024/25", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 400, "s": ["XS", "S"], "o": 4599, "p": 2897, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Dimanche 28.6", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 400, "s": ["L", "XL"], "o": 5999, "p": 3779, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Dimanche 29.6", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 400, "s": ["XL"], "o": 5699, "p": 3590, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Dimanche 29.4", "f": "Route & gravel", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": true, "b": 400, "s": ["S"], "o": 4899, "p": 3086, "d": 37, "y": "2024/25", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 400, "s": ["XS", "S"], "o": 4699, "p": 2960, "d": 37, "y": "2024/25", "lim": true}]}, {"m": "Off 4", "f": "Trekking & VTC", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 625, "s": ["M", "XL"], "o": 3499, "p": 2834, "d": 19, "y": "2026", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 625, "s": ["S", "M"], "o": 3499, "p": 2834, "d": 19, "y": "2026", "lim": false}]}, {"m": "Off 2", "f": "Trekking & VTC", "v": [{"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 500, "s": ["L", "XL"], "o": 2799, "p": 2267, "d": 19, "y": "2023/24/25/26", "lim": false}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Classique", "eq": false, "b": 625, "s": ["L", "XL"], "o": 2999, "p": 2429, "d": 19, "y": "2023/24/25/26", "lim": true}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 500, "s": ["M", "L"], "o": 2799, "p": 2267, "d": 19, "y": "2023/24/25/26", "lim": false}, {"c": "Coloris unique", "cn": "Coloris unique", "hex": "#5E6E66", "fr": "Open", "eq": false, "b": 625, "s": ["M", "L"], "o": 2999, "p": 2429, "d": 19, "y": "2023/24/25/26", "lim": false}]}, {"m": "Trail 150.4", "f": "VTT", "v": [{"c": "Ocre", "cn": "Ocre", "hex": "#C98C2C", "fr": "Classique", "eq": true, "b": 750, "s": ["XL"], "o": 5299, "p": 3338, "d": 37, "y": "2025", "lim": true}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": false, "b": 750, "s": ["XL"], "o": 5099, "p": 3212, "d": 37, "y": "2025", "lim": false}, {"c": "Terracotta", "cn": "Terracotta", "hex": "#D9461E", "fr": "Classique", "eq": true, "b": 750, "s": ["XL"], "o": 5299, "p": 3338, "d": 37, "y": "2025", "lim": true}]}, {"m": "Game 160.9", "f": "VTT", "v": [{"c": "Launch Edition", "cn": "Wild Violet", "hex": "#6A49A6", "fr": "Classique", "eq": false, "b": 600, "s": ["S"], "o": 8999, "p": 6479, "d": 28, "y": "2025", "lim": true}, {"c": "Launch Edition", "cn": "Wild Violet", "hex": "#6A49A6", "fr": "Classique", "eq": false, "b": 750, "s": ["S"], "o": 9299, "p": 6695, "d": 28, "y": "2025", "lim": false}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 8999, "p": 6884, "d": 24, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 9299, "p": 7114, "d": 23, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 8999, "p": 6884, "d": 24, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 9299, "p": 7114, "d": 23, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 8999, "p": 6884, "d": 24, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 9299, "p": 7114, "d": 23, "y": "2025/26", "lim": true}, {"c": "Race", "cn": "High Voltage Green", "hex": "#4E9B1F", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 9599, "p": 7343, "d": 24, "y": "2026", "lim": true}, {"c": "Race", "cn": "High Voltage Green", "hex": "#4E9B1F", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 9899, "p": 7573, "d": 23, "y": "2026", "lim": false}]}, {"m": "Game 150.7", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 5999, "p": 4724, "d": 21, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6299, "p": 4961, "d": 21, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 5999, "p": 4724, "d": 21, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6299, "p": 4961, "d": 21, "y": "2025/26", "lim": false}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 5999, "p": 4724, "d": 21, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 6299, "p": 4961, "d": 21, "y": "2025/26", "lim": true}]}, {"m": "Game 150.8", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6999, "p": 5512, "d": 21, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7299, "p": 5748, "d": 21, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6999, "p": 5512, "d": 21, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7299, "p": 5748, "d": 21, "y": "2025/26", "lim": false}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 6999, "p": 5512, "d": 21, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 7299, "p": 5748, "d": 21, "y": "2025/26", "lim": true}]}, {"m": "Game 160.7", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6499, "p": 4972, "d": 23, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6799, "p": 5201, "d": 24, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 6499, "p": 4972, "d": 23, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 6799, "p": 5201, "d": 24, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 6499, "p": 4972, "d": 23, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 6799, "p": 5201, "d": 24, "y": "2025/26", "lim": false}]}, {"m": "Game 160.8", "f": "VTT", "v": [{"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 7499, "p": 5737, "d": 23, "y": "2025/26", "lim": true}, {"c": "Night Rider", "cn": "Night Rider", "hex": "#1F2B52", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7799, "p": 5966, "d": 24, "y": "2025/26", "lim": false}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 600, "s": ["S", "M"], "o": 7499, "p": 5737, "d": 23, "y": "2025/26", "lim": true}, {"c": "Moon Landing", "cn": "Moon Landing", "hex": "#DAD6CC", "fr": "Classique", "eq": false, "b": 750, "s": ["S", "M"], "o": 7799, "p": 5966, "d": 24, "y": "2025/26", "lim": false}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 600, "s": ["M", "L", "XL"], "o": 7499, "p": 5737, "d": 23, "y": "2025/26", "lim": true}, {"c": "Dusty Mauve", "cn": "Dusty Mauve", "hex": "#E6BDBA", "fr": "Classique", "eq": false, "b": 750, "s": ["M", "L", "XL"], "o": 7799, "p": 5966, "d": 24, "y": "2025/26", "lim": false}]}];
+/* Une photo par modèle, avec le coloris qu'elle montre (les autres coloris affichent cette photo + une mention) */
+const PHOTOS_V = '20261106';   // à changer quand une photo est remplacée (cache des navigateurs)
+const PHOTOS = {"Dimanche 28.4": ["dimanche-28-4.webp", "Coloris unique"], "Dimanche 29.4": ["dimanche-29-4.webp", "Coloris unique"], "Trail 150.4": ["trail-150-4.webp", "Terracotta"], "Dimanche 29.6": ["dimanche-29-6.webp", "Coloris unique"], "Dimanche 28.6": ["dimanche-28-6.webp", "Coloris unique"], "XRoad FS 4": ["xroad-fs-4.webp", "Titanium"], "Lundi 27.6": ["lundi-27-6.webp", "Midnight Blue"], "Game 160.9": ["game-160-9.webp", "Launch Edition"], "Game 160.7": ["game-160-7.webp", "Night Rider"], "Game 160.8": ["game-160-8.webp", "Night Rider"], "Samedi 28 ES": ["samedi-28-es.webp", "Deep Blue"], "Samedi 28.4": ["samedi-28-4.webp", "Red"], "Game 150.7": ["game-150-7.webp", "Night Rider"], "Game 150.8": ["game-150-8.webp", "Night Rider"], "Off 2": ["off-2.webp", "Coloris unique"], "Mardi 27.2": ["mardi-27-2.webp", "Black"], "Off 4": ["off-4.webp", "Coloris unique"], "Lundi 27 ES": ["lundi-27-es.webp", "Curry"], "XRoad ES": ["xroad-es.webp", "Dark Blue"], "Lundi 27.3": ["lundi-27-3.webp", "Pastel Green"], "Lundi 27.4": ["lundi-27-4.webp", "Curry"]};
+
+/* ===================== AFFICHAGE ===================== */
+const eur = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
+const CATS = ['Tous', 'Ville', 'Trekking & VTC', 'Route & gravel', 'VTT'];
+const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'Taille unique'];
+const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let cat = 'Tous';
+try { const c = localStorage.getItem('tv_op_cat'); if (CATS.includes(c)) cat = c; } catch(e){}
+
+const all = MODELS.flatMap(m => m.v);
+document.getElementById('maxOff').textContent = Math.max(...all.map(x => x.d));
+document.getElementById('nbModels').textContent = MODELS.length;
+document.getElementById('fromPrice').textContent = eur(Math.min(...all.map(x => x.p)));
+document.getElementById('maxSave').textContent = eur(Math.max(...all.map(x => x.o - x.p)));
+MODELS.forEach(m => {
+  m.colors = [...new Map(m.v.map(v => [v.c, {c:v.c, cn:v.cn, hex:v.hex}])).values()];
+  m.sel = m.colors[0].c; m.min = Math.min(...m.v.map(v => v.p)); m.max = Math.max(...m.v.map(v => v.d));
+});
+
+const catsEl = document.getElementById('cats');
+CATS.forEach(c => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = c;
+  b.addEventListener('click', () => { cat = c; try { localStorage.setItem('tv_op_cat', c); } catch(e){} render(); });
+  catsEl.appendChild(b);
+});
+['sort', 'q'].forEach(id => document.getElementById(id).addEventListener('input', render));
+
+function variantSpec(v){
+  const parts = [v.b + ' Wh'];
+  if (v.fr === 'Open') parts.push('cadre Open (enjambement bas)');
+  if (v.eq) parts.push('version équipée');
+  return parts.join(' · ');
+}
+function ctaUrl(m, col, min){
+  const msg = `Demande d'infos – Saison des cadeaux : Moustache ${m.m}` + (col.c === 'Coloris unique' ? '' : ` (${col.cn})`) + ` – à partir de ${String(min).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €. Taille souhaitée : `;
+  return FORM_URL + '?message=' + encodeURIComponent(msg);
+}
+function fillCard(el, m){
+  const vs = m.v.filter(v => v.c === m.sel).sort((a, b) => a.p - b.p);
+  const col = m.colors.find(c => c.c === m.sel);
+  const min = Math.min(...vs.map(v => v.p));
+  const sizes = [...new Set(vs.flatMap(v => v.s))].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
+  const ph = PHOTOS[m.m];
+  const autre = ph && ph[1] !== m.sel ? (m.colors.find(c => c.c === ph[1]) || {cn: ph[1]}).cn : '';
+  el.innerHTML = `
+    <div class="stage">
+      <span class="cat">${esc(m.f)}</span><span class="off num">jusqu’à −${m.max}&nbsp;%</span>
+      ${ph ? `<img src="img/${ph[0]}?v=${PHOTOS_V}" alt="Moustache ${esc(m.m)}" loading="lazy">` : ''}
+      ${autre ? `<span class="pnote">Photo : coloris ${esc(autre)}</span>` : ''}
+    </div>
+    <div class="head"><h2>${esc(m.m)}</h2><span class="from">dès <b class="num">${eur(min)}</b></span></div>
+    <div class="colors"><div class="lbl">Coloris${m.colors.length > 1 ? ' · ' + m.colors.length : ''}</div>
+      <div class="swatches">${m.sel === 'Coloris unique' ? '<span class="single">Un seul coloris pour ce modèle</span>' : m.colors.map(c => `<button type="button" class="sw" style="--c:${c.hex}" aria-pressed="${c.c === m.sel}" data-c="${esc(c.c)}"><i></i>${esc(c.cn)}</button>`).join('')}</div></div>
+    <div class="sizes-row"><div class="lbl">Tailles disponibles</div><div class="sizes">${sizes.map(s => `<span class="size">${esc(s)}</span>`).join('')}</div></div>
+    <div class="vlist">${vs.map(v => `
+      <div class="v">
+        <span class="spec">${variantSpec(v)}</span>
+        <span class="sub">${v.s.join(', ')}${v.y ? ' · ' + v.y : ''}${v.lim ? ' · <span class="lim">Stock limité</span>' : ''}</span>
+        <span class="pr num"><span class="now">${eur(v.p)}</span><span class="was"><s>${eur(v.o)}</s>−${v.d}&nbsp;%</span></span>
+      </div>`).join('')}</div>
+    <div class="action">
+      <a class="cta" href="${ctaUrl(m, col, min)}" target="_blank" rel="noopener" data-modele="${esc(m.m)}" data-prix="${min}">Demander plus d’infos <span aria-hidden="true">→</span></a>
+      <p class="cta-note">Laissez vos coordonnées, nous vous rappelons pour ce vélo.</p>
+    </div>`;
+  el.querySelectorAll('.sw').forEach(b => b.addEventListener('click', () => { m.sel = b.dataset.c; fillCard(el, m); }));
+}
+function render(){
+  [...catsEl.children].forEach(b => b.setAttribute('aria-pressed', b.textContent === cat));
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const s = document.getElementById('sort').value;
+  const list = MODELS.filter(m => (cat === 'Tous' || m.f === cat) && (!q || (m.m + ' ' + m.f + ' ' + m.v.map(v => v.cn + ' ' + v.c + ' ' + v.s.join(' ') + ' ' + v.b + 'wh').join(' ')).toLowerCase().includes(q)));
+  list.sort(s === 'pa' ? (a, b) => a.min - b.min : s === 'pd' ? (a, b) => b.min - a.min : (a, b) => b.max - a.max || a.min - b.min);
+  const g = document.getElementById('grid');
+  g.replaceChildren(...list.map(m => { const el = document.createElement('article'); el.className = 'card'; fillCard(el, m); return el; }));
+  document.getElementById('empty').hidden = list.length > 0;
+}
+
+/* Suivi GA4 (après consentement) : clic sur « Demander plus d'infos », sans donnée personnelle */
+document.getElementById('grid').addEventListener('click', e => {
+  const a = e.target.closest('.cta');
+  if (a && window.tvTrack) window.tvTrack('op_demande_infos', { operation: OP, modele: a.dataset.modele, velo_prix: +a.dataset.prix });
+});
+render();
+</script>
+
+<!-- ===================== MESURE D'AUDIENCE (GA4 + Clarity, après consentement) ===================== -->
+<script src="../../tracking.js?v=20261021g"></script>
+</body>
+</html>
