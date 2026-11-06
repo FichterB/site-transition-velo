@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<title>Saison des cadeaux Moustache — Cyclable Valence – Saint-Péray</title>
+<!--
+  MODÈLE DE NEWSLETTER BREVO — clients du magasin Cyclable Valence – Saint-Péray
+  Import : Brevo > Campagnes > Modèles > Nouveau modèle > « Coder votre propre modèle » > coller ce fichier.
+  Images hébergées sur https://transitionvelo.net/newsletter/img/ (dossier site/newsletter/img/ du dépôt).
+  Balises Brevo : {{ contact.PRENOM }}, {{ mirror }} (version en ligne), {{ unsubscribe }} (désinscription, obligatoire).
+  Blocs réutilisables, repérés par les commentaires BLOC : en-tête, accroche, sélection de vélos, atelier, infos pratiques, pied.
+  Procédure : docs/NEWSLETTER-BREVO.md
+-->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Les styles essentiels sont aussi écrits dans chaque balise (style="…") : beaucoup de messageries ignorent cette zone. */
+  body{margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  table{border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0}
+  img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block}
+  a{color:#D4412B}
+  @media only screen and (max-width:620px){
+    .container{width:100% !important}
+    .px{padding-left:20px !important;padding-right:20px !important}
+    .col{display:block !important;width:100% !important;max-width:100% !important}
+    .col-auto{display:block !important;width:auto !important}   /* colonne avec marges intérieures : pas de 100 % (sinon débordement) */
+    .col-pad{padding:0 0 20px 0 !important}
+    .h1{font-size:34px !important;line-height:38px !important}
+    .contact-cell{display:block !important;width:100% !important;text-align:left !important;padding-top:12px !important}
+    .hide-mobile{display:none !important}
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#F4F0E7;">
+
+<!-- Texte d'aperçu (affiché après l'objet dans la boîte de réception) -->
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#F4F0E7;">Jusqu'à −37 % sur une sélection de vélos électriques Moustache, en magasin à Saint-Péray. Quantités limitées.&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F4F0E7;">
+<tr><td align="center" style="padding:24px 12px;">
+
+  <!-- Lien version en ligne -->
+  <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
+    <tr><td align="center" style="padding:0 0 12px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:12px;color:#8A8271;">
+      Vous ne voyez pas bien cet email&nbsp;? <a href="{{ mirror }}" style="color:#6B6454;text-decoration:underline;">Version en ligne</a>
+    </td></tr>
+  </table>
+
+  <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#FFFFFF;">
+
+    <!-- ===================== BLOC : EN-TÊTE ===================== -->
+    <tr><td class="px" style="background:#1C232B;padding:24px 32px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="col" valign="middle" style="width:60%;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td style="background:#FFFFFF;border-radius:6px;padding:8px 12px;"><img src="https://transitionvelo.net/newsletter/img/logo-cyclable.jpg" width="106" height="40" alt="Cyclable" style="width:106px;height:40px;"></td>
+              <td style="padding:0 10px;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#8A8271;">×</td>
+              <td style="background:#FFFFFF;border-radius:6px;padding:8px 12px;"><img src="https://transitionvelo.net/newsletter/img/logo-moustache.png" width="104" height="27" alt="Moustache Bikes" style="width:104px;height:27px;"></td>
+            </tr></table>
+          </td>
+          <td class="contact-cell" valign="middle" align="right" style="font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;">
+            <a href="tel:+33486841032" style="color:#FFFFFF;text-decoration:none;font-size:20px;font-weight:800;white-space:nowrap;">04&nbsp;86&nbsp;84&nbsp;10&nbsp;32</a><br>
+            <span style="color:#B9B3A6;font-size:12px;">Cyclable Valence – Saint-Péray</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ===================== BLOC : ACCROCHE ===================== -->
+    <tr><td class="px" style="background:#1C232B;padding:8px 32px 36px;">
+      <p style="margin:0 0 14px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:16px;line-height:24px;color:#D8D3C8;">Bonjour{% if contact.PRENOM %} {{ contact.PRENOM }}{% endif %},</p>
+      <h1 class="h1" style="margin:0 0 16px;font-family:'Anton',Impact,'Arial Narrow',Arial,sans-serif;font-weight:400;text-transform:uppercase;font-size:44px;line-height:48px;color:#FFFFFF;">Saison des cadeaux&nbsp;: les Moustache <span style="color:#FF8A72;">jusqu’à −37&nbsp;%</span></h1>
+      <p style="margin:0 0 24px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#D8D3C8;">Une sélection de vélos électriques Moustache en déstockage, de la balade en ville au VTT enduro. Les quantités sont limitées&nbsp;: venez les essayer en magasin ou appelez-nous pour réserver votre taille.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="background:#D4412B;border-radius:8px;">
+          <a href="https://transitionvelo.net/op/saison-des-cadeaux/?utm_source=brevo&amp;utm_medium=email&amp;utm_campaign=saison-des-cadeaux" style="display:inline-block;padding:14px 26px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;">Voir les 21 modèles en promotion →</a>
+        </td>
+      </tr></table>
+    </td></tr>
+
+    <!-- ===================== BLOC : SÉLECTION DE VÉLOS (2 × 2) ===================== -->
+    <tr><td class="px" style="padding:36px 32px 12px;">
+      <h2 style="margin:0 0 4px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;color:#1C232B;">Notre sélection</h2>
+      <p style="margin:0 0 20px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:14px;line-height:21px;color:#6B6454;">Un modèle par usage, au meilleur prix. Prix publics TTC, dans la limite des stocks.</p>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <!-- Vélo 1 -->
+          <td class="col col-pad" width="50%" valign="top" style="width:50%;padding:0 8px 20px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E3DDD0;border-radius:8px;">
+              <tr><td style="padding:12px 12px 0;"><img src="https://transitionvelo.net/newsletter/img/samedi-28-es.jpg" width="240" alt="Moustache Samedi 28 ES" style="width:100%;max-width:240px;height:auto;margin:0 auto;"></td></tr>
+              <tr><td style="padding:12px 14px 16px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;">
+                <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A8271;">Trekking &amp; VTC</p>
+                <p style="margin:2px 0 6px;font-size:18px;font-weight:800;color:#1C232B;">Samedi 28 ES</p>
+                <p style="margin:0;font-size:14px;color:#6B6454;">dès <span style="font-size:20px;font-weight:800;color:#D4412B;">1&nbsp;912&nbsp;€</span> <s style="color:#8A8271;">2&nbsp;499&nbsp;€</s> −23&nbsp;%</p>
+              </td></tr>
+            </table>
+          </td>
+          <!-- Vélo 2 -->
+          <td class="col col-pad" width="50%" valign="top" style="width:50%;padding:0 0 20px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E3DDD0;border-radius:8px;">
+              <tr><td style="padding:12px 12px 0;"><img src="https://transitionvelo.net/newsletter/img/lundi-27-6.jpg" width="240" alt="Moustache Lundi 27.6" style="width:100%;max-width:240px;height:auto;margin:0 auto;"></td></tr>
+              <tr><td style="padding:12px 14px 16px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;">
+                <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A8271;">Ville</p>
+                <p style="margin:2px 0 6px;font-size:18px;font-weight:800;color:#1C232B;">Lundi 27.6</p>
+                <p style="margin:0;font-size:14px;color:#6B6454;">dès <span style="font-size:20px;font-weight:800;color:#D4412B;">3&nbsp;095&nbsp;€</span> <s style="color:#8A8271;">4&nbsp;299&nbsp;€</s> −28&nbsp;%</p>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <!-- Vélo 3 -->
+          <td class="col col-pad" width="50%" valign="top" style="width:50%;padding:0 8px 20px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E3DDD0;border-radius:8px;">
+              <tr><td style="padding:12px 12px 0;"><img src="https://transitionvelo.net/newsletter/img/dimanche-28-4.jpg" width="240" alt="Moustache Dimanche 28.4" style="width:100%;max-width:240px;height:auto;margin:0 auto;"></td></tr>
+              <tr><td style="padding:12px 14px 16px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;">
+                <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A8271;">Route &amp; gravel</p>
+                <p style="margin:2px 0 6px;font-size:18px;font-weight:800;color:#1C232B;">Dimanche 28.4</p>
+                <p style="margin:0;font-size:14px;color:#6B6454;">dès <span style="font-size:20px;font-weight:800;color:#D4412B;">2&nbsp;897&nbsp;€</span> <s style="color:#8A8271;">4&nbsp;599&nbsp;€</s> −37&nbsp;%</p>
+              </td></tr>
+            </table>
+          </td>
+          <!-- Vélo 4 -->
+          <td class="col col-pad" width="50%" valign="top" style="width:50%;padding:0 0 20px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E3DDD0;border-radius:8px;">
+              <tr><td style="padding:12px 12px 0;"><img src="https://transitionvelo.net/newsletter/img/game-160-7.jpg" width="240" alt="Moustache Game 160.7" style="width:100%;max-width:240px;height:auto;margin:0 auto;"></td></tr>
+              <tr><td style="padding:12px 14px 16px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;">
+                <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A8271;">VTT</p>
+                <p style="margin:2px 0 6px;font-size:18px;font-weight:800;color:#1C232B;">Game 160.7</p>
+                <p style="margin:0;font-size:14px;color:#6B6454;">dès <span style="font-size:20px;font-weight:800;color:#D4412B;">4&nbsp;972&nbsp;€</span> <s style="color:#8A8271;">6&nbsp;499&nbsp;€</s> −23&nbsp;%</p>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <p style="margin:0 0 8px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:15px;text-align:center;"><a href="https://transitionvelo.net/op/saison-des-cadeaux/?utm_source=brevo&amp;utm_medium=email&amp;utm_campaign=saison-des-cadeaux" style="color:#D4412B;font-weight:700;">Voir tous les modèles, coloris et tailles →</a></p>
+    </td></tr>
+
+    <!-- ===================== BLOC : ATELIER / MAGASIN ===================== -->
+    <tr><td class="px" style="padding:24px 32px 36px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F4F0E7;border-radius:8px;">
+        <tr>
+          <td class="col" width="46%" valign="top" style="width:46%;">
+            <img src="https://transitionvelo.net/newsletter/img/boutique.jpg" width="250" alt="Le magasin Cyclable de Saint-Péray" style="width:100%;max-width:250px;height:auto;border-radius:8px 0 0 8px;">
+          </td>
+          <td class="col-auto" valign="middle" style="padding:20px 22px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;">
+            <h2 style="margin:0 0 8px;font-size:19px;font-weight:800;color:#1C232B;">Essayez avant de choisir</h2>
+            <p style="margin:0 0 14px;font-size:14px;line-height:21px;color:#6B6454;">Venez essayer ces modèles au magasin. Nous vérifions la disponibilité de votre taille et nous nous occupons du réglage à la livraison.</p>
+            <a href="https://agenda.cyclable.com/rdv/valence-saint-peray" style="font-size:15px;font-weight:700;color:#D4412B;">Prendre rendez-vous →</a>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ===================== BLOC : INFOS PRATIQUES ===================== -->
+    <tr><td class="px" style="background:#1C232B;padding:28px 32px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;color:#FFFFFF;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="col col-pad" width="50%" valign="top" style="width:50%;padding-right:16px;">
+            <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#B9B3A6;">Magasin</p>
+            <p style="margin:0 0 10px;font-size:15px;line-height:22px;">Cyclable Valence – Saint-Péray<br>13 avenue du 8 Mai, 07130 Saint-Péray</p>
+            <p style="margin:0;font-size:15px;line-height:22px;"><a href="tel:+33486841032" style="color:#FFFFFF;font-weight:800;text-decoration:none;">04 86 84 10 32</a><br><a href="mailto:valence.saint-peray@cyclable.com" style="color:#FFFFFF;">valence.saint-peray@cyclable.com</a></p>
+          </td>
+          <td class="col" width="50%" valign="top" style="width:50%;">
+            <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#B9B3A6;">Horaires</p>
+            <p style="margin:0;font-size:14px;line-height:22px;">Mardi – vendredi&nbsp;: 9h–13h · 15h–19h<br>Samedi&nbsp;: 10h–18h<br><span style="color:#B9B3A6;">Fermé dimanche et lundi</span></p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+  </table>
+
+  <!-- ===================== BLOC : PIED (mentions et désinscription) ===================== -->
+  <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
+    <tr><td class="px" style="padding:20px 32px 8px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:12px;line-height:18px;color:#8A8271;text-align:center;">
+      Prix publics TTC, remise calculée sur le prix de vente initial conseillé, dans la limite des stocks disponibles. Photos Moustache Bikes, non contractuelles.<br>
+      Cyclable Valence – Saint-Péray, exploité par Transition Vélo SAS, 13 avenue du 8 Mai, 07130 Saint-Péray.<br>
+      Vous recevez cet email car vous êtes client du magasin. <a href="{{ unsubscribe }}" style="color:#6B6454;text-decoration:underline;">Se désinscrire</a>
+    </td></tr>
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>
