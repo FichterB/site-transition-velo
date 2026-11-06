@@ -20,6 +20,7 @@ site/                 ← tout ce qui est publié sur le FTP (et rien d'autre)
   op/<nom>/           landing page autonome d'une opération B2C du magasin Cyclable (ex. op/saison-des-cadeaux/) : non liée au site B2B, voir docs/LANDING-OP.md
   images/             logos SVG + photos
 ressources/           sources non publiées : logo .ai, fiches PDF, photos HD
+newsletters/          modèles d'emails Brevo (non publiés ; images dans site/newsletter/img/), voir docs/NEWSLETTER-BREVO.md
 docs/                 documentation détaillée (déploiement, règles métier, analytics)
 .github/workflows/    déploiement automatique par SFTP
 ```
