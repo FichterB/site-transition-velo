@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<!--
+  Story Instagram en motion design, 1080 × 1920, 9 secondes, 4 scènes :
+    1. « Saison des cadeaux » mot par mot      2. compteur jusqu'à −37 % sur fond rouge
+    3. défilé des 4 vélos (famille, modèle, prix)  4. carte de fin : magasin, téléphone, lien
+  Export MP4 : node ressources/instagram/export-video.mjs ressources/instagram/story-motion.html
+  Ouverte dans un navigateur, la page joue l'animation en boucle.
+  Contenu important entre y = 250 et y = 1620 (le haut et le bas sont masqués par Instagram).
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;800&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#111;display:flex;justify-content:center}
+  canvas{width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+const W = 1080, H = 1920, DUREE = 9;
+const NUIT = '#1C232B', ROUGE = '#D4412B', SAUMON = '#FF8A72', CREME = '#F4F0E7', GRIS = '#B9B3A6';
+const c = document.getElementById('c'), x = c.getContext('2d');
+const IMG = {};
+const SOURCES = {
+  cyclable: 'logo-cyclable.jpg', moustache: 'logo-moustache.png',
+  ville: 'lundi-27-6.webp', trekking: 'samedi-28-es.webp', route: 'dimanche-28-4.webp', vtt: 'game-160-7.webp'
+};
+const VELOS = [
+  { img: 'ville',    famille: 'VILLE',          modele: 'Moustache Lundi 27.6',   prix: '3 095 €', avant: '4 299 €', remise: '−28 %' },
+  { img: 'trekking', famille: 'TREKKING & VTC', modele: 'Moustache Samedi 28 ES', prix: '1 912 €', avant: '2 499 €', remise: '−23 %' },
+  { img: 'route',    famille: 'ROUTE & GRAVEL', modele: 'Moustache Dimanche 28.4', prix: '2 897 €', avant: '4 599 €', remise: '−37 %' },
+  { img: 'vtt',      famille: 'VTT',            modele: 'Moustache Game 160.7',   prix: '4 972 €', avant: '6 499 €', remise: '−23 %' }
+];
+
+// ---------- outils ----------
+const clamp = v => Math.max(0, Math.min(1, v));
+const p = (t, debut, duree) => clamp((t - debut) / duree);
+const expo = k => k >= 1 ? 1 : 1 - Math.pow(2, -10 * k);           // départ vif, arrivée douce
+const cubeIn = k => k * k * k;                                     // départ doux, sortie vive
+const cubeOut = k => 1 - Math.pow(1 - k, 3);
+const rebond = k => { const s = 1.9; k -= 1; return k * k * ((s + 1) * k + s) + 1; };
+
+function fond(couleur) { x.fillStyle = couleur; x.fillRect(0, 0, W, H); }
+function rect(px, py, w, h, r, couleur) { x.fillStyle = couleur; x.beginPath(); x.roundRect(px, py, w, h, r); x.fill(); }
+function texte(t, px, py, police, couleur, align = 'center', espace = '0px') {
+  x.font = police; x.fillStyle = couleur; x.textAlign = align; x.textBaseline = 'alphabetic';
+  x.letterSpacing = espace; x.fillText(t, px, py); x.letterSpacing = '0px';
+}
+// Texte qui monte derrière un cache (la ligne n'apparaît que dans sa propre bande)
+function ligneMasquee(t, py, taille, couleur, k, sortieK = 0) {
+  x.save();
+  x.beginPath(); x.rect(0, py - taille * 1.02, W, taille * 1.22); x.clip();
+  const dy = (1 - expo(k)) * taille * 1.15 - cubeIn(sortieK) * taille * 1.2;
+  texte(t, 540, py + dy, `${taille}px Anton`, couleur);
+  x.restore();
+}
+
+// ---------- scènes ----------
+function scene1(t) {                                   // 0 → 2,1 s
+  fond(NUIT);
+  const sortieK = p(t, 1.75, 0.35);
+  ligneMasquee('SAISON', 760, 230, '#fff', p(t, 0.15, 0.55), sortieK);
+  ligneMasquee('DES', 980, 230, '#fff', p(t, 0.3, 0.55), sortieK);
+  ligneMasquee('CADEAUX', 1200, 230, SAUMON, p(t, 0.45, 0.55), sortieK);
+  // filet rouge qui se trace sous le titre
+  const k = expo(p(t, 0.85, 0.5)) - cubeIn(sortieK);
+  if (k > 0) rect(540 - 300 * k, 1250, 600 * k, 14, 7, ROUGE);
+  // logos
+  const kl = cubeOut(p(t, 0.9, 0.4)) * (1 - sortieK);
+  x.globalAlpha = kl; logos(330 + (1 - kl) * 20); x.globalAlpha = 1;
+}
+
+function scene2(t) {                                   // 1,9 → 4,0 s
+  // disque rouge qui s'ouvre depuis le centre
+  const r = expo(p(t, 1.9, 0.55)) * 1250;
+  x.fillStyle = ROUGE; x.beginPath(); x.arc(540, 960, r, 0, Math.PI * 2); x.fill();
+  if (t < 2.15) return;
+  const sortieK = p(t, 3.65, 0.35);
+  x.save();
+  x.translate(540, 960); x.scale(1 - 0.25 * cubeIn(sortieK), 1 - 0.25 * cubeIn(sortieK)); x.translate(-540, -960);
+  x.globalAlpha = 1 - sortieK;
+  const kj = cubeOut(p(t, 2.2, 0.35));
+  x.globalAlpha *= kj;
+  texte('JUSQU’À', 540, 690 + (1 - kj) * 40, '800 76px "Hanken Grotesk"', '#fff', 'center', '6px');
+  x.globalAlpha = 1 - sortieK;
+  // compteur 0 → 37
+  const kc = p(t, 2.25, 0.85);
+  const n = Math.round(37 * cubeOut(kc));
+  const pop = t < 3.1 ? 0.85 + 0.15 * cubeOut(kc) : 1 + 0.08 * Math.sin(Math.min(1, (t - 3.1) / 0.25) * Math.PI);
+  x.save(); x.translate(540, 1040); x.scale(pop, pop);
+  texte(`−${n} %`, 0, 120, '330px Anton', '#fff');
+  x.restore();
+  const ks = cubeOut(p(t, 3.1, 0.35));
+  x.globalAlpha = (1 - sortieK) * ks;
+  texte('sur 21 vélos électriques Moustache', 540, 1340 + (1 - ks) * 30, '800 46px "Hanken Grotesk"', '#fff');
+  x.restore();
+  x.globalAlpha = 1;
+}
+
+function scene3(t) {                                   // 3,7 → 7,3 s
+  // panneau crème qui monte
+  const kp = expo(p(t, 3.7, 0.5));
+  if (kp <= 0) return;
+  x.fillStyle = CREME; x.fillRect(0, H * (1 - kp), W, H * kp);
+  if (t < 3.95) return;
+  const kt = cubeOut(p(t, 3.95, 0.4));
+  x.globalAlpha = kt;
+  texte('DE LA VILLE AU VTT', 540, 400 + (1 - kt) * 30, '96px Anton', NUIT);
+  x.globalAlpha = 1;
+  const DEBUT = 4.1, PAS = 0.8;
+  VELOS.forEach((v, i) => {
+    const u = t - (DEBUT + i * PAS);
+    if (u < 0) return;
+    const dernier = i === VELOS.length - 1;
+    let dx;
+    if (u < 0.34) dx = (1 - expo(u / 0.34)) * 1150;
+    else if (dernier || u < 0.64) dx = -(u - 0.34) * 40;
+    else if (u < 0.82) dx = -12 - cubeIn((u - 0.64) / 0.18) * 1250;
+    else return;
+    carte(v, 540 + dx, dx);
+  });
+}
+
+function carte(v, cx, dx) {
+  // photo sur carte blanche
+  x.save(); x.translate(cx - 540, 0);
+  rect(70, 500, 940, 720, 28, '#fff');
+  x.drawImage(IMG[v.img], 105, 540, 870, 652);
+  // pastille de remise
+  rect(780, 530, 200, 96, 16, ROUGE);
+  texte(v.remise, 880, 600, '64px Anton', '#fff');
+  x.restore();
+  // textes avec un léger décalage (effet de profondeur)
+  x.save(); x.translate(dx * 1.25, 0);
+  texte(v.famille, 540, 1350, '96px Anton', ROUGE);
+  texte(v.modele, 540, 1420, '800 44px "Hanken Grotesk"', NUIT);
+  x.font = '800 60px "Hanken Grotesk"';
+  const lp = x.measureText(v.prix + '  ').width; x.font = '40px "Hanken Grotesk"';
+  const la = x.measureText(v.avant).width, debut = 540 - (lp + la) / 2;
+  texte(v.prix, debut, 1515, '800 60px "Hanken Grotesk"', NUIT, 'left');
+  texte(v.avant, debut + lp, 1515, '40px "Hanken Grotesk"', '#8A8271', 'left');
+  x.fillStyle = '#8A8271'; x.fillRect(debut + lp, 1500, la, 3);
+  x.restore();
+}
+
+function scene4(t) {                                   // 7,1 → 9 s
+  const kp = expo(p(t, 7.1, 0.5));
+  if (kp <= 0) return;
+  x.fillStyle = NUIT; x.fillRect(0, H * (1 - kp), W, H * kp);
+  if (t < 7.35) return;
+  const kl = cubeOut(p(t, 7.35, 0.4));
+  x.globalAlpha = kl; logos(330 - (1 - kl) * 30); x.globalAlpha = 1;
+  ligneMasquee('21 VÉLOS MOUSTACHE', 640, 104, '#fff', p(t, 7.45, 0.5));
+  ligneMasquee('JUSQU’À −37 %', 800, 150, SAUMON, p(t, 7.6, 0.5));
+  const kt = cubeOut(p(t, 7.85, 0.4));
+  x.globalAlpha = kt;
+  texte('Cyclable Valence – Saint-Péray', 540, 960 + (1 - kt) * 20, '36px "Hanken Grotesk"', GRIS);
+  texte('04 86 84 10 32', 540, 1080 + (1 - kt) * 20, '800 92px "Hanken Grotesk"', '#fff');
+  texte('13 avenue du 8 Mai, Saint-Péray', 540, 1150 + (1 - kt) * 20, '36px "Hanken Grotesk"', GRIS);
+  const ka = cubeOut(p(t, 8.15, 0.4));
+  x.globalAlpha = ka;
+  const rebondFleche = Math.sin(Math.max(0, t - 8.15) * Math.PI * 2.4) * 12;
+  texte('Tous les modèles', 540, 1360, '800 44px "Hanken Grotesk"', '#fff');
+  texte('↓', 540, 1450 + rebondFleche, '800 70px "Hanken Grotesk"', SAUMON);
+  x.globalAlpha = 1;
+}
+
+function logos(py) {
+  rect(324, py - 80, 186, 81, 10, '#fff'); x.drawImage(IMG.cyclable, 342, py - 68, 150, 57);
+  texte('×', 535, py - 28, '26px Arial', '#8A8271');
+  rect(560, py - 72, 196, 66, 10, '#fff'); x.drawImage(IMG.moustache, 578, py - 60, 160, 42);
+}
+
+function dessine(t) {
+  x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1;
+  scene1(t);
+  scene2(t);
+  scene3(t);
+  scene4(t);
+}
+
+// ---------- chargement, lecture, export ----------
+async function prepare() {
+  await Promise.all(Object.entries(SOURCES).map(([k, src]) => new Promise((ok, ko) => {
+    const i = new Image(); i.onload = () => { IMG[k] = i; ok(); }; i.onerror = ko; i.src = src;
+  })));
+  await Promise.all(['100px Anton', '800 40px "Hanken Grotesk"', '40px "Hanken Grotesk"'].map(f => document.fonts.load(f)));
+}
+async function boucle() {
+  await prepare();
+  const t0 = performance.now();
+  (function f() { dessine(((performance.now() - t0) / 1000) % DUREE); requestAnimationFrame(f); })();
+}
+// Appelé par export-video.mjs : le canevas occupe toute la page, puis chaque image est dessinée et capturée.
+window.preparePourExport = async function () {
+  document.body.style.cssText = 'margin:0;display:block';
+  c.style.cssText = 'width:1080px;height:1920px;display:block';
+  await prepare();
+  return DUREE;
+};
+if (!location.hash.includes('export')) boucle();
+</script>
+</body>
+</html>
